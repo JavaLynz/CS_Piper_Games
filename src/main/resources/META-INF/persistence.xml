@@ -28,7 +28,6 @@
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.highlight_sql" value="true"/>
             <property name="hibernate.hbm2ddl.import_files" value="data.sql"/>
-
         </properties>
 
     </persistence-unit>
