@@ -24,11 +24,11 @@ public class Player {
 
     @ManyToOne
     @JoinColumn(name = "address_id")
-    private Address address;
+    private int address_id;
 
     @OneToMany
     @JoinColumn(name = "team_id")
-    private Team team;
+    private Team team_id;
 
     @OneToMany
     @JoinColumn(name = "player_match_id")
