@@ -2,6 +2,9 @@ package com.example.gruppcadettsplitterpipergames.entities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "players")
 
@@ -21,36 +24,31 @@ public class Player {
 
     @Column(name = "player_nick_name", length = 20, nullable = false)
     private String nickName;
-
+/*
     @ManyToOne
     @JoinColumn(name = "address_id")
-    private int addressId;
+    private Address address;
 
-    @OneToMany
+    @ManyToMany(mappedBy = "player_id")
     @JoinColumn(name = "team_id")
-    private int teamId;
+    private List<Team> teams = new ArrayList<>();
 
-    @OneToMany
-    @JoinColumn(name = "player_match_id")
-    private int pmatchId;
+    @OneToMany (mappedBy ="player_id")
+    @JoinColumn(name = "player_match")
+    private List<PlayerMatch> pmatches = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToMany(mappedBy = "player_id")
     @JoinColumn(name = "game_id")
-    private int gameId;
-
+    private List<Game> games = new ArrayList<>();
+*/
 
     public Player() {
     }
 
-    public Player(int id, String firstName, String lastName, String nickName, int addressId, int teamId, int pmatchId, int gameId) {
-        this.id = id;
+    public Player(String firstName, String lastName, String nickName) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.nickName = nickName;
-        this.addressId = addressId;
-        this.teamId = teamId;
-        this.pmatchId = pmatchId;
-        this.gameId = gameId;
     }
 
     public int getId() {
@@ -85,37 +83,40 @@ public class Player {
         this.nickName = nickName;
     }
 
-    public int getAddressId() {
-        return addressId;
+    /*
+    public int getAddress() {
+        return address;
     }
 
-    public void setAddressId(int addressId) {
-        this.addressId = addressId;
+    public void setAddress(int address) {
+        this.address = address;
     }
 
-    public int getTeamId() {
-        return teamId;
+    public int getTeams() {
+        return teams;
     }
 
-    public void setTeamId(int teamId) {
-        this.teamId = teamId;
+    public void setTeams(int teams) {
+        this.teams = teams;
     }
 
-    public int getPmatchId() {
-        return pmatchId;
+    public int getPmatches() {
+        return pmatches;
     }
 
-    public void setPmatchId(int pmatchId) {
-        this.pmatchId = pmatchId;
+    public void setPmatches(int pmatch) {
+        this.pmatches = pmatch;
     }
 
-    public int getGameId() {
-        return gameId;
+    public int getGames() {
+        return games;
     }
 
-    public void setGameId(int gameId) {
-        this.gameId = gameId;
+    public void setGames(int games) {
+        this.games = games;
     }
+
+     */
 }
 
 
