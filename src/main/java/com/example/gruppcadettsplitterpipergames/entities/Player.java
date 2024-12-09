@@ -24,33 +24,33 @@ public class Player {
 
     @ManyToOne
     @JoinColumn(name = "address_id")
-    private int address_id;
+    private int addressId;
 
     @OneToMany
     @JoinColumn(name = "team_id")
-    private Team team_id;
+    private int teamId;
 
     @OneToMany
     @JoinColumn(name = "player_match_id")
-    private PlayerMatch pmatch;
+    private int pmatchId;
 
     @ManyToOne
     @JoinColumn(name = "game_id")
-    private Game game;
+    private int gameId;
 
 
     public Player() {
     }
 
-    public Player(int id, String firstName, String lastName, String nickName, Address address, Team team, PlayerMatch pmatch, Game game) {
+    public Player(int id, String firstName, String lastName, String nickName, int addressId, int teamId, int pmatchId, int gameId) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.nickName = nickName;
-        this.address = address;
-        this.team = team;
-        this.pmatch = pmatch;
-        this.game = game;
+        this.addressId = addressId;
+        this.teamId = teamId;
+        this.pmatchId = pmatchId;
+        this.gameId = gameId;
     }
 
     public int getId() {
@@ -85,36 +85,36 @@ public class Player {
         this.nickName = nickName;
     }
 
-    public Address getAddress() {
-        return address;
+    public int getAddressId() {
+        return addressId;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setAddressId(int addressId) {
+        this.addressId = addressId;
     }
 
-    public Team getTeam() {
-        return team;
+    public int getTeamId() {
+        return teamId;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
+    public void setTeamId(int teamId) {
+        this.teamId = teamId;
     }
 
-    public PlayerMatch getPmatch() {
-        return pmatch;
+    public int getPmatchId() {
+        return pmatchId;
     }
 
-    public void setPmatch(PlayerMatch pmatch) {
-        this.pmatch = pmatch;
+    public void setPmatchId(int pmatchId) {
+        this.pmatchId = pmatchId;
     }
 
-    public Game getGame() {
-        return game;
+    public int getGameId() {
+        return gameId;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    public void setGameId(int gameId) {
+        this.gameId = gameId;
     }
 }
 
