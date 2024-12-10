@@ -10,7 +10,8 @@ public class GamesDAO {
 
     //CRUD operations
 
-    private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("MyConfig");
+
+    private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("myconfig");
 
     //CREATE
 

@@ -1,5 +1,7 @@
 package com.example.gruppcadettsplitterpipergames;
 
+import com.example.gruppcadettsplitterpipergames.DAO.AddressDAO;
+import com.example.gruppcadettsplitterpipergames.DAO.GamesDAO;
 import com.example.gruppcadettsplitterpipergames.DAO.PlayerDAO;
 import com.example.gruppcadettsplitterpipergames.entities.Player;
 import javafx.application.Application;
@@ -25,6 +27,13 @@ public class HelloApplication extends Application {
     Player playerFromDatabase = playerDAO.getPlayerById(1);
     System.out.println("Player fetched from database, first name: " + playerFromDatabase.getFirstName() + " , last name: " + playerFromDatabase.getLastName());
     System.out.println("Size of list of players is: " + playerDAO.getAllPlayers().size());
+
+        AddressDAO addressDAO = new AddressDAO();
+        System.out.println("Address no.3 from database is: " + addressDAO.getAddressById(3).getAddress());
+        System.out.println("Number of addresses in list is: " + addressDAO.getAllAddress().size());
+
+        GamesDAO gamesDAO = new GamesDAO();
+        System.out.println("Number of games available to play: " + gamesDAO.getAllGames().size());
 
     playerDAO.deletePlayer(testPlayer);
 

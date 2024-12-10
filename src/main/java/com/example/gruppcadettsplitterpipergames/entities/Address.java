@@ -14,9 +14,6 @@ public class Address {
     @Column(name = "address", length = 50, nullable = false)
     private String address;
 
-    @Column(name = "address2", length = 50, nullable = true)
-    private String address2;
-
     @Column(name = "district", length = 50, nullable = true)
     private String district;
 
@@ -24,7 +21,7 @@ public class Address {
     private String city;
 
     @Column(name = "postcode", length = 10, nullable = false)
-    private int postcode;
+    private String postcode;
 
     @Column (name = "country", length = 20, nullable = false)
     private String country;
@@ -35,9 +32,8 @@ public class Address {
     @OneToMany (mappedBy = "staffId", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private List<Staff> staff;
 
-    public Address(String address, String address2, String district, String city, int postcode, String country) {
+    public Address(String address, String district, String city, String postcode, String country) {
         this.address = address;
-        this.address2 = address2;
         this.district = district;
         this.city = city;
         this.postcode = postcode;
@@ -61,14 +57,6 @@ public class Address {
         this.address = address;
     }
 
-    public String getAddress2() {
-        return address2;
-    }
-
-    public void setAddress2(String address2) {
-        this.address2 = address2;
-    }
-
     public String getDistrict() {
         return district;
     }
@@ -85,11 +73,11 @@ public class Address {
         this.city = city;
     }
 
-    public int getPostcode() {
+    public String getPostcode() {
         return postcode;
     }
 
-    public void setPostcode(int postcode) {
+    public void setPostcode(String postcode) {
         this.postcode = postcode;
     }
 
