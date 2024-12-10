@@ -3,12 +3,14 @@ package com.example.gruppcadettsplitterpipergames.entities;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "games")
+@Table(name = "staff")
 
-public class Game {
+public class Staff {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "game_id")
+    @Column(name = "staff_id")
     private int id;
+
+
 }
