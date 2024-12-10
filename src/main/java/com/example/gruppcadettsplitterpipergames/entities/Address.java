@@ -1,18 +1,15 @@
 package com.example.gruppcadettsplitterpipergames.entities;
-
 import jakarta.persistence.*;
 
 import java.util.List;
 
 @Entity
 @Table(name = "addresses")
-
 public class Address {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "address_id")
-    private int id;
+    private int addressId;
 
     @Column(name = "address", length = 50, nullable = false)
     private String address;
@@ -32,14 +29,13 @@ public class Address {
     @Column (name = "country", length = 20, nullable = false)
     private String country;
 
-    @OneToMany (mappedBy = "player.id", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @OneToMany (mappedBy = "playerId", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private List<Player> players;
 
-    @OneToMany (mappedBy = "staff.id", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @OneToMany (mappedBy = "staffId", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private List<Staff> staff;
 
-    public Address(int id, String address, String address2, String district, String city, int postcode, String country) {
-        this.id = id;
+    public Address(String address, String address2, String district, String city, int postcode, String country) {
         this.address = address;
         this.address2 = address2;
         this.district = district;
@@ -49,12 +45,12 @@ public class Address {
     }
     public Address() {}
 
-    public int getId() {
-        return id;
+    public int getAddressId() {
+        return addressId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setAddressId(int addressId) {
+        this.addressId = addressId;
     }
 
     public String getAddress() {
@@ -120,5 +116,4 @@ public class Address {
     public void setStaff(List<Staff> staff) {
         this.staff = staff;
     }
-
 }

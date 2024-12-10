@@ -14,9 +14,9 @@
 
             <!-- Credentials -->
             <property name="jakarta.persistence.jdbc.user"
-                      value="Marty"/>
+                      value="root"/>
             <property name="jakarta.persistence.jdbc.password"
-                      value="McFly85!@"/>
+                      value="MySQL574921!"/>
 
             <!-- Automatic schema export -->
             <property name="jakarta.persistence.schema-generation.database.action"
