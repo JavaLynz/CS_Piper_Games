@@ -24,23 +24,22 @@ public class Player {
 
     @Column(name = "player_nick_name", length = 20, nullable = false)
     private String nickName;
-/*
+
     @ManyToOne
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @ManyToMany(mappedBy = "player_id")
+    @ManyToOne
     @JoinColumn(name = "team_id")
-    private List<Team> teams = new ArrayList<>();
+    private Team team;
 
     @OneToMany (mappedBy ="player_id")
     @JoinColumn(name = "player_match")
-    private List<PlayerMatch> pmatches = new ArrayList<>();
+    private List<PlayerMatch> playerMatches = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "player_id")
-    @JoinColumn(name = "game_id")
-    private List<Game> games = new ArrayList<>();
-*/
+    @OneToMany(mappedBy = "player_id")
+    private List<PlayerGame> gamesPlayed = new ArrayList<>();
+
 
     public Player() {
     }
@@ -83,40 +82,40 @@ public class Player {
         this.nickName = nickName;
     }
 
-    /*
-    public int getAddress() {
+
+    public Address getAddress() {
         return address;
     }
 
-    public void setAddress(int address) {
+    public void setAddress(Address address) {
         this.address = address;
     }
 
-    public int getTeams() {
-        return teams;
+    public Team getTeam() {
+        return team;
     }
 
-    public void setTeams(int teams) {
-        this.teams = teams;
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
-    public int getPmatches() {
-        return pmatches;
+    public List<PlayerMatch> getPlayerMatches() {
+        return playerMatches;
     }
 
-    public void setPmatches(int pmatch) {
-        this.pmatches = pmatch;
+    public void setPlayerMatches(List<PlayerMatch> pmatch) {
+        this.playerMatches = pmatch;
     }
 
-    public int getGames() {
-        return games;
+    public List<PlayerGame> getGamesPlayed() {
+        return gamesPlayed;
     }
 
-    public void setGames(int games) {
-        this.games = games;
+    public void setGamesPlayed(List<PlayerGame> gamesPlayed) {
+        this.gamesPlayed = gamesPlayed;
     }
 
-     */
+
 }
 
 

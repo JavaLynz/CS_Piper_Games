@@ -1,106 +1,100 @@
 package com.example.gruppcadettsplitterpipergames.DAO;
 
-import com.example.gruppcadettsplitterpipergames.entities.Game;
+import com.example.gruppcadettsplitterpipergames.entities.Address;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GamesDAO {
 
-    //CRUD operations
+public class AddressDAO {
+    // CRUD operations
 
-    private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("MyConfig");
+    private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("myconfig");
 
     //CREATE
-
-    public boolean saveGame(Game game) {
+    public boolean saveAddress(Address address) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction transaction = null;
         try{
             transaction = entityManager.getTransaction();
             transaction.begin();
-            entityManager.persist(game);
+            entityManager.persist(address);
             transaction.commit();
             return true;
         }catch(Exception e){
             System.out.println(e.getMessage());
-            if(transaction != null && entityManager != null && entityManager.getTransaction().isActive()){
+            if(entityManager != null && transaction != null && entityManager.getTransaction().isActive()){
                 transaction.rollback();
             }
             return false;
-        }finally{
+        } finally {
             entityManager.close();
         }
-
     }
 
     //READ ONE / ALL
 
-    public Game getGameById(int id) {
+    public Address getAddressById(int id) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
-        Game gameToReturn = entityManager.find(Game.class, id);
+        Address addressToReturn = entityManager.find(Address.class, id);
         entityManager.close();
-        return gameToReturn;
-        }
+        return addressToReturn;
+    }
 
-    public List<Game> getAllGames() {
+    public List<Address> getAllAddress() {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
-        List<Game> gamesToReturn = new ArrayList<Game>();
-        TypedQuery<Game> result = entityManager.createQuery("SELECT g FROM Game g", Game.class);
-        gamesToReturn.addAll(result.getResultList());
+        List<Address> addressesToReturn = new ArrayList<>();
+        TypedQuery<Address> result = entityManager.createQuery("SELECT a FROM Address a", Address.class);
+        addressesToReturn.addAll(result.getResultList());
         entityManager.close();
-        return gamesToReturn;
-
+        return addressesToReturn;
     }
 
     //UPDATE
 
-    public void updateGame(Game gameToUpdate) {
+    public void updateAddress(Address addressToUpdate) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction transaction = null;
         try{
             transaction = entityManager.getTransaction();
             transaction.begin();
-            if (entityManager.contains(gameToUpdate)) {
-                System.out.println("Game is in the database");
-                entityManager.persist(gameToUpdate);
-
-            }else {
-                System.out.println("Game is not in the database");
-                Game revivedGame = entityManager.merge(gameToUpdate);
-                System.out.println("Game is now in the database");
+            if (entityManager.contains(addressToUpdate)) {
+                System.out.println("Address is in the database");
+                entityManager.persist(addressToUpdate);
+            }else{
+                System.out.println("Address is not in the database");
+                Address revivedAddress = entityManager.merge(addressToUpdate);
+                System.out.println("Address added to database");
             }
-            entityManager.merge(gameToUpdate);
+            entityManager.merge(addressToUpdate);
             transaction.commit();
-
         }catch(Exception e){
             System.out.println(e.getMessage());
-            if(transaction != null && entityManager != null && entityManager.getTransaction().isActive()){
+            if(entityManager != null && transaction != null && entityManager.getTransaction().isActive()){
                 transaction.rollback();
-
             }
-        }finally{
+        }finally {
             entityManager.close();
         }
     }
 
     //DELETE
 
-    public void deleteGame(Game gameToDelete) {
+    public void deleteAddress(Address addressToDelete) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction transaction = null;
         try{
             transaction = entityManager.getTransaction();
             transaction.begin();
-            if(!entityManager.contains(gameToDelete)) {
-                entityManager.merge(gameToDelete);
+            if(!entityManager.contains(addressToDelete)) {
+                entityManager.merge(addressToDelete);
             }
-            entityManager.remove(gameToDelete);
+            entityManager.remove(addressToDelete);
             transaction.commit();
         }catch(Exception e){
             System.out.println(e.getMessage());
-            if(transaction != null && entityManager != null && entityManager.getTransaction().isActive()){
+            if(entityManager != null && transaction != null && entityManager.getTransaction().isActive()){
                 transaction.rollback();
             }
         }finally{
@@ -108,28 +102,24 @@ public class GamesDAO {
         }
     }
 
-    public boolean deleteGameById(int id) {
+    public boolean deleteAddressById(int id) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction transaction = null;
         try{
             transaction = entityManager.getTransaction();
             transaction.begin();
-            Game gameToDelete = entityManager.find(Game.class, id);
-            entityManager.remove(entityManager.contains(gameToDelete) ? gameToDelete : entityManager.merge(gameToDelete));
+            Address addressToDelete = entityManager.find(Address.class, id);
+            entityManager.remove(entityManager.contains(addressToDelete) ? addressToDelete : addressToDelete);
             transaction.commit();
             return true;
-        }catch(Exception e){
+        }catch (Exception e){
             System.out.println(e.getMessage());
-            if(transaction != null && entityManager != null && entityManager.getTransaction().isActive()){
+            if(entityManager != null && transaction != null && entityManager.getTransaction().isActive()){
                 transaction.rollback();
             }
             return false;
-        }finally{
+        } finally {
             entityManager.close();
         }
     }
-
-
-
-
 }
