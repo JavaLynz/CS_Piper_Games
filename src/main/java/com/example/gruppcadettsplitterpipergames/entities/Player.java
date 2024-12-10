@@ -26,7 +26,7 @@ public class Player {
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
 
