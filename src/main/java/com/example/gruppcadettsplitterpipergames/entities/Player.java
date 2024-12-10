@@ -2,6 +2,9 @@ package com.example.gruppcadettsplitterpipergames.entities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "players")
 
@@ -21,23 +24,23 @@ public class Player {
 
     @Column(name = "player_nick_name", length = 20, nullable = false)
     private String nickName;
-/*
+
     @ManyToOne
     @JoinColumn(name = "addressId")
     private Address address;
-
+/*
     @ManyToOne
     @JoinColumn(name = "teamId")
-    private List<Team> teams = new ArrayList<>();
+    private Team team;
 
     @OneToMany (mappedBy ="playerMatchId")
     @JoinColumn(name = "player_match")
     private List<PlayerMatch> playerMatches = new ArrayList<>();
-
+*/
     @ManyToOne
     @JoinColumn(name = "game_id")
-    private List<Game> games = new ArrayList<>();
-*/
+    private Game game;
+
 
     public Player() {
     }
@@ -104,16 +107,16 @@ public class Player {
     public void setPmatches(int pmatch) {
         this.pmatches = pmatch;
     }
-
-    public int getGames() {
-        return games;
+*/
+    public Game getGame() {
+        return game;
     }
 
-    public void setGames(int games) {
-        this.games = games;
+    public void setGames(Game game) {
+        this.game = game;
     }
 
-     */
+
 }
 
 
