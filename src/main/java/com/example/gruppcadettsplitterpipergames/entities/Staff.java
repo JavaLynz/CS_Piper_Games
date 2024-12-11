@@ -10,7 +10,7 @@ public class Staff {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "staff_id")
-    private int id;
+    private int staffId;
 
     @Column(name = "staff_first_name", length = 20, nullable = false)
     private String firstName;
@@ -21,28 +21,35 @@ public class Staff {
     @Column(name = "staff_nick_name", length = 20, nullable = false)
     private String nickName;
 
-//    @JoinColumn(name = "address_id")
-//    private Address address;
+    @ManyToOne
+    @JoinColumn(name = "address_id")
+    private Address address;
+
+    @Column(name = "staff_email", length = 50, nullable = false)
+    private String email;
 
     //Constructors
 
     public Staff() {
     }
 
-    public Staff(String firstName, String lastName, String nickName) {
+    public Staff(String firstName, String lastName, String nickName, Address address, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.nickName = nickName;
+        this.address = address;
+        this.email = email;
     }
 
-    //Getters & Setters
+//Getters & Setters
 
-    public int getId() {
-        return id;
+
+    public int getStaffId() {
+        return staffId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setStaffId(int staffId) {
+        this.staffId = staffId;
     }
 
     public String getFirstName() {
@@ -69,11 +76,19 @@ public class Staff {
         this.nickName = nickName;
     }
 
-//    public Address getAddress() {
-//        return address;
-//    }
-//
-//    public void setAddress(Address address) {
-//        this.address = address;
-//    }
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }
