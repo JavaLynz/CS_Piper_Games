@@ -10,6 +10,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class HelloApplication extends Application {
     @Override
@@ -17,27 +18,37 @@ public class HelloApplication extends Application {
 
 
     PlayerDAO playerDAO = new PlayerDAO();
-    Player testPlayer = new Player("Lynsey","Fox","Lynz");
-    if (playerDAO.savePlayer(testPlayer)) {
-        System.out.println("Player saved");
-    }else{
-        System.out.println("Player not saved");
+    AddressDAO addressDAO = new AddressDAO();
+    GamesDAO gamesDAO = new GamesDAO();
+
+    try{
+        TimeUnit.SECONDS.sleep(2);
+    }catch (InterruptedException e){
+        throw new RuntimeException(e);
     }
 
     Player playerFromDatabase = playerDAO.getPlayerById(1);
     System.out.println("Player fetched from database, first name: " + playerFromDatabase.getFirstName() + " , last name: " + playerFromDatabase.getLastName());
+        System.out.println(playerFromDatabase.getFirstName() + "'s address is: " + playerFromDatabase.getAddressId().getAddress());
     System.out.println("Size of list of players is: " + playerDAO.getAllPlayers().size());
 
-        AddressDAO addressDAO = new AddressDAO();
-        System.out.println("Address no.3 from database is: " + addressDAO.getAddressById(3).getAddress());
-        System.out.println("Number of addresses in list is: " + addressDAO.getAllAddress().size());
 
-        GamesDAO gamesDAO = new GamesDAO();
-        System.out.println("Number of games available to play: " + gamesDAO.getAllGames().size());
 
-    playerDAO.deletePlayer(testPlayer);
+    System.out.println("Address no.3 from database is: " + addressDAO.getAddressById(3).getAddress());
+    System.out.println("Number of addresses in list is: " + addressDAO.getAllAddress().size());
+
+
+    System.out.println("Number of games available to play: " + gamesDAO.getAllGames().size());
+
+
+
 
         System.out.println("Number of players in list: " + playerDAO.getAllPlayers().size());
+
+
+        Player playerToUpdate = playerDAO.getPlayerById(1);
+        playerDAO.updatePlayer(playerToUpdate);
+
 
 
 
