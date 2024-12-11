@@ -33,6 +33,13 @@ public class Staff {
     public Staff() {
     }
 
+    public Staff(String firstName, String lastName, String nickName, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.nickName = nickName;
+        this.email = email;
+    }
+
     public Staff(String firstName, String lastName, String nickName, Address address, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
