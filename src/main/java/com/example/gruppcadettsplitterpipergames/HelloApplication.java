@@ -3,7 +3,10 @@ package com.example.gruppcadettsplitterpipergames;
 import com.example.gruppcadettsplitterpipergames.DAO.AddressDAO;
 import com.example.gruppcadettsplitterpipergames.DAO.GamesDAO;
 import com.example.gruppcadettsplitterpipergames.DAO.PlayerDAO;
+import com.example.gruppcadettsplitterpipergames.DAO.TeamsDAO;
+import com.example.gruppcadettsplitterpipergames.entities.Game;
 import com.example.gruppcadettsplitterpipergames.entities.Player;
+import com.example.gruppcadettsplitterpipergames.entities.Team;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -16,10 +19,10 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-
     PlayerDAO playerDAO = new PlayerDAO();
     AddressDAO addressDAO = new AddressDAO();
     GamesDAO gamesDAO = new GamesDAO();
+    TeamsDAO teamsDAO = new TeamsDAO();
 
 
 
@@ -33,11 +36,7 @@ public class HelloApplication extends Application {
     System.out.println("Address no.3 from database is: " + addressDAO.getAddressById(3).getAddress());
     System.out.println("Number of addresses in list is: " + addressDAO.getAllAddress().size());
 
-
     System.out.println("Number of games available to play: " + gamesDAO.getAllGames().size());
-
-
-
 
         System.out.println("Number of players in list: " + playerDAO.getAllPlayers().size());
 
@@ -56,6 +55,7 @@ public class HelloApplication extends Application {
     }
 
     public static void main(String[] args) {
-        launch();
+
+    launch(HelloApplication.class);
     }
 }
