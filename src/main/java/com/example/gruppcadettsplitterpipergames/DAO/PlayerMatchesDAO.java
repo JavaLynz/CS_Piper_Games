@@ -1,6 +1,6 @@
-package com.example.dao;
+package com.example.gruppcadettsplitterpipergames.DAO;
 
-import com.example.entity.PlayerMatches;
+import com.example.gruppcadettsplitterpipergames.entities.PlayerMatches;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;

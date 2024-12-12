@@ -1,4 +1,4 @@
-package com.exapackage com.example.entities;
+package com.example.gruppcadettsplitterpipergames.entities;
 
 import jakarta.persistence.*;
 import java.util.List;
@@ -13,9 +13,6 @@ public class PlayerMatches {
 
     @Column(name = "match_date", nullable = false)
     private String matchDate;
-
-    @Column(name = "match_location", length = 100, nullable = false)
-    private String matchLocation;
 
     @ManyToOne
     @JoinColumn(name = "team1_id", nullable = false)
@@ -43,7 +40,6 @@ public class PlayerMatches {
 
     public PlayerMatches(String matchDate, String matchLocation, Team team1, Team team2, int team1Score, int team2Score) {
         this.matchDate = matchDate;
-        this.matchLocation = matchLocation;
         this.team1 = team1;
         this.team2 = team2;
         this.team1Score = team1Score;
@@ -64,14 +60,6 @@ public class PlayerMatches {
 
     public void setMatchDate(String matchDate) {
         this.matchDate = matchDate;
-    }
-
-    public String getMatchLocation() {
-        return matchLocation;
-    }
-
-    public void setMatchLocation(String matchLocation) {
-        this.matchLocation = matchLocation;
     }
 
     public Team getTeam1() {

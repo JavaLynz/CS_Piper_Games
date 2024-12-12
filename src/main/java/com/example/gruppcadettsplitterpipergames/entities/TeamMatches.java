@@ -1,11 +1,11 @@
-package com.example.entities;
+package com.example.gruppcadettsplitterpipergames.entities;
 
 import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "team_matches")
-public class TeamMatch {
+public class TeamMatches {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,9 +30,9 @@ public class TeamMatch {
     @OneToMany(mappedBy = "teamMatch", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<PlayerMatches> playerMatches;
 
-    public TeamMatch() {}
+    public TeamMatches() {}
 
-    public TeamMatch(String team1Name, String team2Name, int scoreTeam1, int scoreTeam2, String matchDate) {
+    public TeamMatches(String team1Name, String team2Name, int scoreTeam1, int scoreTeam2, String matchDate) {
         this.team1Name = team1Name;
         this.team2Name = team2Name;
         this.scoreTeam1 = scoreTeam1;
