@@ -43,18 +43,18 @@ public class HelloApplication extends Application {
 
         Player playerToUpdate;
         playerToUpdate = playerDAO.getPlayerById(1);
-        System.out.println("Player to update name: " + playerToUpdate.getFirstName());
+        System.out.println("Team 3: " + teamsDAO.getTeamById(3).getName());
         playerToUpdate.setGame(gamesDAO.getGameById(3));
         playerToUpdate.setTeam(teamsDAO.getTeamById(5));
         playerDAO.updatePlayer(playerToUpdate);
 
-        System.out.println("Team 3: " + teamsDAO.getTeamById(3).getName());
+        System.out.println("Player to update name: " + playerToUpdate.getFirstName());
         System.out.println("Player updated, player team: " + playerToUpdate.getTeam().getName());
         System.out.println("Player updated, game played: " + playerToUpdate.getGame().getGameName());
 
 
 
-
+// login screen goes here -- as initial screen ?
 
         AnchorPane root = new AnchorPane();
         Scene scene = new Scene(root, 320, 240);
