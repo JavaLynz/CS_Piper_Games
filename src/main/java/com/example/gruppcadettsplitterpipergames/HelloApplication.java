@@ -21,11 +21,7 @@ public class HelloApplication extends Application {
     AddressDAO addressDAO = new AddressDAO();
     GamesDAO gamesDAO = new GamesDAO();
 
-    try{
-        TimeUnit.SECONDS.sleep(2);
-    }catch (InterruptedException e){
-        throw new RuntimeException(e);
-    }
+
 
     Player playerFromDatabase = playerDAO.getPlayerById(1);
     System.out.println("Player fetched from database, first name: " + playerFromDatabase.getFirstName() + " , last name: " + playerFromDatabase.getLastName());
