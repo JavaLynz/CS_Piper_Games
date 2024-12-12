@@ -64,7 +64,7 @@
                 <executions>
                     <execution>
                         <!-- Default configuration for running with: mvn clean javafx:run -->
-                        <id>default-cli</id>
+                        <playerId>default-cli</playerId>
                         <configuration>
                             <mainClass>
                                 com.example.gruppcadettsplitterpipergames/com.example.gruppcadettsplitterpipergames.HelloApplication
