@@ -10,13 +10,13 @@
         <properties>
             <!-- MySQL -->
             <property name="jakarta.persistence.jdbc.url"
-                      value="jdbc:mysql://192.168.1.236:3306/cadettsplitterspipergames"/>
+                      value="jdbc:mysql://localhost:3306/cadettsplitterspipergames"/>
 
             <!-- Credentials -->
             <property name="jakarta.persistence.jdbc.user"
-                      value="Marty"/>
+                      value="root"/>
             <property name="jakarta.persistence.jdbc.password"
-                      value=" McFly85!"/>
+                      value="MySQL574921!"/>
 
             <!-- Automatic schema export -->
             <property name="jakarta.persistence.schema-generation.database.action"
@@ -27,7 +27,7 @@
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.highlight_sql" value="true"/>
-            <property name="hibernate.hbm2ddl.import_files" value="data.sql"/>
+            <property name="hibernate.hbm2ddl.import_files" value="import.sql"/>
         </properties>
 
     </persistence-unit>

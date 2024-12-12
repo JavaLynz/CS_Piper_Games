@@ -1,2 +1,0 @@
-CREATE DATABASE CadettSplittersPiperGames;
-USE CadettSplittersPiperGames;

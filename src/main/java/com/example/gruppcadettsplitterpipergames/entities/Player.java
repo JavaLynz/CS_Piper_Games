@@ -11,7 +11,7 @@ public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "player_id")
-    private int id;
+    private int playerId;
 
     @Column(name = "player_first_name", length = 20, nullable = false)
     private String firstName;
@@ -24,16 +24,16 @@ public class Player {
 
     @ManyToOne
     @JoinColumn(name = "address_id")
-    private Address address;
-
-    @OneToMany
+    private Address addressId;
+/*
+    @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
 
-    @OneToMany
+    @OneToMany (mappedBy ="playerMatchId")
     @JoinColumn(name = "player_match_id")
-    private PlayerMatch pmatch;
-
+    private List<PlayerMatch> playerMatches = new ArrayList<>();
+*/
     @ManyToOne
     @JoinColumn(name = "game_id")
     private Game game;
@@ -42,23 +42,19 @@ public class Player {
     public Player() {
     }
 
-    public Player(int id, String firstName, String lastName, String nickName, Address address, Team team, PlayerMatch pmatch, Game game) {
-        this.id = id;
+    public Player(String firstName, String lastName, String nickName, int addressId, int gameID) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.nickName = nickName;
-        this.address = address;
-        this.team = team;
-        this.pmatch = pmatch;
-        this.game = game;
+
     }
 
-    public int getId() {
-        return id;
+    public int getPlayerId() {
+        return playerId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
     }
 
     public String getFirstName() {
@@ -85,37 +81,40 @@ public class Player {
         this.nickName = nickName;
     }
 
-    public Address getAddress() {
-        return address;
+
+    public Address getAddressId() {
+        return addressId;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setAddress(int address) {
+        this.addressId = addressId;
+    }
+/*
+    public int getTeams() {
+        return teams;
     }
 
-    public Team getTeam() {
-        return team;
+    public void setTeams(int teams) {
+        this.teams = teams;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
+    public int getPmatches() {
+        return pmatches;
     }
 
-    public PlayerMatch getPmatch() {
-        return pmatch;
+    public void setPmatches(int pmatch) {
+        this.pmatches = pmatch;
     }
-
-    public void setPmatch(PlayerMatch pmatch) {
-        this.pmatch = pmatch;
-    }
-
+*/
     public Game getGame() {
         return game;
     }
 
-    public void setGame(Game game) {
+    public void setGames(Game game) {
         this.game = game;
     }
+
+
 }
 
 
