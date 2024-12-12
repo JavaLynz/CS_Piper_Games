@@ -4,18 +4,13 @@ import com.example.gruppcadettsplitterpipergames.DAO.AddressDAO;
 import com.example.gruppcadettsplitterpipergames.DAO.GamesDAO;
 import com.example.gruppcadettsplitterpipergames.DAO.PlayerDAO;
 import com.example.gruppcadettsplitterpipergames.DAO.TeamsDAO;
-import com.example.gruppcadettsplitterpipergames.entities.Game;
 import com.example.gruppcadettsplitterpipergames.entities.Player;
-import com.example.gruppcadettsplitterpipergames.entities.Team;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class HelloApplication extends Application {
     @Override
@@ -32,7 +27,7 @@ public class HelloApplication extends Application {
 
     Player playerFromDatabase = playerDAO.getPlayerById(1);
     System.out.println("Player fetched from database, first name: " + playerFromDatabase.getFirstName() + " , last name: " + playerFromDatabase.getLastName());
-        System.out.println(playerFromDatabase.getFirstName() + "'s address is: " + playerFromDatabase.getAddressId().getAddress());
+        System.out.println(playerFromDatabase.getFirstName() + "'s address is: " + playerFromDatabase.getAddress().getAddress());
     System.out.println("Size of list of players is: " + playerDAO.getAllPlayers().size());
 
 
@@ -54,7 +49,7 @@ public class HelloApplication extends Application {
         playerDAO.updatePlayer(playerToUpdate);
 
         System.out.println("Team 3: " + teamsDAO.getTeamById(3).getName());
-        System.out.println("Player updated, player team: " + playerToUpdate.getTeam());
+        System.out.println("Player updated, player team: " + playerToUpdate.getTeam().getName());
         System.out.println("Player updated, game played: " + playerToUpdate.getGame().getGameName());
 
 

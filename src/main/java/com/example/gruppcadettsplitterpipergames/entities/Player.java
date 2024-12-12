@@ -24,7 +24,7 @@ public class Player {   //Lynsey Fox
 
     @ManyToOne
     @JoinColumn(name = "address_id")
-    private Address addressId;
+    private Address address;
 
     @ManyToOne
     @JoinColumn(name = "team_id")
@@ -81,19 +81,19 @@ public class Player {   //Lynsey Fox
     }
 
 
-    public Address getAddressId() {
-        return addressId;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setAddress(int address) {
-        this.addressId = addressId;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public Team getTeam() {
         return team;
     }
 
-    public void setTeam(Team teams) {
+    public void setTeam(Team team) {
         this.team = team;
     }
     /*
