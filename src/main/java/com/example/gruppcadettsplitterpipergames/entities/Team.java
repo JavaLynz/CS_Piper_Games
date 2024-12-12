@@ -16,28 +16,34 @@ public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "team_id")
+    @Column(name = "team_id", nullable = false)
     private int id;
 
-
-    @Column (name = "team_name", length = 30, nullable = false)
+    @Column (name = "team_name", length = 50, nullable = false)
     private String name;
 
+
+    // Flera lag till ett spel
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
-    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    // Ett lag till en spelare
+    @OneToMany(mappedBy = "team", fetch = FetchType.EAGER)
     private List<Player> players = new ArrayList<>();
 
-    public Team() {}
+    // Flera lag till flera matcher
+//    @ManyToMany
+//    @JoinTable(name = "team_team_matches", joinColumns = @JoinColumn(name = "team_id"), inverseJoinColumns = @JoinColumn(name = "team_match_id"))
+//    private List<TeamMatch> teamMatches = new ArrayList<>();
 
+
+    public Team() {}
 
 
     public Team(String name, Game game) {
         this.name = name;
         this.game = game;
-
     }
 
     public int getId() {
@@ -71,4 +77,13 @@ public class Team {
     public void setPlayers(List<Player> players) {
         this.players = players;
     }
+
+//    public List<TeamMatch> getTeamMatches() {
+//        return teamMatches;
+//    }
+//
+//    public void setTeamMatches(List<TeamMatch> teamMatches) {
+//        this.teamMatches = teamMatches;
+//    }
+
 }

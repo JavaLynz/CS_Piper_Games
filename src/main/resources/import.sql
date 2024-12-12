@@ -28,3 +28,13 @@ INSERT INTO games(game_name) VALUES ('Mario Kart');
 INSERT INTO games(game_name) VALUES ('Street Fighter');
 INSERT INTO games(game_name) VALUES ('Asphalt 9');
 
+INSERT INTO teams(team_name, game_id) VALUES ("Ninjas in Pyjamas",1);
+INSERT INTO teams(team_name, game_id) VALUES ("Team Liquid", 1);
+INSERT INTO teams(team_name, game_id) VALUES ("Fnatic", 2);
+INSERT INTO teams(team_name, game_id) VALUES ("G2 Esports", 2);
+INSERT INTO teams(team_name, game_id) VALUES ("Cloud9",3);
+INSERT INTO teams(team_name, game_id) VALUES ("Natus Vincere",3);
+INSERT INTO teams(team_name, game_id) VALUES ("FaZe Clan", 4);
+INSERT INTO teams(team_name, game_id) VALUES ("Evil Geniuses", 4);
+
+
