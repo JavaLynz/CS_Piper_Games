@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "players")
 
-public class Player {
+public class Player {   //Lynsey Fox
 
 
     @Id
@@ -24,16 +24,15 @@ public class Player {
 
     @ManyToOne
     @JoinColumn(name = "address_id")
-    private Address addressId;
-/*
+    private Address address;
+
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
-
-    @OneToMany (mappedBy ="playerMatchId")
-    @JoinColumn(name = "player_match_id")
-    private List<PlayerMatch> playerMatches = new ArrayList<>();
-*/
+    /*
+        @OneToMany (mappedBy ="playerMatchId")
+        private List<PlayerMatch> playerMatches = new ArrayList<>();
+    */
     @ManyToOne
     @JoinColumn(name = "game_id")
     private Game game;
@@ -82,35 +81,35 @@ public class Player {
     }
 
 
-    public Address getAddressId() {
-        return addressId;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setAddress(int address) {
-        this.addressId = addressId;
-    }
-/*
-    public int getTeams() {
-        return teams;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
-    public void setTeams(int teams) {
-        this.teams = teams;
+    public Team getTeam() {
+        return team;
     }
 
-    public int getPmatches() {
-        return pmatches;
+    public void setTeam(Team team) {
+        this.team = team;
     }
+    /*
+        public int getPmatches() {
+            return pmatches;
+        }
 
-    public void setPmatches(int pmatch) {
-        this.pmatches = pmatch;
-    }
-*/
+        public void setPmatches(int pmatch) {
+            this.pmatches = pmatch;
+        }
+    */
     public Game getGame() {
         return game;
     }
 
-    public void setGames(Game game) {
+    public void setGame(Game game) {
         this.game = game;
     }
 

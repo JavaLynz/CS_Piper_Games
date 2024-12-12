@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "games")
 
-public class Game {
+public class Game {     //Lynsey Fox
 
 
     @Id

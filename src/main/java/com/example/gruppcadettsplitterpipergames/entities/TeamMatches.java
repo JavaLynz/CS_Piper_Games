@@ -27,8 +27,8 @@ public class TeamMatches {
     @Column(name = "match_date", nullable = false)
     private String matchDate;
 
-    @OneToMany(mappedBy = "teamMatch", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<PlayerMatches> playerMatches;
+    //@OneToMany(mappedBy = "teamMatch", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    //private List<PlayerMatches> playerMatches;
 
     public TeamMatches() {}
 
@@ -88,11 +88,11 @@ public class TeamMatches {
         this.matchDate = matchDate;
     }
 
-    public List<PlayerMatches> getPlayerMatches() {
-        return playerMatches;
-    }
+   // public List<PlayerMatches> getPlayerMatches() {
+     //   return playerMatches;
+   // }
 
-    public void setPlayerMatches(List<PlayerMatches> playerMatches) {
-        this.playerMatches = playerMatches;
-    }
+    //public void setPlayerMatches(List<PlayerMatches> playerMatches) {
+      //  this.playerMatches = playerMatches;
+    //}
 }
