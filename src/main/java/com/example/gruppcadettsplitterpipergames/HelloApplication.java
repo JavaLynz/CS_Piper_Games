@@ -14,10 +14,14 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
+
+     //   Logger.getLogger("org.hibernate").setLevel(Level.OFF);
 
     PlayerDAO playerDAO = new PlayerDAO();
     AddressDAO addressDAO = new AddressDAO();
@@ -41,8 +45,18 @@ public class HelloApplication extends Application {
         System.out.println("Number of players in list: " + playerDAO.getAllPlayers().size());
 
 
-        Player playerToUpdate = playerDAO.getPlayerById(1);
+
+        Player playerToUpdate;
+        playerToUpdate = playerDAO.getPlayerById(1);
+        System.out.println("Player to update name: " + playerToUpdate.getFirstName());
+        playerToUpdate.setGame(gamesDAO.getGameById(3));
+        playerToUpdate.setTeam(teamsDAO.getTeamById(5));
         playerDAO.updatePlayer(playerToUpdate);
+
+        System.out.println("Team 3: " + teamsDAO.getTeamById(3).getName());
+        System.out.println("Player updated, player team: " + playerToUpdate.getTeam());
+        System.out.println("Player updated, game played: " + playerToUpdate.getGame().getGameName());
+
 
 
 
