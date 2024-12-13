@@ -28,7 +28,7 @@ public class Team {
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
-    // Ett lag till en spelare
+    // Ett lag till flera spelare
     @OneToMany(mappedBy = "team", fetch = FetchType.EAGER)
     private List<Player> players = new ArrayList<>();
 
