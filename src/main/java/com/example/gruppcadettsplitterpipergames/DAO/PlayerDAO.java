@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerDAO {
+public class PlayerDAO {    //Lynsey Fox
 //CRUD operations
 
 private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("myconfig");
@@ -63,7 +63,7 @@ public void updatePlayer(Player playerToUpdate) {
         }else {
             System.out.println("Player is not in the database");
             Player revivedPlayer =entityManager.merge(playerToUpdate);
-            System.out.println(revivedPlayer + "is now in the database");
+            System.out.println(revivedPlayer.getFirstName() + " is now in the database");
         }
         entityManager.merge(playerToUpdate);
         transaction.commit();
