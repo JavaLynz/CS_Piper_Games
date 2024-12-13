@@ -1,3 +1,4 @@
+//CF
 package com.example.gruppcadettsplitterpipergames.entities;
 
 import jakarta.persistence.*;
@@ -26,9 +27,6 @@ public class TeamMatches {
 
     @Column(name = "match_date", nullable = false)
     private String matchDate;
-
-    @OneToMany(mappedBy = "teamMatch", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<PlayerMatches> playerMatches;
 
     public TeamMatches() {}
 
@@ -86,13 +84,5 @@ public class TeamMatches {
 
     public void setMatchDate(String matchDate) {
         this.matchDate = matchDate;
-    }
-
-    public List<PlayerMatches> getPlayerMatches() {
-        return playerMatches;
-    }
-
-    public void setPlayerMatches(List<PlayerMatches> playerMatches) {
-        this.playerMatches = playerMatches;
     }
 }
