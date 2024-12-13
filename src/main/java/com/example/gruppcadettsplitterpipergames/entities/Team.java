@@ -32,10 +32,10 @@ public class Team {
     @OneToMany(mappedBy = "team", fetch = FetchType.EAGER)
     private List<Player> players = new ArrayList<>();
 
-    // Flera lag till flera matcher
-//    @ManyToMany
-//    @JoinTable(name = "team_team_matches", joinColumns = @JoinColumn(name = "team_id"), inverseJoinColumns = @JoinColumn(name = "team_match_id"))
-//    private List<TeamMatch> teamMatches = new ArrayList<>();
+    //Flera lag till flera matcher
+    @ManyToMany
+    @JoinTable(name = "team_team_matches", joinColumns = @JoinColumn(name = "team_id"), inverseJoinColumns = @JoinColumn(name = "team_match_id"))
+    private List<TeamMatches> teamMatches = new ArrayList<>();
 
 
     public Team() {}
@@ -78,12 +78,12 @@ public class Team {
         this.players = players;
     }
 
-//    public List<TeamMatch> getTeamMatches() {
-//        return teamMatches;
-//    }
-//
-//    public void setTeamMatches(List<TeamMatch> teamMatches) {
-//        this.teamMatches = teamMatches;
-//    }
+    public List<TeamMatches> getTeamMatches() {
+        return teamMatches;
+    }
+
+    public void setTeamMatches(List<TeamMatches> teamMatches) {
+        this.teamMatches = teamMatches;
+    }
 
 }
