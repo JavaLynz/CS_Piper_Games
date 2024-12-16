@@ -22,7 +22,6 @@ public class TeamMatchesFX {
     }
 
     private void initializeUI() {
-        // TableView setup
         tableView = new TableView<>();
         TableColumn<TeamMatches, Integer> idColumn = new TableColumn<>("ID");
         idColumn.setCellValueFactory(data -> data.getValue().teamMatchIdProperty().asObject());
@@ -35,19 +34,16 @@ public class TeamMatchesFX {
 
         tableView.getColumns().addAll(idColumn, teamColumn, matchColumn);
 
-        // Buttons setup
-        Button addButton = new Button("Add");
-        Button updateButton = new Button("Update");
-        Button deleteButton = new Button("Delete");
-        Button searchButton = new Button("Search");
+        Button addButton = new Button("Add new match");
+        Button updateButton = new Button("Update match");
+        Button deleteButton = new Button("Delete match");
+        Button searchButton = new Button("Search match");
 
-        // Button actions
         addButton.setOnAction(event -> addTeamMatch());
         updateButton.setOnAction(event -> updateTeamMatch());
         deleteButton.setOnAction(event -> deleteTeamMatch());
         searchButton.setOnAction(event -> searchTeamMatch());
 
-        // Layout
         HBox buttons = new HBox(10, addButton, updateButton, deleteButton, searchButton);
         buttons.setStyle("-fx-padding: 10;");
 
@@ -63,22 +59,20 @@ public class TeamMatchesFX {
     }
 
     private void loadTeamMatches() {
-        // Load data from the database using DAO
         teamMatchesList = FXCollections.observableArrayList(teamMatchesDAO.getAllTeamMatches());
         tableView.setItems(teamMatchesList);
     }
 
     private void addTeamMatch() {
-        // Example: Open a dialog to input data
-        System.out.println("Add Team Match: Open input dialog here");
+        // Skapa ruta för att fylla i data
     }
 
     private void updateTeamMatch() {
         TeamMatches selected = tableView.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            System.out.println("Update Team Match: " + selected);
+            // Skriv en uppdateringsruta
         } else {
-            showAlert("No selection", "Please select a match to update.");
+            showAlert("Varning!", "No valid choice.");
         }
     }
 
@@ -93,7 +87,7 @@ public class TeamMatchesFX {
     }
 
     private void searchTeamMatch() {
-        System.out.println("Search Team Match: Implement search logic here.");
+        // Sökmekanik här
     }
 
     private void showAlert(String title, String message) {

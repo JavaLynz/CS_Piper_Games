@@ -73,7 +73,7 @@ public class PlayerMatchesFX {
             //Skriv en uppdateringsruta.
         }
         else{
-            showAlert("No valid choice.");
+            showAlert("Varning!", "No valid choice.");
         }
     }
 
@@ -84,7 +84,7 @@ public class PlayerMatchesFX {
             playerMatchesList.remove(selected);
         }
         else {
-            showAlert("No valid choise.");
+            showAlert("Varning!", "No valid choise.");
         }
     }
 
@@ -92,9 +92,10 @@ public class PlayerMatchesFX {
         // Sökmekanik här
     }
 
-    private void showAlert(String title){
+    private void showAlert(String title, String message){
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle(title);
+        alert.setContentText(message);
         alert.showAndWait();
     }
 }
