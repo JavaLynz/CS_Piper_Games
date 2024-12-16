@@ -66,6 +66,7 @@ public class HelloApplication extends Application {
         tabPane.getTabs().addAll(teamTab, playerTab, gameTab, matchTab);
 
 
+
         Scene scene = new Scene(tabPane, 800, 600);
         stage.setTitle("Piper Games");
         stage.setScene(scene);
