@@ -4,7 +4,6 @@ import com.example.gruppcadettsplitterpipergames.DAO.AddressDAO;
 import com.example.gruppcadettsplitterpipergames.DAO.GamesDAO;
 import com.example.gruppcadettsplitterpipergames.DAO.PlayerDAO;
 import com.example.gruppcadettsplitterpipergames.DAO.TeamsDAO;
-import com.example.gruppcadettsplitterpipergames.entities.Player;
 import com.example.gruppcadettsplitterpipergames.view.PlayerFX;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -21,14 +20,7 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
 
-     //   Logger.getLogger("org.hibernate").setLevel(Level.OFF);
-
-    PlayerDAO playerDAO = new PlayerDAO();
-    AddressDAO addressDAO = new AddressDAO();
-    GamesDAO gamesDAO = new GamesDAO();
-    TeamsDAO teamsDAO = new TeamsDAO();
-
-/*
+    /*
 
 
     Player playerFromDatabase = playerDAO.getPlayerById(1);
@@ -68,7 +60,7 @@ public class HelloApplication extends Application {
         button.setAlignment(Pos.CENTER);
         button.setOnAction(event -> {
             System.out.println("hello");
-            new PlayerFX(primaryStage,playerDAO).display();
+            new PlayerFX(primaryStage).displayPlayerTab();
 
         });
 
