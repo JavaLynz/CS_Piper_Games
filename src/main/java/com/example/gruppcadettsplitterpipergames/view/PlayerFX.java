@@ -7,9 +7,12 @@ import com.example.gruppcadettsplitterpipergames.entities.Player;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -88,16 +91,23 @@ public class PlayerFX {
         //Game tab content
 
         AnchorPane gamesRoot = new AnchorPane();
+        VBox container = new VBox(30);
+        container.setAlignment(Pos.TOP_CENTER);
+        container.setPadding(new Insets(0,20,20,20));
+        Label title = new Label("Games");
+        title.setStyle("-fx-font-size: 24;-fx-font-weight: bold;");
+        title.setAlignment(Pos.TOP_CENTER);
+        container.setStyle("-fx-background-color: silver");
+        HBox buttonHolder = new HBox(30,showAllPlayers,addPlayer,deletePlayer,updatePlayer);
+        buttonHolder.setAlignment(Pos.CENTER);
+
         ListView gamesListView = new ListView();
         ObservableList<String> gameData = FXCollections.observableArrayList();
-        gamesListView.prefWidth(150);
-        gamesListView.setMaxHeight(50);
-        gamesListView.setLayoutX(50);
-        gamesListView.setLayoutY(30);
+
+        container.getChildren().addAll(title, buttonHolder, gamesListView);
+
 
         Button showAllGames = new Button("Show All Games");
-        showAllGames.setLayoutX(50);
-        showAllGames.setLayoutY(30);
         showAllGames.setOnAction(e -> {
 
             gamesListView.setItems(gameData);
@@ -135,15 +145,11 @@ public class PlayerFX {
         gameNameTextField.setLayoutX(50);
         gameNameTextField.setLayoutY(195);
         Button addGame = new Button("Add Game");
-        addGame.setLayoutX(50);
-        addGame.setLayoutY(160);
         addGame.setOnAction(e1 -> {
             System.out.println("Game added");
         });
 
         Button deleteGame = new Button("Delete Game");
-        deleteGame.setLayoutX(50);
-        deleteGame.setLayoutY(230);
         deleteGame.setOnAction(e1 -> {
             List<Game> gamesList = gamesDAO.getAllGames();
             Iterator<Game> iterator = gamesList.iterator();
@@ -166,12 +172,10 @@ public class PlayerFX {
         });
 
         Button updateGame = new Button("Update Game");
-        updateGame.setLayoutX(50);
-        updateGame.setLayoutY(125);
         updateGame.setOnAction(e1 -> {
             System.out.println("Game updated");
         });
-        gamesRoot.getChildren().addAll(gamesListView,showAllGames, showGameByID,addGame, gameNameTextField,deleteGame, updateGame);
+        gamesRoot.getChildren().addAll(container);
         gamesRoot.setPadding(new Insets(15));
 
 
@@ -189,7 +193,7 @@ public class PlayerFX {
         tabpane.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab, playerMatchesTab, teamMatchesTab);
 
         root.getChildren().addAll(tabpane);
-        Scene playerScene = new Scene(root, 1500, 1500);
+        Scene playerScene = new Scene(root, 800, 500);
 
 
         playerStage.setTitle("PiperGames");
