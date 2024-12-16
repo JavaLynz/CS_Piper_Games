@@ -3,6 +3,8 @@ package com.example.gruppcadettsplitterpipergames.DAO;
 import com.example.gruppcadettsplitterpipergames.entities.Player;
 import jakarta.persistence.*;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +43,7 @@ public Player getPlayerById(int id){
     return playerToReturn;
 }
 
-public List<Player> getAllPlayers(){
+public List<Player> getAllPlayers() {
     EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
     List<Player> playersToReturn = new ArrayList<>();
     TypedQuery<Player> result = entityManager.createQuery("SELECT p FROM Player p", Player.class);

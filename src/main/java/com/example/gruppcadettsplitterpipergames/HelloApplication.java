@@ -5,16 +5,21 @@ import com.example.gruppcadettsplitterpipergames.DAO.GamesDAO;
 import com.example.gruppcadettsplitterpipergames.DAO.PlayerDAO;
 import com.example.gruppcadettsplitterpipergames.DAO.TeamsDAO;
 import com.example.gruppcadettsplitterpipergames.entities.Player;
+import com.example.gruppcadettsplitterpipergames.view.PlayerFX;
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 
 public class HelloApplication extends Application {
+
+
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage primaryStage) throws IOException {
 
      //   Logger.getLogger("org.hibernate").setLevel(Level.OFF);
 
@@ -23,6 +28,7 @@ public class HelloApplication extends Application {
     GamesDAO gamesDAO = new GamesDAO();
     TeamsDAO teamsDAO = new TeamsDAO();
 
+/*
 
 
     Player playerFromDatabase = playerDAO.getPlayerById(1);
@@ -51,16 +57,32 @@ public class HelloApplication extends Application {
         System.out.println("Player to update name: " + playerToUpdate.getFirstName());
         System.out.println("Player updated, player team: " + playerToUpdate.getTeam().getName());
         System.out.println("Player updated, game played: " + playerToUpdate.getGame().getGameName());
-
+*/
 
 
 // login screen goes here -- as initial screen ?
 
+
+
+        Button button = new Button("Login");
+        button.setAlignment(Pos.CENTER);
+        button.setOnAction(event -> {
+            System.out.println("hello");
+            new PlayerFX(primaryStage,playerDAO).display();
+
+        });
+
+
         AnchorPane root = new AnchorPane();
+        root.getChildren().addAll(button);
+
+
         Scene scene = new Scene(root, 320, 240);
-        stage.setTitle("Hello!");
-        stage.setScene(scene);
-        stage.show();
+
+
+        primaryStage.setTitle("Hello!");
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     public static void main(String[] args) {
