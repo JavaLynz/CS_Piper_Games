@@ -6,6 +6,7 @@ INSERT INTO addresses(address, district, city, postcode, country) VALUES ('12-20
 INSERT INTO addresses(address, district, city, postcode, country) VALUES ('916 West Burbank Bouvlevard', 'Burbank','California', '91506', 'USA');
 INSERT INTO addresses(address, district, city, postcode, country) VALUES ('485 West 46th St.', 'Hells Kitchen','New York', '10019', 'USA');
 INSERT INTO addresses(address, district, city, postcode, country) VALUES ('Nedre Åkargata 67 A', '','Gävle', '80251', 'Sweden');
+INSERT INTO addresses(address, district, city, postcode, country) VALUES ('Klostergatan 67', '','Jönköping', '55337', 'Sweden');
 
 
 
@@ -22,9 +23,26 @@ INSERT INTO players(player_first_name, player_last_name, player_nick_name, addre
 INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Kiera', 'Knightly', 'Kiera',5);
 INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Johnny', 'Depp', 'Jon', 6);
 INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Jessica', 'Jones', 'JJ',7);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Deborah', 'Sam', 'Deb',1);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Oskar', 'Isaksson', 'Oskar',3);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Lukas', 'Isaksson', 'Lukas',3);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Madelene', 'Hall', 'Madde',9);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Sebastian', 'Hall', 'Sebbe',9);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Dante', 'Eriksson', 'Dante',10);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Carola', 'Eriksson', 'Carola',10);
 
 INSERT INTO games(game_name) VALUES ('Battleship');
 INSERT INTO games(game_name) VALUES ('Mario Kart');
 INSERT INTO games(game_name) VALUES ('Street Fighter');
 INSERT INTO games(game_name) VALUES ('Asphalt 9');
+
+INSERT INTO teams(team_name, game_id) VALUES ("Ninjas in Pyjamas",1);
+INSERT INTO teams(team_name, game_id) VALUES ("Team Liquid", 1);
+INSERT INTO teams(team_name, game_id) VALUES ("Fnatic", 2);
+INSERT INTO teams(team_name, game_id) VALUES ("G2 Esports", 2);
+INSERT INTO teams(team_name, game_id) VALUES ("Cloud9",3);
+INSERT INTO teams(team_name, game_id) VALUES ("Natus Vincere",3);
+INSERT INTO teams(team_name, game_id) VALUES ("FaZe Clan", 4);
+INSERT INTO teams(team_name, game_id) VALUES ("Evil Geniuses", 4);
+
 
