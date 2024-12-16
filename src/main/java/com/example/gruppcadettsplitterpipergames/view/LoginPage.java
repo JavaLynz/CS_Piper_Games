@@ -2,7 +2,6 @@ package com.example.gruppcadettsplitterpipergames.view;
 
 import com.example.gruppcadettsplitterpipergames.DAO.StaffDAO;
 import com.example.gruppcadettsplitterpipergames.entities.Staff;
-import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -19,17 +18,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 
-public class LoginPage extends Application {
+public class LoginPage {
     StaffDAO staffDAO = new StaffDAO();
 
-    @Override
-    public void start(Stage stage) throws Exception {
-    }
 
-    public Scene getLoginScene() throws FileNotFoundException {
+    public Scene getLoginScene(Stage stage) throws FileNotFoundException {
         //Components and styling for basic layout
         AnchorPane root = new AnchorPane();
-        //stage.setResizable(false);
         Scene loginScene = new Scene(root, 600,350);
         VBox container = new VBox(20);
         container.setAlignment(Pos.TOP_CENTER);
@@ -49,7 +44,7 @@ public class LoginPage extends Application {
         //UI to select a staff member from dropdown box and log in with their ID
         HBox loginUI = new HBox(20);
         loginUI.setAlignment(Pos.TOP_CENTER);
-        ComboBox loginDropdown = new ComboBox<>();
+        ComboBox<String> loginDropdown = new ComboBox<>();
         loginDropdown.setOnMouseClicked(mouseEvent -> loginDropdown.setStyle(""));
         loginDropdown.setMinWidth(300);
         HashMap<String, Staff> staffHashMap = new HashMap<>();
@@ -62,7 +57,7 @@ public class LoginPage extends Application {
         Button loginBtn = new Button("Login");
         loginBtn.setOnMouseClicked(mouseEvent -> {
             try {
-                Staff chosenStaff = staffHashMap.get((String) loginDropdown.getValue());
+                Staff chosenStaff = staffHashMap.get(loginDropdown.getValue());
                 System.out.println("StaffID: " + chosenStaff.getStaffId()+ " logged into system.");
                 //TODO: Add link to next page in application.
             } catch (Exception e) {
