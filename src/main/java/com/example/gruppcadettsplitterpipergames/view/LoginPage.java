@@ -16,6 +16,7 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 
 public class LoginPage extends Application {
@@ -23,9 +24,12 @@ public class LoginPage extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+    }
+
+    public Scene getLoginScene() throws FileNotFoundException {
         //Components and styling for basic layout
         AnchorPane root = new AnchorPane();
-        stage.setResizable(false);
+        //stage.setResizable(false);
         Scene loginScene = new Scene(root, 600,350);
         VBox container = new VBox(20);
         container.setAlignment(Pos.TOP_CENTER);
@@ -71,6 +75,6 @@ public class LoginPage extends Application {
         root.getChildren().addAll(container);
         container.getChildren().addAll(logo, loginUI);
         loginUI.getChildren().addAll(loginDropdown, loginBtn);
-        stage.setScene(loginScene);
+        return loginScene;
     }
 }
