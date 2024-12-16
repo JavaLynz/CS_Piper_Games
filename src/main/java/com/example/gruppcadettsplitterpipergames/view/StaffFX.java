@@ -3,6 +3,8 @@ package com.example.gruppcadettsplitterpipergames.view;
 import com.example.gruppcadettsplitterpipergames.DAO.AddressDAO;
 import com.example.gruppcadettsplitterpipergames.DAO.StaffDAO;
 import com.example.gruppcadettsplitterpipergames.entities.Staff;
+import jakarta.persistence.Table;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,6 +18,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+import javax.security.auth.callback.Callback;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -129,7 +132,7 @@ public class StaffFX {
 
         containerMult.getChildren().addAll(staffSelectMult, addChoice, staffChoices, resetChoices, selectMult);
         containerAll.getChildren().addAll(selectAll);
-        container.getChildren().addAll(containerMult, containerAll);
+        container.getChildren().addAll(containerMult, containerAll, addNewStaff());
         return container;
     }
 
@@ -140,36 +143,128 @@ public class StaffFX {
 
         TableView staffTable = new TableView<>();
 
-        TableColumn idCol = new TableColumn<>("ID");
+        TableColumn<Staff, String> idCol = new TableColumn<>("ID");
+        idCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getStaffId())));
 
-        TableColumn firstNameCol = new TableColumn<>("First Name");
-        firstNameCol.setCellValueFactory(cellData -> new SimpleStringProperty()
-        );
-        TableColumn lastNameCol = new TableColumn<>("Last Name");
-        TableColumn nickNameCol = new TableColumn<>("Nickname");
-        TableColumn addressStreetCol = new TableColumn<>("Street Address");
-        TableColumn addressDistrictCol = new TableColumn<>("District");
-        TableColumn addressCityCol = new TableColumn<>("City");
-        TableColumn addressPostcodeCol = new TableColumn<>("Postcode");
-        TableColumn addressCountryCol = new TableColumn<>("Country");
-        TableColumn emailCol = new TableColumn<>("e-mail");
-        staffTable.getColumns().addAll(idCol, firstNameCol,lastNameCol,nickNameCol,addressStreetCol,addressDistrictCol,addressCityCol,addressPostcodeCol,addressCountryCol,emailCol);
+        TableColumn<Staff, String> firstNameCol = new TableColumn<>("First Name");
+        firstNameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFirstName()));
 
+        TableColumn<Staff, String> lastNameCol = new TableColumn<>("Last Name");
+        lastNameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLastName()));
 
+        TableColumn<Staff, String> nickNameCol = new TableColumn<>("Nickname");
+        nickNameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNickName()));
+
+        TableColumn<Staff, String> addressStreetCol = new TableColumn<>("Street Address");
+        addressStreetCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getAddress()));
+
+        TableColumn<Staff, String> addressDistrictCol = new TableColumn<>("District");
+        addressDistrictCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getDistrict()));
+
+        TableColumn<Staff, String> addressCityCol = new TableColumn<>("City");
+        addressCityCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getCity()));
+
+        TableColumn<Staff, String> addressPostcodeCol = new TableColumn<>("Postcode");
+        addressPostcodeCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getPostcode()));
+
+        TableColumn<Staff, String> addressCountryCol = new TableColumn<>("Country");
+        addressCountryCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getCountry()));
+
+        TableColumn<Staff, String> emailCol = new TableColumn<>("e-mail");
+        emailCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
+
+        TableColumn<Staff,Void> updateCol =  new TableColumn<>("Update");
+        updateCol.setCellFactory(col -> new TableCell<Staff,Void>(){
+            Button updateBtn = new Button("Update");
+            {
+                updateBtn.setOnMouseClicked(mouseEvent -> {
+                    System.out.println("Works");
+
+                    for (int i = 0; i < staffTable.getColumns().size()-2; i++){
+                        TableColumn selectedCol = (TableColumn) staffTable.getColumns().get(i);
+                        System.out.println(selectedCol.getCellObservableValue(getIndex()).getValue());
+                    }
+
+                });
+            }
+            @Override
+            public void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty){
+                    setGraphic(null);
+                } else {
+                    setGraphic(updateBtn);
+                }
+            }
+        });
+        TableColumn<Staff,Void> deleteCol =  new TableColumn<>("Delete");
+        deleteCol.setCellFactory(col -> new TableCell<Staff,Void>(){
+            Button deleteBtn = new Button("Delete");
+            {
+                deleteBtn.setOnMouseClicked(mouseEvent -> {
+                    System.out.println("Works");
+
+                    for (int i = 0; i < staffTable.getColumns().size()-2; i++){
+                        TableColumn selectedCol = (TableColumn) staffTable.getColumns().get(i);
+                        System.out.println(selectedCol.getCellObservableValue(getIndex()).getValue());
+                    }
+
+                });
+            }
+            @Override
+            public void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty){
+                    setGraphic(null);
+                } else {
+                    setGraphic(deleteBtn);
+                }
+            }
+        });
+
+        staffTable.getColumns().addAll(idCol, firstNameCol,lastNameCol,nickNameCol,addressStreetCol,addressDistrictCol, addressCityCol, addressPostcodeCol, addressCountryCol, emailCol, updateCol, deleteCol);
         staffTable.setItems(tableData);
 
 
 
-        TextArea txt = new TextArea();
-        for (Staff staff: staffList){
-            txt.appendText(staff.getFirstName()+ "\n");
-        }
-        Button btn = new Button("Back");
-        btn.setOnMouseClicked(mouseEvent -> {
+        Button backBtn = new Button("Back");
+        backBtn.setOnMouseClicked(mouseEvent -> {
             outerContainer.getChildren().remove(container);
             outerContainer.getChildren().add(createStaffSelect(outerContainer));
         });
-        container.getChildren().addAll(staffTable, txt,btn);
+
+        container.getChildren().addAll(staffTable, addNewStaff(), backBtn);
         return container;
     }
+
+    public HBox addNewStaff(){
+        HBox container = new HBox();
+        TextField firstName = new TextField();
+        firstName.setPromptText("First Name");
+        TextField lastName = new TextField();
+        lastName.setPromptText("Last Name");
+        TextField nickname = new TextField();
+        nickname.setPromptText("Nickname");
+        ComboBox<String> streetAddress = new ComboBox<>();
+        streetAddress.setPromptText("Street Address");
+        streetAddress.setEditable(true);
+        TextField district = new TextField();
+        district.setPromptText("District");
+        TextField city = new TextField();
+        city.setPromptText("City");
+        TextField postcode = new TextField();
+        postcode.setPromptText("Postcode");
+        TextField country = new TextField();
+        country.setPromptText("Country");
+
+        TextField email = new TextField();
+        email.setPromptText("E-mail");
+
+        Button addStaff = new Button("Add new");
+
+
+        container.getChildren().addAll(firstName,lastName,nickname,streetAddress,district,city,postcode,country,email, addStaff);
+        return container;
+    }
+
 }
