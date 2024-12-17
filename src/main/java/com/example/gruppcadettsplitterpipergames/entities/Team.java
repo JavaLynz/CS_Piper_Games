@@ -86,4 +86,8 @@ public class Team {
         this.teamMatches = teamMatches;
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }

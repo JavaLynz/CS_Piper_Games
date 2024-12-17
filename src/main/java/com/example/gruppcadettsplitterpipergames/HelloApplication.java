@@ -1,10 +1,8 @@
 package com.example.gruppcadettsplitterpipergames;
 
-import com.example.gruppcadettsplitterpipergames.DAO.AddressDAO;
-import com.example.gruppcadettsplitterpipergames.DAO.GamesDAO;
-import com.example.gruppcadettsplitterpipergames.DAO.PlayerDAO;
-import com.example.gruppcadettsplitterpipergames.DAO.TeamsDAO;
+import com.example.gruppcadettsplitterpipergames.DAO.*;
 import com.example.gruppcadettsplitterpipergames.entities.Player;
+import com.example.gruppcadettsplitterpipergames.entities.Team;
 import com.example.gruppcadettsplitterpipergames.view.PlayerFX;
 import com.example.gruppcadettsplitterpipergames.view.TeamFX;
 import javafx.application.Application;
@@ -15,17 +13,19 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-     //   Logger.getLogger("org.hibernate").setLevel(Level.OFF);
+//        Logger.getLogger("org.hibernate").setLevel(Level.OFF);
 
 //    PlayerDAO playerDAO = new PlayerDAO();
 //    AddressDAO addressDAO = new AddressDAO();
 //    GamesDAO gamesDAO = new GamesDAO();
 //    TeamsDAO teamsDAO = new TeamsDAO();
+//    StaffDAO staffDAO = new StaffDAO();
 
 
 
@@ -55,6 +55,8 @@ public class HelloApplication extends Application {
 //        System.out.println("Team 3: " + teamsDAO.getTeamById(3).getName());
 //        System.out.println("Player updated, player team: " + playerToUpdate.getTeam().getName());
 //        System.out.println("Player updated, game played: " + playerToUpdate.getGame().getGameName());
+
+
 
 
         TabPane tabPane = new TabPane();

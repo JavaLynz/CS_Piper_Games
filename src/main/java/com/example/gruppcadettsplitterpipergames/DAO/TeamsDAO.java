@@ -78,9 +78,11 @@ public class TeamsDAO {
         try {
             transaction = entityManager.getTransaction();
             transaction.begin();
-            if (entityManager.contains(teamToDelete)) {
+            if (!entityManager.contains(teamToDelete)) {
                 teamToDelete = entityManager.merge(teamToDelete);
             }
+            entityManager.remove(teamToDelete);
+            transaction.commit();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             if(entityManager != null && transaction != null && transaction.isActive()){
