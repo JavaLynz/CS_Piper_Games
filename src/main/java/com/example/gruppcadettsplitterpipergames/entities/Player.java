@@ -113,7 +113,10 @@ public class Player {   //Lynsey Fox
         this.game = game;
     }
 
-
+    @Override
+    public String toString() {
+        return firstName + " " + lastName;
+    }
 }
 
 
