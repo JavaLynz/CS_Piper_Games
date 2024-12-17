@@ -1,17 +1,21 @@
 package com.example.gruppcadettsplitterpipergames;
 
-import com.example.gruppcadettsplitterpipergames.DAO.AddressDAO;
-import com.example.gruppcadettsplitterpipergames.DAO.GamesDAO;
-import com.example.gruppcadettsplitterpipergames.DAO.PlayerDAO;
-import com.example.gruppcadettsplitterpipergames.DAO.TeamsDAO;
+import com.example.gruppcadettsplitterpipergames.DAO.*;
+import com.example.gruppcadettsplitterpipergames.entities.Address;
 import com.example.gruppcadettsplitterpipergames.entities.Player;
+import com.example.gruppcadettsplitterpipergames.entities.Staff;
 import com.example.gruppcadettsplitterpipergames.view.LoginPage;
+import com.example.gruppcadettsplitterpipergames.view.TabMenu;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -40,28 +44,24 @@ public class HelloApplication extends Application {
 
     System.out.println("Number of games available to play: " + gamesDAO.getAllGames().size());
 
-        System.out.println("Number of players in list: " + playerDAO.getAllPlayers().size());
 
 
 
-        Player playerToUpdate;
-        playerToUpdate = playerDAO.getPlayerById(1);
-        System.out.println("Player to update name: " + playerToUpdate.getFirstName());
-        playerToUpdate.setGame(gamesDAO.getGameById(3));
-        playerToUpdate.setTeam(teamsDAO.getTeamById(5));
-        playerDAO.updatePlayer(playerToUpdate);
 
-        System.out.println("Team 3: " + teamsDAO.getTeamById(3).getName());
-        System.out.println("Player updated, player team: " + playerToUpdate.getTeam().getName());
-        System.out.println("Player updated, game played: " + playerToUpdate.getGame().getGameName());
+        AnchorPane root = new AnchorPane();
 
-
+        ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
+        Circle logoClip = new Circle(80,80,70);
+        logo.setTranslateX(80);
+        logo.setClip(logoClip);
+        logo.setPreserveRatio(true);
+        logo.setFitHeight(160.0);
 
         LoginPage login = new LoginPage();
 
         Button startAppBtn = new Button("Start Application");
-        AnchorPane.setTopAnchor(startAppBtn,100.0);
-        AnchorPane.setBottomAnchor(startAppBtn,100.0);
+        AnchorPane.setTopAnchor(startAppBtn,160.0);
+        AnchorPane.setBottomAnchor(startAppBtn,40.0);
         AnchorPane.setRightAnchor(startAppBtn,100.0);
         AnchorPane.setLeftAnchor(startAppBtn,100.0);
         startAppBtn.setOnMouseClicked(mouseEvent -> {
@@ -72,11 +72,10 @@ public class HelloApplication extends Application {
             }
         });
 
-
-        AnchorPane root = new AnchorPane();
         Scene scene = new Scene(root, 320, 240);
-        root.getChildren().add(startAppBtn);
+        root.getChildren().addAll(logo, startAppBtn);
         stage.setTitle("Hello!");
+        stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
     }
