@@ -1,6 +1,7 @@
 package com.example.gruppcadettsplitterpipergames.entities;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,10 +28,10 @@ public class Address {
     private String country;
 
     @OneToMany (mappedBy= "address", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Player> players;
+    private List<Player> players = new ArrayList<>();
 
     @OneToMany (mappedBy = "staffId", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    private List<Staff> staff;
+    private List<Staff> staff = new ArrayList<>();
 
     public Address(String address, String district, String city, String postcode, String country) {
         this.address = address;
