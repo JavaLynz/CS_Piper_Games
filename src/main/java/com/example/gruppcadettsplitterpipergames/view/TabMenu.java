@@ -7,19 +7,26 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
+
 public class TabMenu{
     private TabPane root = new TabPane();
     private StaffFX staffFX = new StaffFX(this.root);
 
 
-    public Scene tabMenuScene(Stage stage, Scene firstScene){
-        this.root.getTabs().add(staffFX.createStaffTab());
+    public Scene tabMenuScene(Stage stage){
+        stage.setResizable(true);
+        this.root.getTabs().add(staffFX.createStaffTab(stage));
         this.root.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
-
+        LoginPage login = new LoginPage();
         Button logoutBtn = new Button("Logout");
         logoutBtn.setOnMouseClicked(mouseEvent -> {
-            stage.setScene(firstScene);
+            try {
+                stage.setScene(login.getLoginScene(stage));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         });
 
 

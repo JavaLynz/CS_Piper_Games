@@ -2,9 +2,8 @@ package com.example.gruppcadettsplitterpipergames.view;
 
 import com.example.gruppcadettsplitterpipergames.DAO.AddressDAO;
 import com.example.gruppcadettsplitterpipergames.DAO.StaffDAO;
+import com.example.gruppcadettsplitterpipergames.entities.Address;
 import com.example.gruppcadettsplitterpipergames.entities.Staff;
-import jakarta.persistence.Table;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,22 +11,21 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
+import javafx.stage.*;
 
-import javax.security.auth.callback.Callback;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class StaffFX {
-    StaffDAO staffDAO = new StaffDAO();
-    AddressDAO addressDAO = new AddressDAO();
-    Tab staffTab = new Tab("Staff");
-    TabPane root;
+    private StaffDAO staffDAO = new StaffDAO();
+    private AddressDAO addressDAO = new AddressDAO();
+    private Tab staffTab = new Tab("Staff");
+    private TabPane root;
+    private TableView staffTable;
 
     public StaffFX() {
     }
@@ -36,125 +34,60 @@ public class StaffFX {
         this.root = parentScene;
     }
 
-    public Tab createStaffTab(){
-
-        AnchorPane root = new AnchorPane();
-        VBox container = new VBox(30);
+    public Tab createStaffTab(Stage stage){
+        this.root.setPrefSize(1000,400);
+        AnchorPane anchorPane = new AnchorPane();
+        VBox container = new VBox();
         container.setAlignment(Pos.TOP_CENTER);
-        container.setPadding(new Insets(0, 20,20,20));
+        container.setPadding(new Insets(0, 5,5,5));
         AnchorPane.setTopAnchor(container,0.0);
         AnchorPane.setBottomAnchor(container,5.0);
         AnchorPane.setLeftAnchor(container,5.0);
         AnchorPane.setRightAnchor(container,5.0);
         Text title = new Text("Staff");
 
+        this.staffTable = createStaffTable();
+
+
+        HBox btnContainer = new HBox(5);
+        btnContainer.setAlignment(Pos.CENTER);
+
+        Button addBtn = new Button("Add new staff");
+        addBtn.setOnMouseClicked(mouseEvent -> {
+            createPopup(1, null);
+        });
+        Button searchBtn = new Button("Search");
+        searchBtn.setOnMouseClicked(mouseEvent -> {
+            createPopup(2, null);
+        });
+
         title.setStyle("-fx-font-size: 24; -fx-font-weight: bold");
         container.setStyle("-fx-background-color: silver; -fx-background-radius:0 0 5 5;");
 
-        container.getChildren().addAll(title, createStaffSelect(container));
-        root.getChildren().addAll(container);
-        this.staffTab.setContent(root);
+        btnContainer.getChildren().addAll(addBtn,searchBtn);
+        container.getChildren().addAll(title, staffTable, btnContainer);
+        fillTable(staffDAO.getAllStaff());
+        anchorPane.getChildren().addAll(container);
+        this.staffTab.setContent(anchorPane);
         return this.staffTab;
     }
 
-    public VBox createStaffSelect(VBox outerContainer){
-        List<Staff> staffList = new ArrayList<>();
-        VBox container = new VBox(10);
-
-        container.setAlignment(Pos.TOP_CENTER);
-        this.root.setPrefSize(800,300);
-
-        HBox containerMult = new HBox(10);
-        HBox containerAll = new HBox(10);
-        containerMult.setAlignment(Pos.CENTER);
-        containerAll.setAlignment(Pos.CENTER);
-
-
-        ComboBox<Object> staffSelectMult = new ComboBox<>();
-
-        staffSelectMult.setMinWidth(250);
-        HashMap<String, Staff> staffHashMap = new HashMap<>();
-        for (Staff staff : staffDAO.getAllStaff()){
-            String fullName = staff.getFirstName() + " \""+ staff.getNickName()+"\" "+ staff.getLastName();
-            staffHashMap.put(fullName, staff);
-            staffSelectMult.getItems().add(fullName);
-        }
-
-
-        TextArea staffChoices = new TextArea();
-        staffChoices.setEditable(false);
-        staffChoices.setPrefRowCount(3);
-        staffChoices.setPrefColumnCount(15);
-
-
-
-        Button selectMult = new Button("Select");
-        selectMult.setDisable(true);
-        selectMult.setOnMouseClicked(mouseEvent -> {
-            outerContainer.getChildren().remove(container);
-            outerContainer.getChildren().add(createEdit(staffList, outerContainer));
-        });
-        Button addChoice = new Button("Add");
-        addChoice.setOnMouseClicked(mouseEvent -> {
-            String choice = (String) staffSelectMult.getValue();
-            if (!staffList.contains(staffHashMap.get(choice))){
-                staffChoices.appendText(choice+"\n");
-                staffList.add(staffHashMap.get(choice));
-            }
-            if (staffList.size()>0){
-                selectMult.setDisable(false);
-            }
-            if (staffList.size()> 1){
-                selectMult.setText("Select Multiple");
-            }
-        });
-
-        Button resetChoices = new Button("Reset");
-        resetChoices.setOnMouseClicked(mouseEvent -> {
-            staffChoices.setText("");
-            staffList.clear();
-            selectMult.setDisable(true);
-            selectMult.setText("Select");
-        });
-
-        Button selectAll = new Button("Select All");
-        selectAll.setOnMouseClicked(mouseEvent -> {
-            staffList.clear();
-            staffList.addAll(staffDAO.getAllStaff());
-            outerContainer.getChildren().remove(container);
-            outerContainer.getChildren().add(createEdit(staffList, outerContainer));
-        });
-
-
-
-        selectAll.setPrefSize(80, 30);
-        selectMult.setPrefSize(80,30);
-
-        containerMult.getChildren().addAll(staffSelectMult, addChoice, staffChoices, resetChoices, selectMult);
-        containerAll.getChildren().addAll(selectAll);
-        container.getChildren().addAll(containerMult, containerAll, addNewStaff());
-        return container;
-    }
-
-    public VBox createEdit(List<Staff> staffList, VBox outerContainer){
-        VBox container = new VBox(10);
-        ObservableList<Staff> tableData = FXCollections.observableArrayList();
-        tableData.setAll(staffList);
+    public TableView createStaffTable(){
 
         TableView staffTable = new TableView<>();
 
         TableColumn<Staff, String> idCol = new TableColumn<>("ID");
         idCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getStaffId())));
-
+        idCol.setPrefWidth(30);
         TableColumn<Staff, String> firstNameCol = new TableColumn<>("First Name");
         firstNameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFirstName()));
-
+        firstNameCol.setPrefWidth(100);
         TableColumn<Staff, String> lastNameCol = new TableColumn<>("Last Name");
         lastNameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLastName()));
-
+        lastNameCol.setPrefWidth(100);
         TableColumn<Staff, String> nickNameCol = new TableColumn<>("Nickname");
         nickNameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNickName()));
-
+        nickNameCol.setPrefWidth(100);
         TableColumn<Staff, String> addressStreetCol = new TableColumn<>("Street Address");
         addressStreetCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getAddress()));
 
@@ -178,13 +111,9 @@ public class StaffFX {
             Button updateBtn = new Button("Update");
             {
                 updateBtn.setOnMouseClicked(mouseEvent -> {
-                    System.out.println("Works");
-
-                    for (int i = 0; i < staffTable.getColumns().size()-2; i++){
-                        TableColumn selectedCol = (TableColumn) staffTable.getColumns().get(i);
-                        System.out.println(selectedCol.getCellObservableValue(getIndex()).getValue());
-                    }
-
+                    TableColumn idColumn = (TableColumn) staffTable.getColumns().get(0);
+                    int id = Integer.parseInt ((String) idColumn.getCellObservableValue(getIndex()).getValue());
+                    createPopup(3,staffDAO.getStaffById(id));
                 });
             }
             @Override
@@ -202,13 +131,9 @@ public class StaffFX {
             Button deleteBtn = new Button("Delete");
             {
                 deleteBtn.setOnMouseClicked(mouseEvent -> {
-                    System.out.println("Works");
-
-                    for (int i = 0; i < staffTable.getColumns().size()-2; i++){
-                        TableColumn selectedCol = (TableColumn) staffTable.getColumns().get(i);
-                        System.out.println(selectedCol.getCellObservableValue(getIndex()).getValue());
-                    }
-
+                    TableColumn idColumn = (TableColumn) staffTable.getColumns().get(0);
+                    int id = Integer.parseInt ((String) idColumn.getCellObservableValue(getIndex()).getValue());
+                    createPopup(4,staffDAO.getStaffById(id));
                 });
             }
             @Override
@@ -223,48 +148,352 @@ public class StaffFX {
         });
 
         staffTable.getColumns().addAll(idCol, firstNameCol,lastNameCol,nickNameCol,addressStreetCol,addressDistrictCol, addressCityCol, addressPostcodeCol, addressCountryCol, emailCol, updateCol, deleteCol);
-        staffTable.setItems(tableData);
-
-
-
-        Button backBtn = new Button("Back");
-        backBtn.setOnMouseClicked(mouseEvent -> {
-            outerContainer.getChildren().remove(container);
-            outerContainer.getChildren().add(createStaffSelect(outerContainer));
-        });
-
-        container.getChildren().addAll(staffTable, addNewStaff(), backBtn);
-        return container;
+        return staffTable;
     }
 
-    public HBox addNewStaff(){
-        HBox container = new HBox();
+    public void fillTable(List<Staff> rawData){
+        ObservableList<Staff> tableData = FXCollections.observableArrayList();
+        tableData.setAll(rawData);
+        this.staffTable.setItems(tableData);
+
+    }
+
+
+    public void createPopup(int index, Staff staff){
+        Stage stage = new Stage();
+        Button closeBtn = new Button("Close");
+        closeBtn.setOnMouseClicked(mouseEvent -> stage.close());
+
+        AnchorPane root = new AnchorPane();
+        root.setPrefSize(300,300);
+        VBox content = null;
+
+        switch (index){
+            case 1:
+                content = fillAddPopup(stage, root);
+                break;
+            case 2:
+                content = fillSearchPopup(stage, root);
+                break;
+            case 3:
+                content = fillUpdatePopup(stage, staff);
+                break;
+            case 4:
+                content = fillDeletePopup(stage,staff,root);
+                break;
+            default:
+                break;
+        }
+
+        AnchorPane.setTopAnchor(content,5.0);
+        AnchorPane.setBottomAnchor(content,5.0);
+        AnchorPane.setLeftAnchor(content,5.0);
+        AnchorPane.setRightAnchor(content,5.0);
+
+
+        content.setStyle("-fx-background-color:silver; -fx-background-radius:5");
+        content.getChildren().add(closeBtn);
+
+        root.getChildren().add(content);
+        stage.setScene(new Scene(root));
+        stage.setAlwaysOnTop(true);
+        stage.show();
+    }
+
+    public VBox fillAddPopup(Stage stage, AnchorPane root){
+        root.setPrefSize(400,250);
+        VBox container = new VBox(10);
+        container.setPadding(new Insets(5));
+        stage.setTitle("Add new staff member");
+
+        HBox nameRow = new HBox(5);
         TextField firstName = new TextField();
         firstName.setPromptText("First Name");
         TextField lastName = new TextField();
         lastName.setPromptText("Last Name");
         TextField nickname = new TextField();
         nickname.setPromptText("Nickname");
+        nameRow.getChildren().addAll(firstName,lastName,nickname);
+
+        HBox addressRow1 = new HBox(5);
         ComboBox<String> streetAddress = new ComboBox<>();
+        HashMap<String, Address> addressHashMap= new HashMap<>();
+        for (Address address: addressDAO.getAllAddress()){
+            addressHashMap.put(address.getAddress(),address);
+            streetAddress.getItems().add(address.getAddress());
+        }
+
         streetAddress.setPromptText("Street Address");
         streetAddress.setEditable(true);
+        addressRow1.getChildren().addAll(streetAddress);
+
+        HBox addressRow2 = new HBox(5);
         TextField district = new TextField();
         district.setPromptText("District");
         TextField city = new TextField();
         city.setPromptText("City");
+        addressRow2.getChildren().addAll(district,city);
+
+        HBox addressRow3 = new HBox(5);
         TextField postcode = new TextField();
         postcode.setPromptText("Postcode");
         TextField country = new TextField();
         country.setPromptText("Country");
+        addressRow3.getChildren().addAll(postcode,country);
 
+
+        streetAddress.setOnAction(actionEvent -> {
+            if (!streetAddress.getValue().equalsIgnoreCase(null)){
+                try {
+                    Address tempAddress = addressHashMap.get(streetAddress.getValue());
+                    district.setText(tempAddress.getDistrict());
+                    city.setText(tempAddress.getCity());
+                    postcode.setText(tempAddress.getPostcode());
+                    country.setText(tempAddress.getCountry());
+                } catch (Exception e) {
+                    district.clear();
+                    city.clear();
+                    postcode.clear();
+                    country.clear();
+                }
+            }
+        });
+
+        HBox emailRow = new HBox();
         TextField email = new TextField();
         email.setPromptText("E-mail");
+        emailRow.getChildren().addAll(email);
 
         Button addStaff = new Button("Add new");
+        addStaff.setOnMouseClicked(mouseEvent -> {
+            Staff newStaff = new Staff(firstName.getText(),lastName.getText(),nickname.getText(),email.getText());
+            Address newAddress = new Address(streetAddress.getValue(), district.getText(), city.getText(), postcode.getText(),country.getText());
+            try {
+                addressDAO.saveAddress(newAddress);
+                newStaff.setAddress(newAddress);
+                newAddress.getStaff().add(newStaff);
+                staffDAO.saveStaff(newStaff);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+            fillTable(staffDAO.getAllStaff());
+            stage.close();
+        });
 
-
-        container.getChildren().addAll(firstName,lastName,nickname,streetAddress,district,city,postcode,country,email, addStaff);
+        container.getChildren().addAll(nameRow,addressRow1,addressRow2,addressRow3,emailRow, addStaff);
         return container;
     }
 
+    public VBox fillSearchPopup(Stage stage, AnchorPane root){
+        //root.setPrefSize(200,400);
+        VBox container = new VBox(10);
+        stage.setTitle("Search for staff members");
+
+        HashMap<String, Staff> staffHashMap = new HashMap<>();
+        List<Staff> staffSelection = new ArrayList<>();
+
+        for (Staff staff: staffDAO.getAllStaff()){
+            String fullName = staff.getFirstName() + " \""+ staff.getNickName()+"\" "+ staff.getLastName();
+            staffHashMap.put(fullName, staff);
+        }
+
+        ComboBox<Object> staffDropdown = new ComboBox<>();
+        staffHashMap.forEach((key,value) -> staffDropdown.getItems().add(key));
+
+        TextArea staffChoices = new TextArea();
+        staffChoices.setEditable(false);
+        staffChoices.setPrefRowCount(3);
+        staffChoices.setPrefColumnCount(15);
+
+        Button multBtn = new Button("Select");
+        multBtn.setDisable(true);
+        multBtn.setOnMouseClicked(mouseEvent -> {
+            fillTable(staffSelection);
+            stage.close();
+        });
+
+
+        Button addChoice = new Button("Add");
+        addChoice.setOnMouseClicked(mouseEvent -> {
+            String choice = (String) staffDropdown.getValue();
+            if (!staffSelection.contains(staffHashMap.get(choice))){
+                staffChoices.appendText(choice+"\n");
+                staffSelection.add(staffHashMap.get(choice));
+            }
+            if (staffSelection.size()>0){
+                multBtn.setDisable(false);
+            }
+            if (staffSelection.size()> 1){
+                multBtn.setText("Select Multiple");
+            }
+        });
+
+        Button allBtn = new Button("Select");
+        allBtn.setOnMouseClicked(mouseEvent -> {
+            fillTable(staffDAO.getAllStaff());
+            stage.close();
+        });
+
+        container.getChildren().addAll(staffDropdown, addChoice,staffChoices,multBtn,allBtn);
+        return container;
+    }
+
+    public VBox fillUpdatePopup(Stage stage, Staff staff){
+        VBox container = new VBox(5);
+        stage.setTitle("Update "+ staff.getFirstName());
+        container.setFillWidth(true);
+        container.setPadding(new Insets(5));
+        container.setAlignment(Pos.TOP_CENTER);
+
+        HBox row1 = new HBox(10);
+        row1.setAlignment(Pos.CENTER_LEFT);
+        Label fNameLabel = new Label("First Name:");
+        fNameLabel.setPrefWidth(80);
+        TextField firstName = new TextField(staff.getFirstName());
+        row1.getChildren().addAll(fNameLabel,firstName);
+
+        HBox row2 = new HBox(10);
+        row2.setAlignment(Pos.CENTER_LEFT);
+        Label lNameLabel = new Label("Last Name:");
+        lNameLabel.setPrefWidth(80);
+        TextField lastName = new TextField(staff.getLastName());
+        row2.getChildren().addAll(lNameLabel,lastName);
+
+        HBox row3 = new HBox(10);
+        row3.setAlignment(Pos.CENTER_LEFT);
+        Label nNameLabel = new Label("Nickname:");
+        nNameLabel.setPrefWidth(80);
+        TextField nickname = new TextField(staff.getNickName());
+        row3.getChildren().addAll(nNameLabel,nickname);
+
+        HBox row4 = new HBox(10);
+        row4.setAlignment(Pos.CENTER_LEFT);
+        Label addressLabel = new Label("Street Address:");
+        addressLabel.setPrefWidth(80);
+        TextField streetAddress = new TextField(staff.getAddress().getAddress());
+        row4.getChildren().addAll(addressLabel,streetAddress);
+
+        HBox row5 = new HBox(10);
+        row5.setAlignment(Pos.CENTER_LEFT);
+        Label districtLabel = new Label("District:");
+        districtLabel.setPrefWidth(80);
+        TextField district = new TextField(staff.getAddress().getDistrict());
+        row5.getChildren().addAll(districtLabel,district);
+
+        HBox row6 = new HBox(10);
+        row6.setAlignment(Pos.CENTER_LEFT);
+        Label cityLabel = new Label("City:");
+        cityLabel.setPrefWidth(80);
+        TextField city = new TextField(staff.getAddress().getCity());
+        row6.getChildren().addAll(cityLabel,city);
+
+        HBox row7 = new HBox(10);
+        row7.setAlignment(Pos.CENTER_LEFT);
+        Label postcodeLabel = new Label("Postcode:");
+        postcodeLabel.setPrefWidth(80);
+        TextField postcode = new TextField(staff.getAddress().getPostcode());
+        row7.getChildren().addAll(postcodeLabel,postcode);
+
+        HBox row8 = new HBox(10);
+        row8.setAlignment(Pos.CENTER_LEFT);
+        Label countryLabel = new Label("Country:");
+        countryLabel.setPrefWidth(80);
+        TextField country = new TextField(staff.getAddress().getCountry());
+        row8.getChildren().addAll(countryLabel,country);
+
+        HBox row9 = new HBox(10);
+        row9.setAlignment(Pos.CENTER_LEFT);
+        Label emailLabel = new Label("Email:");
+        emailLabel.setPrefWidth(80);
+        TextField email = new TextField(staff.getEmail());
+        row9.getChildren().addAll(emailLabel,email);
+
+
+        Button updateBtn = new Button("Update");
+        updateBtn.setOnMouseClicked(mouseEvent -> {
+            staff.setFirstName(firstName.getText());
+            staff.setLastName(lastName.getText());
+            staff.setNickName(nickname.getText());
+            staff.setEmail(email.getText());
+
+            Address checkAddress = staff.getAddress();
+            Address tempAddress = new Address(streetAddress.getText(),district.getText(),city.getText(),postcode.getText(),country.getText());
+
+            if (!tempAddress.getAddress().equalsIgnoreCase(checkAddress.getAddress())
+                    || !tempAddress.getDistrict().equalsIgnoreCase(checkAddress.getDistrict())
+                    || !tempAddress.getCity().equalsIgnoreCase(checkAddress.getCity())
+                    || !tempAddress.getPostcode().equalsIgnoreCase(checkAddress.getPostcode())
+                    || !tempAddress.getCountry().equalsIgnoreCase(checkAddress.getCountry())){
+                fillAddressCheck(staff,tempAddress);
+            } else {
+                staffDAO.updateStaff(staff);
+                fillTable(staffDAO.getAllStaff());
+            }
+
+            System.out.println(checkAddress.getAddress() + " "+ tempAddress.getAddress());
+            stage.close();
+
+        });
+        container.getChildren().addAll(row1,row2,row3,row4,row5,row6,row7,row8,row9,updateBtn);
+        return container;
+    }
+    public void fillAddressCheck(Staff staff, Address address){
+        Stage stage = new Stage();
+        AnchorPane root = new AnchorPane();
+        VBox container = new VBox();
+        container.setAlignment(Pos.TOP_CENTER);
+        container.setPadding(new Insets(5));
+        AnchorPane.setTopAnchor(container,5.0);
+        AnchorPane.setBottomAnchor(container,5.0);
+        AnchorPane.setLeftAnchor(container,5.0);
+        AnchorPane.setRightAnchor(container,5.0);
+
+        Text choiceText = new Text("Do you want to edit the existing address or create a new one?");
+        HBox btnContainer = new HBox(20);
+        btnContainer.setAlignment(Pos.CENTER);
+        Button editBtn = new Button("Edit existing");
+        editBtn.setOnMouseClicked(mouseEvent -> {
+            address.setAddressId(staff.getAddress().getAddressId());
+            staffDAO.updateStaff(staff);
+            addressDAO.updateAddress(address);
+            fillTable(staffDAO.getAllStaff());
+            stage.close();
+        });
+
+        Button createBtn = new Button("Create New");
+        createBtn.setOnMouseClicked(mouseEvent -> {
+            addressDAO.saveAddress(address);
+            staff.setAddress(address);
+            staffDAO.updateStaff(staff);
+            fillTable(staffDAO.getAllStaff());
+            stage.close();
+        });
+
+
+        container.setStyle("-fx-background-color:silver; -fx-background-radius: 5");
+        btnContainer.getChildren().addAll(editBtn,createBtn);
+        container.getChildren().addAll(choiceText,btnContainer);
+        root.getChildren().add(container);
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
+    public VBox fillDeletePopup(Stage stage, Staff staff, AnchorPane root){
+        VBox container = new VBox(10);
+        container.setPadding(new Insets(5));
+        container.setAlignment(Pos.TOP_CENTER);
+        stage.setTitle("Delete "+ staff.getFirstName());
+
+        Text alert = new Text("Are you sure you want to delete:\n\n"+ staff.getFirstName()+" \""+staff.getNickName()+"\" "+staff.getLastName());
+        Button deleteBtn = new Button("Delete");
+        deleteBtn.setOnMouseClicked(mouseEvent -> {
+            staffDAO.deleteStaff(staff);
+            stage.close();
+            fillTable(staffDAO.getAllStaff());
+        });
+
+        root.setPrefHeight(100);
+        container.getChildren().addAll(alert, deleteBtn);
+        return container;
+    }
 }

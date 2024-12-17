@@ -49,6 +49,7 @@ public class HelloApplication extends Application {
 
 
         AnchorPane root = new AnchorPane();
+        LoginPage login = new LoginPage();
 
         ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
         Circle logoClip = new Circle(80,80,70);
@@ -56,8 +57,6 @@ public class HelloApplication extends Application {
         logo.setClip(logoClip);
         logo.setPreserveRatio(true);
         logo.setFitHeight(160.0);
-
-        LoginPage login = new LoginPage();
 
         Button startAppBtn = new Button("Start Application");
         AnchorPane.setTopAnchor(startAppBtn,160.0);
