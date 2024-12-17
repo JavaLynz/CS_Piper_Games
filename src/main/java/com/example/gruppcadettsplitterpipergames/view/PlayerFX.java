@@ -1,18 +1,14 @@
 package com.example.gruppcadettsplitterpipergames.view;
 
-import com.example.gruppcadettsplitterpipergames.DAO.GamesDAO;
 import com.example.gruppcadettsplitterpipergames.DAO.PlayerDAO;
-import com.example.gruppcadettsplitterpipergames.entities.Game;
 import com.example.gruppcadettsplitterpipergames.entities.Player;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -22,18 +18,17 @@ import java.util.List;
 public class PlayerFX {
 
     private Stage playerStage;
-    private PlayerDAO playerDAO;
+    private PlayerDAO playerDAO = new PlayerDAO();
+    private AnchorPane playerView;
 
-    public PlayerFX(Stage stage, PlayerDAO playerDAO) {
-        this.playerDAO = playerDAO;
-        this.playerStage = stage;
+    public PlayerFX() {
     }
 
     public void displayPlayerTab() {
 
         //Player tab content
 
-        AnchorPane playerRoot = new AnchorPane();
+        playerView = new AnchorPane();
         ListView listView = new ListView();
         listView.prefWidth(150);
         listView.setLayoutX(150);
@@ -73,30 +68,8 @@ public class PlayerFX {
             System.out.println("Player updated");
         });
 
-        playerRoot.getChildren().addAll(showAllPlayers,listView, deletePlayer, updatePlayer);
-        playerRoot.setPadding(new Insets(15));
-
-
-
-        AnchorPane root = new AnchorPane();
-
-        TabPane tabpane = new TabPane();
-        Tab staffTab = new Tab("Staff");
-        Tab playerTab;
-        Tab teamTab = new Tab("Team");
-        Tab teamMatchesTab = new Tab("TeamMatches");
-        Tab playerMatchesTab = new Tab("PlayerMatches");
-        Tab gamesTab = new Tab("Games", new GameFX().getGamesView());
-        playerTab = new Tab("Player",playerRoot);
-        tabpane.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab, playerMatchesTab, teamMatchesTab);
-
-        root.getChildren().addAll(tabpane);
-        Scene playerScene = new Scene(root, 800, 500);
-
-
-        playerStage.setTitle("PiperGames");
-        playerStage.setScene(playerScene);
-        playerStage.show();
+        playerView.getChildren().addAll(showAllPlayers,listView, deletePlayer, updatePlayer);
+        playerView.setPadding(new Insets(15));
 
 
     }
@@ -128,5 +101,11 @@ public class PlayerFX {
         return container;
     }
 
+    public AnchorPane getPlayerView() {
+        return playerView;
+    }
 
+    public void setPlayerView(AnchorPane playerView) {
+        this.playerView = playerView;
+    }
 }

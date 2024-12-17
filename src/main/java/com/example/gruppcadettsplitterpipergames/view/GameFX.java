@@ -8,20 +8,23 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 
 public class GameFX {
     private final GamesDAO gamesDAO;
     private AnchorPane gamesView;
     private final ObservableList<Game> gamesList;
 
-    public GameFX() {
+    public GameFX() throws FileNotFoundException {
         gamesDAO = new GamesDAO();
         gamesList = FXCollections.observableArrayList();
         gamesView = new AnchorPane();
@@ -36,46 +39,62 @@ public class GameFX {
         HBox buttonHolder = new HBox(30);
         buttonHolder.setAlignment(Pos.CENTER);
 
+        ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
+        Circle logoClip = new Circle(80,80,70);
+        logo.setTranslateY(0);
+        logo.setClip(logoClip);
+        logo.setPreserveRatio(true);
+        logo.setFitHeight(160.0);
+
         TableView<Game> gamesTableView = createGamesTableView();
-        gamesTableView.setPrefHeight(350);
-        gamesTableView.setPrefWidth(800);
+        gamesTableView.setPrefHeight(250);
+        gamesTableView.setPrefWidth(600);
 
 
-        container.getChildren().addAll(title, gamesTableView,buttonHolder);
+        container.getChildren().addAll(logo, title, gamesTableView,buttonHolder);
+        container.setMinWidth(800);
+        container.setMinHeight(600);
 
 
         Button searchGames = new Button("Search");
         searchGames.setOnAction(e -> {
             //search game pop up box
+            new GameSearchPopUp().display();
+
             System.out.println("show search window");
 
         });
 
         Button deleteGame = new Button("Delete Game");
         deleteGame.setOnAction(e1 -> {
-            System.out.println("Game deleted");
-            // delete game pop up box
+            if(new DeleteConfirmBox().display()){
+                System.out.println("Game deleted");
+                //code to delete game
+            }
+
+
 
         });
 
         Button updateGame = new Button("Update Game");
         updateGame.setOnAction(e1 -> {
             //update game pop up box
+            new GameUpdateBox().display();
             System.out.println("Game updated");
         });
 
         Button addGame = new Button("Add Game");
         addGame.setOnAction(e1 -> {
-            //add game popup box
-            //gamesDAO.saveGame(new Game(givenGameName));
-            System.out.println("Game added: "+gamesDAO.getGameById(5));
+            new AddGameBox(gamesDAO).display();
+
         });
 
-        buttonHolder.getChildren().addAll(searchGames,deleteGame, addGame);
+        buttonHolder.getChildren().addAll(searchGames, addGame);
         buttonHolder.setStyle("-fx-background-color: silver");
         buttonHolder.setAlignment(Pos.BOTTOM_CENTER);
         gamesView.getChildren().addAll(container);
         gamesView.setPadding(new Insets(15));
+        gamesView.setPrefWidth(800);
 
 
 

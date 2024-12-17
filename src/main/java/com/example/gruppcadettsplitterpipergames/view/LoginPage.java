@@ -60,6 +60,7 @@ public class LoginPage {
                 Staff chosenStaff = staffHashMap.get(loginDropdown.getValue());
                 System.out.println("StaffID: " + chosenStaff.getStaffId()+ " logged into system.");
                 //TODO: Add link to next page in application.
+                stage.setScene(new TabMenu().getTabMenuScene(stage));
             } catch (Exception e) {
                 loginDropdown.setStyle("-fx-background-color: indianred");
                 System.out.println("Invalid login attempt.");

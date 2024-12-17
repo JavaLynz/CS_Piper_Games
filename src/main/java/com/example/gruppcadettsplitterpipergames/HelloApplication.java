@@ -6,12 +6,17 @@ import com.example.gruppcadettsplitterpipergames.DAO.PlayerDAO;
 import com.example.gruppcadettsplitterpipergames.DAO.TeamsDAO;
 import com.example.gruppcadettsplitterpipergames.entities.Player;
 import com.example.gruppcadettsplitterpipergames.view.LoginPage;
+import com.example.gruppcadettsplitterpipergames.view.QuitConfirmBox;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -75,8 +80,15 @@ public class HelloApplication extends Application {
 
         AnchorPane root = new AnchorPane();
         Scene scene = new Scene(root, 320, 240);
-        root.getChildren().add(startAppBtn);
-        stage.setTitle("Hello!");
+        root.getChildren().addAll(startAppBtn);
+        root.setStyle("-fx-background-color: silver");
+        stage.setTitle("Welcome To Piper Games!");
+
+        stage.setOnCloseRequest(event -> {
+            event.consume();
+            new QuitConfirmBox().display();
+
+        });
         stage.setScene(scene);
         stage.show();
     }
