@@ -8,7 +8,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class DeleteConfirmBox {
+public class DeleteConfirmBox {     // Lynsey Fox
 
     boolean answer;
 
@@ -17,6 +17,9 @@ public class DeleteConfirmBox {
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Confirm Delete");
         window.setMinWidth(400);
+        Label title = new Label("Confirm Delete");
+        title.setAlignment(Pos.CENTER);
+        title.setStyle("-fx-font-size: 20");
         Label label = new Label();
         label.setText("Are you sure you want to delete?");
 
@@ -32,7 +35,7 @@ public class DeleteConfirmBox {
         });
 
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(label, delete, cancel);
+        layout.getChildren().addAll(title,label, delete, cancel);
         layout.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(layout);

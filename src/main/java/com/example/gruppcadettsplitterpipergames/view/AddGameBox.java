@@ -12,7 +12,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class AddGameBox {
+public class AddGameBox {       // Lynsey Fox
 
     private GamesDAO gamesDAO;
 
@@ -29,11 +29,11 @@ public class AddGameBox {
         Label label = new Label();
         label.setText("Add Game");
         label.setAlignment(Pos.CENTER);
-        label.setFont(new Font("Arial", 20));
+        label.setStyle(" -fx-font-size: 20");
 
         Label label2 = new Label("Enter new game name:");
         TextField getGameName = new TextField();
-
+        getGameName.setMaxWidth(100);
 
 
         Button save = new Button("Save");

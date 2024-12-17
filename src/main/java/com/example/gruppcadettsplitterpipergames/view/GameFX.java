@@ -19,7 +19,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 
-public class GameFX {
+public class GameFX {           //Lynsey Fox
     private final GamesDAO gamesDAO;
     private AnchorPane gamesView;
     private final ObservableList<Game> gamesList;
@@ -65,23 +65,6 @@ public class GameFX {
 
         });
 
-        Button deleteGame = new Button("Delete Game");
-        deleteGame.setOnAction(e1 -> {
-            if(new DeleteConfirmBox().display()){
-                System.out.println("Game deleted");
-                //code to delete game
-            }
-
-
-
-        });
-
-        Button updateGame = new Button("Update Game");
-        updateGame.setOnAction(e1 -> {
-            //update game pop up box
-            new GameUpdateBox().display();
-            System.out.println("Game updated");
-        });
 
         Button addGame = new Button("Add Game");
         addGame.setOnAction(e1 -> {
@@ -111,7 +94,53 @@ public class GameFX {
         nameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGameName()));
         nameCol.setPrefWidth(200);
 
-        gamesTableView.getColumns().addAll(idCol, nameCol);
+        TableColumn<Game,Void> updateCol =  new TableColumn<>("Update");
+        updateCol.setCellFactory(col -> new TableCell<Game,Void>(){
+            Button updateGame = new Button("Update Game");
+
+            {
+                updateGame.setOnAction(e1 -> {
+                    //update game pop up box
+                    new GameUpdateBox().display();
+                    System.out.println("Game updated");
+                });
+            }
+            @Override
+            public void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty){
+                    setGraphic(null);
+                } else {
+                    setGraphic(updateGame);
+                }
+            }
+        });
+        TableColumn<Game,Void> deleteCol =  new TableColumn<>("Delete");
+        deleteCol.setCellFactory(col -> new TableCell<Game, Void>(){
+            Button deleteGame = new Button("Delete Game");
+            {
+                deleteGame.setOnAction(e1 -> {
+                    if(new DeleteConfirmBox().display()){
+                        System.out.println("Game deleted");
+                        //code to delete game
+                    }
+
+
+
+                });
+            }
+            @Override
+            public void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty){
+                    setGraphic(null);
+                } else {
+                    setGraphic(deleteGame);
+                }
+            }
+        });
+
+        gamesTableView.getColumns().addAll(idCol, nameCol, updateCol, deleteCol);
         loadGamesFromDB(gamesTableView);
         return gamesTableView;
 

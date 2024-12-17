@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GamesDAO {
+public class GamesDAO {         //Lynsey Fox
 
     //CRUD operations
 

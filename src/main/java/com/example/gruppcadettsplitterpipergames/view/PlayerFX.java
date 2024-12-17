@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class PlayerFX {
+public class PlayerFX {         //Lynsey Fox
 
     private Stage playerStage;
     private PlayerDAO playerDAO = new PlayerDAO();

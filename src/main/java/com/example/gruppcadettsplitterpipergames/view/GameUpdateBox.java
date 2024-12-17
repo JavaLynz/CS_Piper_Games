@@ -21,7 +21,7 @@ public class GameUpdateBox {
         Label label = new Label();
         label.setText("Update Game: ");
         label.setAlignment(Pos.CENTER);
-        label.setFont(new Font("Arial", 50));
+        label.setStyle("-fx-font-size: 20");
 
 
 

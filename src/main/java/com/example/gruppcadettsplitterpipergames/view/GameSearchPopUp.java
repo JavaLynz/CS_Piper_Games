@@ -9,7 +9,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class GameSearchPopUp {
+public class GameSearchPopUp {      //Lynsey Fox
     public static void display() {
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
@@ -17,10 +17,13 @@ public class GameSearchPopUp {
         window.setMinWidth(400);
         window.setMinHeight(500);
 
+        Label title = new Label();
+        title.setText("Search: ");
+        title.setAlignment(Pos.CENTER);
+        title.setStyle("-fx-font-size: 20");
+
         Label label = new Label();
-        label.setText("Search: ");
-        label.setAlignment(Pos.CENTER);
-        label.setFont(new Font("Arial", 50));
+        label.setText("Choose search term: ");
 
 
 
