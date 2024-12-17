@@ -17,9 +17,9 @@ import java.util.Iterator;
 import java.util.List;
 
 public class GameFX {
-    private GamesDAO gamesDAO;
+    private final GamesDAO gamesDAO;
     private AnchorPane gamesView;
-    private ObservableList<Game> gamesList;
+    private final ObservableList<Game> gamesList;
 
     public GameFX() {
         gamesDAO = new GamesDAO();
@@ -41,54 +41,44 @@ public class GameFX {
         gamesTableView.setPrefWidth(800);
 
 
-        container.getChildren().addAll(title, buttonHolder, addNewGame(), gamesTableView);
+        container.getChildren().addAll(title, gamesTableView,buttonHolder);
 
 
-        Button showAllGames = new Button("Show All Games");
-        showAllGames.setOnAction(e -> {
+        Button searchGames = new Button("Search");
+        searchGames.setOnAction(e -> {
+            //search game pop up box
+            System.out.println("show search window");
 
-            loadGamesFromDB(gamesTableView);
-
-
-        });
-
-        Label idLabel = new Label("Enter Game ID to show: ");
-        TextField idTextField = new TextField();
-        Button showGameByID = new Button("Show Game By ID");
-        showGameByID.setLayoutX(50);
-        showGameByID.setLayoutY(175);
-        showGameByID.setOnAction(e -> {
-
-            System.out.println("Show Game By ID");
         });
 
         Button deleteGame = new Button("Delete Game");
         deleteGame.setOnAction(e1 -> {
             System.out.println("Game deleted");
+            // delete game pop up box
 
         });
 
         Button updateGame = new Button("Update Game");
         updateGame.setOnAction(e1 -> {
+            //update game pop up box
             System.out.println("Game updated");
         });
 
-        buttonHolder.getChildren().addAll(showAllGames,deleteGame,updateGame);
+        Button addGame = new Button("Add Game");
+        addGame.setOnAction(e1 -> {
+            //add game popup box
+            //gamesDAO.saveGame(new Game(givenGameName));
+            System.out.println("Game added: "+gamesDAO.getGameById(5));
+        });
+
+        buttonHolder.getChildren().addAll(searchGames,deleteGame, addGame);
+        buttonHolder.setStyle("-fx-background-color: silver");
+        buttonHolder.setAlignment(Pos.BOTTOM_CENTER);
         gamesView.getChildren().addAll(container);
         gamesView.setPadding(new Insets(15));
 
-    }
-    public HBox addNewGame(){
-        HBox container = new HBox();
-        TextField gameName = new TextField();
-        gameName.setPromptText("Game Name");
 
-        Button addGame = new Button("Add Game");
-        addGame.setOnAction(e1 -> {
-            System.out.println("Game added");
-        });
-        container.getChildren().addAll(gameName, addGame);
-        return container;
+
     }
 
     private TableView<Game> createGamesTableView() {
@@ -103,6 +93,7 @@ public class GameFX {
         nameCol.setPrefWidth(200);
 
         gamesTableView.getColumns().addAll(idCol, nameCol);
+        loadGamesFromDB(gamesTableView);
         return gamesTableView;
 
     }

@@ -24,8 +24,8 @@ public class PlayerFX {
     private Stage playerStage;
     private PlayerDAO playerDAO;
 
-    public PlayerFX(Stage stage) {
-        playerDAO = new PlayerDAO();
+    public PlayerFX(Stage stage, PlayerDAO playerDAO) {
+        this.playerDAO = playerDAO;
         this.playerStage = stage;
     }
 

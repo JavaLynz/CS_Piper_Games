@@ -20,6 +20,7 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
 
+        PlayerDAO playerDAO = new PlayerDAO();
     /*
 
 
@@ -60,7 +61,7 @@ public class HelloApplication extends Application {
         button.setAlignment(Pos.CENTER);
         button.setOnAction(event -> {
             System.out.println("hello");
-            new PlayerFX(primaryStage).displayPlayerTab();
+            new PlayerFX(primaryStage, playerDAO).displayPlayerTab();
 
         });
 
