@@ -18,25 +18,24 @@ import javafx.stage.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class StaffFX {
     private StaffDAO staffDAO = new StaffDAO();
     private AddressDAO addressDAO = new AddressDAO();
-    private Tab staffTab = new Tab("Staff");
-    private TabPane root;
+    private TabPane parent;
     private TableView staffTable;
+    private AnchorPane staffTab;
 
     public StaffFX() {
     }
 
-    public StaffFX(TabPane parentScene) {
-        this.root = parentScene;
+    public StaffFX(TabPane parent) {
+        this.parent = parent;
     }
 
-    public Tab createStaffTab(Stage stage){
-        this.root.setPrefSize(1000,400);
-        AnchorPane anchorPane = new AnchorPane();
+    public void createStaffTab(){
+        this.parent.setMinSize(1000,400);
+        this.staffTab = new AnchorPane();
         VBox container = new VBox();
         container.setAlignment(Pos.TOP_CENTER);
         container.setPadding(new Insets(0, 5,5,5));
@@ -60,16 +59,16 @@ public class StaffFX {
         searchBtn.setOnMouseClicked(mouseEvent -> {
             createPopup(2, null);
         });
+        addBtn.setPrefSize(200,40);
+        searchBtn.setPrefSize(200,40);
 
         title.setStyle("-fx-font-size: 24; -fx-font-weight: bold");
         container.setStyle("-fx-background-color: silver; -fx-background-radius:0 0 5 5;");
 
+        fillTable(staffDAO.getAllStaff());
         btnContainer.getChildren().addAll(addBtn,searchBtn);
         container.getChildren().addAll(title, staffTable, btnContainer);
-        fillTable(staffDAO.getAllStaff());
-        anchorPane.getChildren().addAll(container);
-        this.staffTab.setContent(anchorPane);
-        return this.staffTab;
+        staffTab.getChildren().addAll(container);
     }
 
     public TableView createStaffTable(){
@@ -87,27 +86,27 @@ public class StaffFX {
         lastNameCol.setPrefWidth(100);
         TableColumn<Staff, String> nickNameCol = new TableColumn<>("Nickname");
         nickNameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNickName()));
-        nickNameCol.setPrefWidth(100);
+        nickNameCol.setPrefWidth(70);
         TableColumn<Staff, String> addressStreetCol = new TableColumn<>("Street Address");
         addressStreetCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getAddress()));
-
+        addressStreetCol.setPrefWidth(150);
         TableColumn<Staff, String> addressDistrictCol = new TableColumn<>("District");
         addressDistrictCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getDistrict()));
-
+        addressDistrictCol.setPrefWidth(70);
         TableColumn<Staff, String> addressCityCol = new TableColumn<>("City");
         addressCityCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getCity()));
-
+        addressCityCol.setPrefWidth(70);
         TableColumn<Staff, String> addressPostcodeCol = new TableColumn<>("Postcode");
         addressPostcodeCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getPostcode()));
-
+        addressPostcodeCol.setPrefWidth(70);
         TableColumn<Staff, String> addressCountryCol = new TableColumn<>("Country");
         addressCountryCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getCountry()));
-
+        addressCityCol.setPrefWidth(50);
         TableColumn<Staff, String> emailCol = new TableColumn<>("e-mail");
         emailCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
-
+        emailCol.setPrefWidth(150);
         TableColumn<Staff,Void> updateCol =  new TableColumn<>("Update");
-        updateCol.setCellFactory(col -> new TableCell<Staff,Void>(){
+        updateCol.setCellFactory(col -> new TableCell<>(){
             Button updateBtn = new Button("Update");
             {
                 updateBtn.setOnMouseClicked(mouseEvent -> {
@@ -126,8 +125,9 @@ public class StaffFX {
                 }
             }
         });
+        updateCol.setPrefWidth(65);
         TableColumn<Staff,Void> deleteCol =  new TableColumn<>("Delete");
-        deleteCol.setCellFactory(col -> new TableCell<Staff,Void>(){
+        deleteCol.setCellFactory(col -> new TableCell<>(){
             Button deleteBtn = new Button("Delete");
             {
                 deleteBtn.setOnMouseClicked(mouseEvent -> {
@@ -146,6 +146,7 @@ public class StaffFX {
                 }
             }
         });
+        deleteCol.setPrefWidth(60);
 
         staffTable.getColumns().addAll(idCol, firstNameCol,lastNameCol,nickNameCol,addressStreetCol,addressDistrictCol, addressCityCol, addressPostcodeCol, addressCountryCol, emailCol, updateCol, deleteCol);
         return staffTable;
@@ -320,7 +321,7 @@ public class StaffFX {
                 staffChoices.appendText(choice+"\n");
                 staffSelection.add(staffHashMap.get(choice));
             }
-            if (staffSelection.size()>0){
+            if (!staffSelection.isEmpty()){
                 multBtn.setDisable(false);
             }
             if (staffSelection.size()> 1){
@@ -495,5 +496,10 @@ public class StaffFX {
         root.setPrefHeight(100);
         container.getChildren().addAll(alert, deleteBtn);
         return container;
+    }
+
+    public AnchorPane getStaffTab() {
+        createStaffTab();
+        return staffTab;
     }
 }
