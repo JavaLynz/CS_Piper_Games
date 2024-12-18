@@ -25,6 +25,7 @@ public class StaffFX {
     private TabPane parent;
     private TableView staffTable;
     private AnchorPane staffTab;
+    private HashMap<Integer,String> currentUser;
 
     public StaffFX() {
     }
@@ -44,6 +45,10 @@ public class StaffFX {
         AnchorPane.setLeftAnchor(container,5.0);
         AnchorPane.setRightAnchor(container,5.0);
         Text title = new Text("Staff");
+
+//        currentUser.forEach((k,v)->{
+//            System.out.println(k + " : "+ v);
+//        });
 
         this.staffTable = createStaffTable();
 
@@ -286,20 +291,20 @@ public class StaffFX {
     }
 
     public VBox fillSearchPopup(Stage stage, AnchorPane root){
-        //root.setPrefSize(200,400);
+        root.setPrefHeight(250);
         VBox container = new VBox(10);
+        container.setPadding(new Insets(5));
         stage.setTitle("Search for staff members");
 
         HashMap<String, Staff> staffHashMap = new HashMap<>();
         List<Staff> staffSelection = new ArrayList<>();
 
+        ComboBox<Object> staffDropdown = new ComboBox<>();
         for (Staff staff: staffDAO.getAllStaff()){
             String fullName = staff.getFirstName() + " \""+ staff.getNickName()+"\" "+ staff.getLastName();
             staffHashMap.put(fullName, staff);
+            staffDropdown.getItems().add(fullName);
         }
-
-        ComboBox<Object> staffDropdown = new ComboBox<>();
-        staffHashMap.forEach((key,value) -> staffDropdown.getItems().add(key));
 
         TextArea staffChoices = new TextArea();
         staffChoices.setEditable(false);
@@ -329,7 +334,7 @@ public class StaffFX {
             }
         });
 
-        Button allBtn = new Button("Select");
+        Button allBtn = new Button("Select All");
         allBtn.setOnMouseClicked(mouseEvent -> {
             fillTable(staffDAO.getAllStaff());
             stage.close();
@@ -484,22 +489,40 @@ public class StaffFX {
         container.setPadding(new Insets(5));
         container.setAlignment(Pos.TOP_CENTER);
         stage.setTitle("Delete "+ staff.getFirstName());
+        String fullName = staff.getFirstName()+" \""+staff.getNickName()+"\" "+staff.getLastName();
 
-        Text alert = new Text("Are you sure you want to delete:\n\n"+ staff.getFirstName()+" \""+staff.getNickName()+"\" "+staff.getLastName());
-        Button deleteBtn = new Button("Delete");
-        deleteBtn.setOnMouseClicked(mouseEvent -> {
-            staffDAO.deleteStaff(staff);
-            stage.close();
-            fillTable(staffDAO.getAllStaff());
-        });
+        Text alert = new Text();
+        container.getChildren().add(alert);
+        if (currentUser.containsKey(staff.getStaffId()) && currentUser.containsValue(fullName) ){
+            alert.setText("You can not delete yourself from the database.");
+        } else {
+            alert.setText("Are you sure you want to delete:\n\n"+ fullName);
+            Button deleteBtn = new Button("Delete");
+            deleteBtn.setOnMouseClicked(mouseEvent -> {
+                staffDAO.deleteStaff(staff);
+                stage.close();
+                fillTable(staffDAO.getAllStaff());
+            });
+            container.getChildren().add(deleteBtn);
+        }
+
 
         root.setPrefHeight(100);
-        container.getChildren().addAll(alert, deleteBtn);
         return container;
     }
+
+    //GETTERS AND SETTERS
 
     public AnchorPane getStaffTab() {
         createStaffTab();
         return staffTab;
+    }
+
+    public HashMap<Integer, String> getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(HashMap<Integer, String> currentUser) {
+        this.currentUser = currentUser;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.gruppcadettsplitterpipergames.view;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
@@ -11,14 +12,20 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.HashMap;
+
 
 public class TabMenu{
     private TabPane root = new TabPane();
+    private HashMap<Integer,String> currentUser;
     private StaffFX staffFX = new StaffFX(this.root);
+
 
 
     public Scene tabMenuScene(Stage stage){
         stage.setResizable(true);
+        staffFX.setCurrentUser(this.currentUser);
+
         Tab staffTab = new Tab("Staff", staffFX.getStaffTab());
 
         this.root.getTabs().addAll(staffTab);
@@ -35,8 +42,7 @@ public class TabMenu{
         logoutTab.setStyle("-fx-padding: 0; right:0");
         this.root.getTabs().add(logoutTab);
 
-        Scene scene = new Scene(this.root);
-        return scene;
+        return new Scene(this.root);
     }
 
     public void createLogoutPrompt(Stage mainStage){
@@ -44,11 +50,17 @@ public class TabMenu{
         Stage stage = new Stage();
         AnchorPane root = new AnchorPane();
         VBox container = new VBox(10);
+        AnchorPane.setTopAnchor(container,5.0);
+        AnchorPane.setBottomAnchor(container,5.0);
+        AnchorPane.setLeftAnchor(container,5.0);
+        AnchorPane.setRightAnchor(container,5.0);
         container.setPadding(new Insets(5));
+        container.setAlignment(Pos.TOP_CENTER);
 
         Text alert = new Text("Are you sure you want to log out?");
 
         HBox btnContainer = new HBox(20);
+        btnContainer.setAlignment(Pos.CENTER);
         Button confirmBtn = new Button("Confirm");
         confirmBtn.setOnMouseClicked(mouseEvent -> {
             try {
@@ -63,10 +75,19 @@ public class TabMenu{
             stage.close();
         });
 
+        container.setStyle("-fx-background-color:silver; -fx-background-radius:5;");
         btnContainer.getChildren().addAll(confirmBtn,closeBtn);
         container.getChildren().addAll(alert, btnContainer);
         root.getChildren().add(container);
         stage.setScene(new Scene(root));
         stage.show();
+    }
+
+    public HashMap<Integer, String> getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(HashMap<Integer, String> currentUser) {
+        this.currentUser = currentUser;
     }
 }

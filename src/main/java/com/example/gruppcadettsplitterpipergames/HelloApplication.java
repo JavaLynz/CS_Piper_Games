@@ -1,11 +1,8 @@
 package com.example.gruppcadettsplitterpipergames;
 
 import com.example.gruppcadettsplitterpipergames.DAO.*;
-import com.example.gruppcadettsplitterpipergames.entities.Address;
 import com.example.gruppcadettsplitterpipergames.entities.Player;
-import com.example.gruppcadettsplitterpipergames.entities.Staff;
 import com.example.gruppcadettsplitterpipergames.view.LoginPage;
-import com.example.gruppcadettsplitterpipergames.view.TabMenu;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -74,7 +71,7 @@ public class HelloApplication extends Application {
         Scene scene = new Scene(root, 320, 240);
         root.getChildren().addAll(logo, startAppBtn);
         stage.setTitle("Hello!");
-        stage.setResizable(false);
+        //stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
     }
