@@ -10,6 +10,7 @@ import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -21,6 +22,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 import java.sql.*;
+import java.util.List;
 
 public class TeamFX {
 
@@ -37,10 +39,13 @@ public class TeamFX {
         playerDAO = new PlayerDAO();
         view = new BorderPane();
         teamList = FXCollections.observableArrayList();
+        ListView<Player> playersInTeamList = new ListView();
 
-        HBox Hbuttons = new HBox();
-        VBox buttons = new VBox(20);
-        HBox labels = new HBox(500);
+
+        HBox buttonsBox = new HBox();
+        HBox tableBox = new HBox(20);
+        VBox playerListBox = new VBox(5);
+
 
         Button btnAdd = new Button("Add new team");
         btnAdd.setPrefSize(200, 50);
@@ -50,22 +55,83 @@ public class TeamFX {
         btnDelete.setPrefSize(200, 50);
         Button btnRead = new Button("Search");
         btnRead.setPrefSize(200, 50);
-        Hbuttons.getChildren().addAll(btnAdd, btnUpdate, btnDelete, btnRead);
-        view.setBottom(Hbuttons);
-//        Hbuttons.setAlignment(Pos.BOTTOM_CENTER);
-        //Hbuttons.setAlignment(Pos.CENTER_RIGHT);
-        Hbuttons.setPadding(new Insets(0, 0, 0, 0));
+        buttonsBox.getChildren().addAll(btnAdd, btnUpdate, btnDelete, btnRead);
+        view.setBottom(buttonsBox);
+        buttonsBox.setPadding(new Insets(0, 0, 0, 0));
 
-        view.setLeft(labels);
-        labels.setAlignment(Pos.TOP_LEFT);
+        view.setLeft(tableBox);
+        tableBox.setAlignment(Pos.TOP_LEFT);
 
         TableView<Team> teamTable = createTableView();
-        teamTable.setPrefWidth(800);
-        teamTable.setPrefHeight(350);
-        labels.setFillHeight(true);
-        labels.getChildren().add(teamTable);
+        teamTable.setPrefWidth(500);
+        tableBox.setFillHeight(true);
+
+        playersInTeamList.setMaxHeight(200);
+        Label playerListLabel = new Label("Players in selected team");
+        playerListLabel.setStyle("-fx-font-weight: bold");
+        playerListBox.setAlignment(Pos.TOP_CENTER);
+
+        ListView<Player> allplayers = new ListView();
+        allplayers.getItems().addAll(playerDAO.getAllPlayers());
+
+        playerListBox.getChildren().addAll(playerListLabel,playersInTeamList);
+        tableBox.getChildren().addAll(teamTable, playerListBox, allplayers );
+
+        allplayers.setCellFactory(param -> new ListCell<Player>() {
+            @Override
+            protected void updateItem(Player player, boolean empty) {
+                super.updateItem(player, empty);
+                if (empty || player == null) {
+                    setText(null);
+                } else {
+                    setText(player.getFirstName() + " " + player.getLastName());
+                }
+            }
+        });
 
         loadTeamsFromDatabase(teamTable);
+
+
+
+
+
+        teamTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                Team team = teamsDAO.getTeamById(newValue.getId()); // Hämta laget från databasen
+                List<Player> players = team.getPlayers(); // Få spelarna från databasen
+                System.out.println("Players in team: " + players);
+
+                playersInTeamList.getItems().setAll(players);
+            }
+        });
+
+        playersInTeamList.setCellFactory(param -> new ListCell<Player>() {
+            @Override
+            protected void updateItem(Player player, boolean empty) {
+                super.updateItem(player, empty);
+                if (empty || player == null) {
+                    setText(null);
+                } else {
+                    setText(player.getFirstName() + " " + player.getLastName());
+                }
+            }
+        });
+
+//        playersInTeamList.setCellFactory(param -> new ListCell<Player>() {
+//            @Override
+//            protected void updateItem(Player player, boolean empty) {
+//                super.updateItem(player, empty);
+//                if (empty || player == null) {
+//                    setText(null);
+//                } else {
+//                    setText(player.getFirstName() + " " + player.getLastName());
+//                }
+//            }
+//        });
+
+
+
+
 
         // CREATE
         btnAdd.setOnAction(event -> {
@@ -81,6 +147,32 @@ public class TeamFX {
             ComboBox<Game> gameCombo = new ComboBox<>();
             gameCombo.setPromptText("Select a game");
             gameCombo.getItems().addAll(gameDAO.getAllGames());
+
+            // CellFactory för att skriva ut spelnamnen i ComboBox
+            gameCombo.setCellFactory(param -> new ListCell<Game>() {
+                @Override
+                protected void updateItem(Game game, boolean empty) {
+                    super.updateItem(game, empty);
+                    if (empty || game == null) {
+                        setText(null);
+                    } else {
+                        setText(game.getGameName());
+                    }
+                }
+            });
+
+            gameCombo.setButtonCell((new ListCell<Game>() {
+                @Override
+                protected void updateItem(Game game, boolean empty) {
+                    super.updateItem(game, empty);
+                    if (empty || game == null) {
+                        setText(null);
+                    } else {
+                        setText(game.getGameName());
+                    }
+                }
+            }));
+
 
             GridPane gridPane = new GridPane();
             gridPane.setHgap(20);
@@ -131,6 +223,40 @@ public class TeamFX {
         // READ
         btnRead.setOnAction(event -> {
             System.out.println("Read team");
+
+//            ComboBox<Game> gameCombo = new ComboBox<>();
+//            gameCombo.setPromptText("Select a game");
+//            gameCombo.getItems().addAll(gameDAO.getAllGames());
+//            view.setTop(gameCombo);
+
+            ObservableList<Team> teamByGameList = FXCollections.observableArrayList();
+
+
+            String query = "SELECT t.team_id, t.team_name, t.game_id, g.name AS game_name " +
+                    "FROM teams t " +
+                    "LEFT JOIN games g ON t.game_id = g.id";
+
+
+            try (Connection connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/cadettsplitterspipergames", "root", "IOqw12");
+                 Statement statement = connection.createStatement();
+                 ResultSet resultSet = statement.executeQuery("SELECT team_id, team_name FROM teams")) {
+
+                while (resultSet.next()) {
+                    int teamId = resultSet.getInt("team_id");
+                    String teamName = resultSet.getString("team_name");
+
+                    // Skriv ut lagets ID och namn i konsolen
+                    System.out.println("Team ID: " + teamId + ", Team Name: " + teamName);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println("Could not retrieve teams from the database.");
+            }
+
+
+            teamTable.setItems(teamByGameList);
+
         });
 
         // DELETE
@@ -144,6 +270,33 @@ public class TeamFX {
             ComboBox<Team> teamCombo = new ComboBox<>();
             teamCombo.setPromptText("Select a team to delete");
             teamCombo.getItems().addAll(teamsDAO.getAllTeams());
+
+
+            // CellFactory för att skriva ut lagnamnen i ComboBox
+            teamCombo.setCellFactory(param -> new ListCell<Team>() {
+                @Override
+                protected void updateItem(Team team, boolean empty) {
+                    super.updateItem(team, empty);
+                    if (empty || team == null) {
+                        setText(null);
+                    } else {
+                        setText(team.getName());
+                    }
+                }
+            });
+
+            teamCombo.setButtonCell((new ListCell<Team>() {
+                @Override
+                protected void updateItem(Team team, boolean empty) {
+                    super.updateItem(team, empty);
+                    if (empty || team == null) {
+                        setText(null);
+                    } else {
+                        setText(team.getName());
+                    }
+                }
+            }));
+
 
             GridPane gridPane = new GridPane();
             gridPane.setHgap(20);
@@ -185,13 +338,67 @@ public class TeamFX {
             dialog.setTitle("Update team");
             dialog.setHeaderText("Update team");
 
+
+
             ComboBox<Team> teamCombo = new ComboBox<>();
             teamCombo.setPromptText("Select a team to update");
             teamCombo.getItems().addAll(teamsDAO.getAllTeams());
 
+
+// CellFactory för att skriva ut lagnamnen i ComboBox
+            teamCombo.setCellFactory(param -> new ListCell<Team>() {
+                @Override
+                protected void updateItem(Team team, boolean empty) {
+                    super.updateItem(team, empty);
+                    if (empty || team == null) {
+                        setText(null);
+                    } else {
+                        setText(team.getName());
+                    }
+                }
+            });
+
+            teamCombo.setButtonCell((new ListCell<Team>() {
+                @Override
+                protected void updateItem(Team team, boolean empty) {
+                    super.updateItem(team, empty);
+                    if (empty || team == null) {
+                        setText(null);
+                    } else {
+                        setText(team.getName());
+                    }
+                }
+            }));
+
             ComboBox<Game> gameCombo = new ComboBox<>();
             gameCombo.setPromptText("Select a game");
             gameCombo.getItems().addAll(gameDAO.getAllGames());
+
+
+            // CellFactory för att skriva ut spelnamnen i ComboBox
+            gameCombo.setCellFactory(param -> new ListCell<Game>() {
+                @Override
+                protected void updateItem(Game game, boolean empty) {
+                    super.updateItem(game, empty);
+                    if (empty || game == null) {
+                        setText(null);
+                    } else {
+                        setText(game.getGameName());
+                    }
+                }
+            });
+
+            gameCombo.setButtonCell((new ListCell<Game>() {
+                @Override
+                protected void updateItem(Game game, boolean empty) {
+                    super.updateItem(game, empty);
+                    if (empty || game == null) {
+                        setText(null);
+                    } else {
+                        setText(game.getGameName());
+                    }
+                }
+            }));
 
 
             GridPane gridPane = new GridPane();
@@ -226,11 +433,36 @@ public class TeamFX {
                 dialogManagePlayers.setHeaderText("Manage players");
                 Team teamToUpdate = teamCombo.getValue();
 
+
                 ListView<Player> playersInTeam = new ListView();
                 playersInTeam.getItems().addAll(teamToUpdate.getPlayers());
+                playersInTeam.setCellFactory(param -> new ListCell<Player>() {
+                    @Override
+                    protected void updateItem(Player player, boolean empty) {
+                        super.updateItem(player, empty);
+                        if (empty || player == null) {
+                            setText(null);
+                        } else {
+                            setText(player.getFirstName() + " " + player.getLastName());
+                        }
+                    }
+                });
+
 
                 ListView<Player> playersList = new ListView();
                 playersList.getItems().addAll(playerDAO.getAllPlayers());
+                playersList.setCellFactory(param -> new ListCell<Player>() {
+                    @Override
+                    protected void updateItem(Player player, boolean empty) {
+                        super.updateItem(player, empty);
+                        if (empty || player == null) {
+                            setText(null);
+                        } else {
+                            setText(player.getFirstName() + " " + player.getLastName());
+                        }
+                    }
+                });
+
 
                 Button btnAddPlayer = new Button("Add player to team");
                 Button btnRemovePlayer = new Button("Remove player from team");
@@ -253,7 +485,7 @@ public class TeamFX {
 
                 btnAddPlayer.setOnAction(e2 -> {
                     Player selectedPlayer = playersList.getSelectionModel().getSelectedItem();
-                    if(selectedPlayer != null) {
+                    if (selectedPlayer != null) {
                         teamToUpdate.addPlayer(selectedPlayer);
                         playersList.getItems().remove(selectedPlayer);
                         playersInTeam.getItems().add(selectedPlayer);
@@ -264,15 +496,15 @@ public class TeamFX {
 
                 btnRemovePlayer.setOnAction(e2 -> {
                     Player selectedPlayer = playersInTeam.getSelectionModel().getSelectedItem();
-                    if(selectedPlayer != null) {
+                    if (selectedPlayer != null) {
                         teamToUpdate.removePlayer(selectedPlayer);
-                        playersList.getItems().remove(selectedPlayer);
-                        playersInTeam.getItems().add(selectedPlayer);
+                        playersInTeam.getItems().remove(selectedPlayer);
+                        playersList.getItems().add(selectedPlayer);
                         playerDAO.updatePlayer(selectedPlayer);
                     }
                 });
 
-                btnCloseManagePlayers.setOnAction(e2-> {
+                btnCloseManagePlayers.setOnAction(e2 -> {
                     dialogManagePlayers.setResult(Boolean.TRUE);
                     dialogManagePlayers.close();
                 });
@@ -306,9 +538,12 @@ public class TeamFX {
     }
 
 
-        // Skapa tabell
+    // Skapa tabell
     private TableView<Team> createTableView() {
         TableView<Team> teamTable = new TableView<>();
+
+        //Id-kolumn
+
 
         // Lag-kolumn
         TableColumn<Team, String> nameCol = new TableColumn<>("Team Name");
@@ -328,6 +563,7 @@ public class TeamFX {
     }
 
     private void loadTeamsFromDatabase(TableView<Team> teamTable) {
+        teamList.clear();
         teamList.setAll(teamsDAO.getAllTeams());
         teamTable.setItems(teamList);
     }

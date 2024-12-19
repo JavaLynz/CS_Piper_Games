@@ -1,6 +1,8 @@
 package com.example.gruppcadettsplitterpipergames.entities;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "games")
 
@@ -14,6 +16,17 @@ public class Game {     //Lynsey Fox
 
     @Column(name = "game_name")
     private String gameName;
+
+
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "playerId")
+    private List<Player> players;
+
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, mappedBy = "id")
+    private List<Team> teams;
+
+
+
+
 
     public Game(String gameName) {
         this.gameName = gameName;
@@ -37,8 +50,4 @@ public class Game {     //Lynsey Fox
         this.gameName = gameName;
     }
 
-    @Override
-    public String toString() {
-        return gameName;
-    }
 }

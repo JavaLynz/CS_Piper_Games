@@ -5,6 +5,7 @@
 package com.example.gruppcadettsplitterpipergames.entities;
 
 import jakarta.persistence.*;
+import org.hibernate.engine.internal.Cascade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,8 +101,4 @@ public class Team {
         this.teamMatches = teamMatches;
     }
 
-    @Override
-    public String toString() {
-        return name;
-    }
 }
