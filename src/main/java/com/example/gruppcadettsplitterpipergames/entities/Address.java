@@ -27,7 +27,7 @@ public class Address {
     @Column (name = "country", length = 20, nullable = false)
     private String country;
 
-    @OneToMany (mappedBy= "address", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany (mappedBy= "address", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Player> players = new ArrayList<>();
 
     @OneToMany (mappedBy = "staffId", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)

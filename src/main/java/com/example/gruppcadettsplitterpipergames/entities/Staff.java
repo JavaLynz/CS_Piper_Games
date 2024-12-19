@@ -21,7 +21,7 @@ public class Staff {
     @Column(name = "staff_nick_name", length = 20, nullable = false)
     private String nickName;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "address_id")
     private Address address;
 
@@ -97,5 +97,9 @@ public class Staff {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getFullName(){
+        return this.firstName + " \"" + this.getNickName() + "\" " + this.lastName;
     }
 }

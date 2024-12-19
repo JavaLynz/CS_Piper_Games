@@ -9,15 +9,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class StaffFX {
     private StaffDAO staffDAO = new StaffDAO();
@@ -46,12 +49,7 @@ public class StaffFX {
         AnchorPane.setRightAnchor(container,5.0);
         Text title = new Text("Staff");
 
-//        currentUser.forEach((k,v)->{
-//            System.out.println(k + " : "+ v);
-//        });
-
         this.staffTable = createStaffTable();
-
 
         HBox btnContainer = new HBox(5);
         btnContainer.setAlignment(Pos.CENTER);
@@ -220,6 +218,9 @@ public class StaffFX {
         TextField nickname = new TextField();
         nickname.setPromptText("Nickname");
         nameRow.getChildren().addAll(firstName,lastName,nickname);
+        firstName.setOnMouseClicked(actionEvent -> firstName.setStyle(""));
+        lastName.setOnMouseClicked(actionEvent -> lastName.setStyle(""));
+        nickname.setOnMouseClicked(actionEvent -> nickname.setStyle(""));
 
         HBox addressRow1 = new HBox(5);
         ComboBox<String> streetAddress = new ComboBox<>();
@@ -232,6 +233,7 @@ public class StaffFX {
         streetAddress.setPromptText("Street Address");
         streetAddress.setEditable(true);
         addressRow1.getChildren().addAll(streetAddress);
+        streetAddress.setOnMouseClicked(actionEvent -> streetAddress.setStyle(""));
 
         HBox addressRow2 = new HBox(5);
         TextField district = new TextField();
@@ -239,6 +241,8 @@ public class StaffFX {
         TextField city = new TextField();
         city.setPromptText("City");
         addressRow2.getChildren().addAll(district,city);
+        district.setOnMouseClicked(actionEvent -> district.setStyle(""));
+        city.setOnMouseClicked(actionEvent -> city.setStyle(""));
 
         HBox addressRow3 = new HBox(5);
         TextField postcode = new TextField();
@@ -246,12 +250,16 @@ public class StaffFX {
         TextField country = new TextField();
         country.setPromptText("Country");
         addressRow3.getChildren().addAll(postcode,country);
+        postcode.setOnMouseClicked(actionEvent -> postcode.setStyle(""));
+        country.setOnMouseClicked(actionEvent -> country.setStyle(""));
 
 
+        AtomicBoolean existingAddress = new AtomicBoolean(false);
         streetAddress.setOnAction(actionEvent -> {
             if (!streetAddress.getValue().equalsIgnoreCase(null)){
                 try {
                     Address tempAddress = addressHashMap.get(streetAddress.getValue());
+                    existingAddress.set(true);
                     district.setText(tempAddress.getDistrict());
                     city.setText(tempAddress.getCity());
                     postcode.setText(tempAddress.getPostcode());
@@ -261,6 +269,7 @@ public class StaffFX {
                     city.clear();
                     postcode.clear();
                     country.clear();
+                    existingAddress.set(false);
                 }
             }
         });
@@ -269,24 +278,59 @@ public class StaffFX {
         TextField email = new TextField();
         email.setPromptText("E-mail");
         emailRow.getChildren().addAll(email);
+        email.setOnMouseClicked(mouseEvent -> email.setStyle(""));
 
         Button addStaff = new Button("Add new");
+        container.getChildren().addAll(nameRow,addressRow1,addressRow2,addressRow3,emailRow, addStaff);
+
         addStaff.setOnMouseClicked(mouseEvent -> {
             Staff newStaff = new Staff(firstName.getText(),lastName.getText(),nickname.getText(),email.getText());
             Address newAddress = new Address(streetAddress.getValue(), district.getText(), city.getText(), postcode.getText(),country.getText());
-            try {
-                addressDAO.saveAddress(newAddress);
-                newStaff.setAddress(newAddress);
-                newAddress.getStaff().add(newStaff);
-                staffDAO.saveStaff(newStaff);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
+            if (!firstName.getText().equalsIgnoreCase("")
+                    && !lastName.getText().equalsIgnoreCase("")
+                    && !nickname.getText().equalsIgnoreCase("")
+                    && !streetAddress.getValue().equalsIgnoreCase("")
+                    && !city.getText().equalsIgnoreCase("")
+                    && !postcode.getText().equalsIgnoreCase("")
+                    && !country.getText().equalsIgnoreCase("")
+                    && !email.getText().equalsIgnoreCase("")){
+                try {
+                    if (existingAddress.get()){
+                        newAddress = addressHashMap.get(streetAddress.getValue());
+                        newAddress.getStaff().add(newStaff);
+                        addressDAO.updateAddress(newAddress);
+                        staffDAO.saveStaff(newStaff);
+                        newStaff.setAddress(newAddress);
+                        staffDAO.updateStaff(newStaff);
+                    }
+                    newStaff.setAddress(newAddress);
+                    newAddress.getStaff().add(newStaff);
+                    staffDAO.saveStaff(newStaff);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+                fillTable(staffDAO.getAllStaff());
+                stage.close();
+
+            } else {
+                for (Node row : container.getChildren()){
+                    if (row instanceof HBox){
+                        for (Node field : ((HBox) row).getChildren()){
+                            if (field instanceof TextField textField){
+                                if (textField.getText().equalsIgnoreCase("")){
+                                    textField.setStyle("-fx-background-color:indianred");
+                                }
+                            }
+                        }
+                    }
+                }
+                if (streetAddress.getValue() == null){
+                    streetAddress.setStyle("-fx-background-color:indianred");
+                }
             }
-            fillTable(staffDAO.getAllStaff());
-            stage.close();
         });
 
-        container.getChildren().addAll(nameRow,addressRow1,addressRow2,addressRow3,emailRow, addStaff);
+
         return container;
     }
 
@@ -489,14 +533,14 @@ public class StaffFX {
         container.setPadding(new Insets(5));
         container.setAlignment(Pos.TOP_CENTER);
         stage.setTitle("Delete "+ staff.getFirstName());
-        String fullName = staff.getFirstName()+" \""+staff.getNickName()+"\" "+staff.getLastName();
 
         Text alert = new Text();
+        alert.setTextAlignment(TextAlignment.CENTER);
         container.getChildren().add(alert);
-        if (currentUser.containsKey(staff.getStaffId()) && currentUser.containsValue(fullName) ){
+        if (currentUser.containsKey(staff.getStaffId()) && currentUser.containsValue(staff.getFullName()) ){
             alert.setText("You can not delete yourself from the database.");
         } else {
-            alert.setText("Are you sure you want to delete:\n\n"+ fullName);
+            alert.setText("Are you sure you want to delete:\n\n"+ staff.getFullName());
             Button deleteBtn = new Button("Delete");
             deleteBtn.setOnMouseClicked(mouseEvent -> {
                 staffDAO.deleteStaff(staff);
@@ -505,8 +549,6 @@ public class StaffFX {
             });
             container.getChildren().add(deleteBtn);
         }
-
-
         root.setPrefHeight(100);
         return container;
     }

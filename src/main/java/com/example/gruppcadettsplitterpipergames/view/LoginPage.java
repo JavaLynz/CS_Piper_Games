@@ -50,9 +50,8 @@ public class LoginPage {
         loginDropdown.setMinWidth(300);
         HashMap<String, Staff> staffHashMap = new HashMap<>();
         for (Staff staff: staffDAO.getAllStaff()){
-            String fullName = staff.getFirstName() + " \""+staff.getNickName()+"\" "+staff.getLastName();
-            staffHashMap.put(fullName,staff);
-            loginDropdown.getItems().add(fullName);
+            staffHashMap.put(staff.getFullName(),staff);
+            loginDropdown.getItems().add(staff.getFullName());
         }
 
         Button loginBtn = new Button("Login");
