@@ -48,7 +48,6 @@ public class GameFX {           //Lynsey Fox
 
         TableView<Game> gamesTableView = createGamesTableView();
         gamesTableView.setPrefHeight(250);
-        gamesTableView.setPrefWidth(600);
 
 
         container.getChildren().addAll(logo, title, gamesTableView,buttonHolder);
@@ -59,31 +58,52 @@ public class GameFX {           //Lynsey Fox
         Button searchGames = new Button("Search");
         searchGames.setOnAction(e -> {
             //search game pop up box
-            new GameSearchPopUp().display();
+            try {
+                new GameSearchPopUp().display(gamesDAO);
+            } catch (FileNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
 
-            System.out.println("show search window");
+            loadGamesFromDB(gamesTableView);
 
         });
 
 
         Button addGame = new Button("Add Game");
         addGame.setOnAction(e1 -> {
-            new AddGameBox(gamesDAO).display();
+            try {
+                if(new AddGameBox(gamesDAO).display()){
+                    loadGamesFromDB(gamesTableView);
+                }
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+
 
         });
 
-        buttonHolder.getChildren().addAll(searchGames, addGame);
+        Button refreshTable = new Button("Refresh Table");
+        refreshTable.setOnAction(e1 -> {
+            loadGamesFromDB(gamesTableView);
+
+        });
+        buttonHolder.getChildren().addAll(refreshTable, searchGames, addGame);
         buttonHolder.setStyle("-fx-background-color: silver");
         buttonHolder.setAlignment(Pos.BOTTOM_CENTER);
+        AnchorPane.setBottomAnchor(gamesView, 10.0);
+        AnchorPane.setLeftAnchor(gamesView, 10.0);
+        AnchorPane.setRightAnchor(gamesView, 10.0);
+        AnchorPane.setTopAnchor(gamesView, 10.0);
         gamesView.getChildren().addAll(container);
         gamesView.setPadding(new Insets(15));
         gamesView.setPrefWidth(800);
+        loadGamesFromDB(gamesTableView);
 
 
 
     }
 
-    private TableView<Game> createGamesTableView() {
+    public TableView<Game> createGamesTableView() {
         TableView<Game> gamesTableView = new TableView<>();
 
         TableColumn<Game, String> idCol = new TableColumn<>("ID");
@@ -100,9 +120,18 @@ public class GameFX {           //Lynsey Fox
 
             {
                 updateGame.setOnAction(e1 -> {
-                    //update game pop up box
-                    new GameUpdateBox().display();
-                    System.out.println("Game updated");
+                    TableColumn idColumn = (TableColumn) gamesTableView.getColumns().get(0);
+                    int id = Integer.parseInt ((String) idColumn.getCellObservableValue(getIndex()).getValue());
+                    Game gameToUpdate = gamesDAO.getGameById(id);
+                    try {
+                        if(new GameUpdateBox().display(gameToUpdate, gamesDAO)){
+                            loadGamesFromDB(gamesTableView);
+                        }
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                    System.out.println("Game updated: " + gameToUpdate);
+
                 });
             }
             @Override
@@ -120,12 +149,16 @@ public class GameFX {           //Lynsey Fox
             Button deleteGame = new Button("Delete Game");
             {
                 deleteGame.setOnAction(e1 -> {
-                    if(new DeleteConfirmBox().display()){
-                        System.out.println("Game deleted");
-                        //code to delete game
+                    TableColumn idColumn = (TableColumn) gamesTableView.getColumns().get(0);
+                    int id = Integer.parseInt ((String) idColumn.getCellObservableValue(getIndex()).getValue());
+                    Game gameToDelete = gamesDAO.getGameById(id);
+                    try {
+                        if(new DeleteConfirmBox().display(gameToDelete, gamesDAO)){
+                            loadGamesFromDB(gamesTableView);
+                        }
+                    } catch (FileNotFoundException e) {
+                        throw new RuntimeException(e);
                     }
-
-
 
                 });
             }
@@ -141,7 +174,6 @@ public class GameFX {           //Lynsey Fox
         });
 
         gamesTableView.getColumns().addAll(idCol, nameCol, updateCol, deleteCol);
-        loadGamesFromDB(gamesTableView);
         return gamesTableView;
 
     }

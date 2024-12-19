@@ -7,24 +7,39 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 public class AddGameBox {       // Lynsey Fox
 
     private GamesDAO gamesDAO;
+    public boolean result = false;
 
     public AddGameBox(GamesDAO gamesDAO) {
         this.gamesDAO = gamesDAO;
     }
-    public void display() {
+    public boolean display() throws FileNotFoundException {
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Add New Game");
         window.setMinWidth(400);
         window.setMinHeight(500);
+
+        ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
+        Circle logoClip = new Circle(80,80,70);
+        logo.setTranslateY(0);
+        logo.setClip(logoClip);
+        logo.setPreserveRatio(true);
+        logo.setFitHeight(160.0);
 
         Label label = new Label();
         label.setText("Add Game");
@@ -41,7 +56,14 @@ public class AddGameBox {       // Lynsey Fox
         save.setOnAction(e -> {
                 if(!getGameName.getText().isEmpty()){
                     String givenGameName = getGameName.getText();
-                    gamesDAO.saveGame(new Game(givenGameName));
+                    Game gameToAdd = new Game(givenGameName);
+                    gamesDAO.saveGame(gameToAdd);
+                    result = true;
+                    try {
+                        confirmPopup(gameToAdd);
+                    } catch (FileNotFoundException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }else{
                     getGameName.requestFocus();
                     getGameName.setStyle("-fx-background-color: red");
@@ -52,15 +74,53 @@ public class AddGameBox {       // Lynsey Fox
         });
 
         Button cancel = new Button("Cancel");
-        cancel.setOnAction(e-> window.close());
+        cancel.setOnAction(e-> {
+            window.close();
+            result = false;
+        });
 
 
         VBox layout = new VBox(20);
-        layout.getChildren().addAll(label, label2, getGameName, save, cancel);
+        layout.getChildren().addAll(logo,label, label2, getGameName, save, cancel);
         layout.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(layout);
         window.setScene(scene);
         window.showAndWait();
+        return result;
+    }
+
+    private void confirmPopup(Game gameToAdd) throws FileNotFoundException {
+        Stage window = new Stage();
+        window.initModality(Modality.APPLICATION_MODAL);
+
+        ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
+        Circle logoClip = new Circle(80,80,70);
+        logo.setTranslateY(0);
+        logo.setClip(logoClip);
+        logo.setPreserveRatio(true);
+        logo.setFitHeight(160.0);
+
+        Button closeButton = new Button("Close");
+        closeButton.setOnAction(e -> window.close());
+
+        Label label = new Label("Game: "+ gameToAdd.getGameName() + " has been added to the database");
+        AnchorPane root = new AnchorPane();
+        root.setPrefSize(150,150);
+
+        VBox layout = new VBox(20);
+        layout.getChildren().addAll(logo, label, closeButton);
+        layout.setAlignment(Pos.CENTER);
+        root.getChildren().add(layout);
+
+        AnchorPane.setLeftAnchor(layout, 5.0);
+        AnchorPane.setRightAnchor(layout, 5.0);
+        AnchorPane.setTopAnchor(layout, 5.0);
+        AnchorPane.setBottomAnchor(layout, 5.0);
+
+        Scene scene = new Scene(root);
+        window.setScene(scene);
+        window.showAndWait();
+        window.setAlwaysOnTop(true);
     }
 }

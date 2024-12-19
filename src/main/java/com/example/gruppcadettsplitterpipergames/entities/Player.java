@@ -22,18 +22,18 @@ public class Player {   //Lynsey Fox
     @Column(name = "player_nick_name", length = 20, nullable = false)
     private String nickName;
 
-    @ManyToOne
+    @ManyToOne (cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "team_id")
     private Team team;
     /*
         @OneToMany (mappedBy ="playerMatchId")
         private List<PlayerMatch> playerMatches = new ArrayList<>();
     */
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "game_id")
     private Game game;
 
@@ -41,7 +41,7 @@ public class Player {   //Lynsey Fox
     public Player() {
     }
 
-    public Player(String firstName, String lastName, String nickName, int addressId, int gameID) {
+    public Player(String firstName, String lastName, String nickName) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.nickName = nickName;

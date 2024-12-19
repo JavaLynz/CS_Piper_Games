@@ -95,7 +95,7 @@ public class GamesDAO {         //Lynsey Fox
             transaction = entityManager.getTransaction();
             transaction.begin();
             if(!entityManager.contains(gameToDelete)) {
-                entityManager.merge(gameToDelete);
+                gameToDelete = entityManager.merge(gameToDelete);
             }
             entityManager.remove(gameToDelete);
             transaction.commit();

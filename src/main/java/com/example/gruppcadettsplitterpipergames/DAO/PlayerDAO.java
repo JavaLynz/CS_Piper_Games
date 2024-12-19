@@ -87,7 +87,7 @@ public void deletePlayer(Player playerToDelete) {
         transaction = entityManager.getTransaction();
         transaction.begin();
         if (!entityManager.contains(playerToDelete)) {
-            entityManager.merge(playerToDelete);
+            playerToDelete = entityManager.merge(playerToDelete);
         }
         entityManager.remove(playerToDelete);
         transaction.commit();
