@@ -378,7 +378,8 @@ public class TeamFX {
             dialog.setHeaderText("Update team");
 
 
-
+            TextField changeNameField = new TextField();
+            changeNameField.setPromptText("Change name");
             ComboBox<Team> teamCombo = new ComboBox<>();
             teamCombo.setPromptText("Select a team to update");
             teamCombo.getItems().addAll(teamsDAO.getAllTeams());
@@ -444,14 +445,15 @@ public class TeamFX {
             gridPane.setHgap(20);
             gridPane.setVgap(10);
             gridPane.add(teamCombo, 1, 0);
-            gridPane.add(gameCombo, 1, 1);
+            gridPane.add(changeNameField, 1, 1);
+            gridPane.add(gameCombo, 1, 2);
             Button btnUpdateTeam = new Button("Update team");
             Button btnManagePlayers = new Button("Manage players");
             Button btnCancelUpdateTeam = new Button("Close");
             dialog.getDialogPane().setContent(gridPane);
             gridPane.add(btnUpdateTeam, 1, 6);
             gridPane.add(btnCancelUpdateTeam, 2, 8);
-            gridPane.add(btnManagePlayers, 1, 2);
+            gridPane.add(btnManagePlayers, 1, 3);
 
             btnManagePlayers.setDisable(true);
             gameCombo.setDisable(true);
@@ -558,6 +560,7 @@ public class TeamFX {
                     System.out.println("Invalid");
 
                 } else {
+                    teamToUpdate.setName(changeNameField.getText());
                     teamToUpdate.setGame(selectedGame);
                     teamsDAO.updateTeam(teamToUpdate);
                     teamTable.getItems().setAll(teamsDAO.getAllTeams());
