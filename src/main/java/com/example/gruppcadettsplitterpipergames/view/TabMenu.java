@@ -28,12 +28,17 @@ public class TabMenu{
         staffFX.setCurrentUser(this.currentUser);
 
         Tab staffTab = new Tab("Staff", staffFX.getStaffTab());
-        Tab playerTab;
-        Tab teamTab = new Tab("Team");
+        staffTab.setClosable(false);
+        Tab teamTab = new Tab("Team", new TeamFX().getView());
+        teamTab.setClosable(false);
         Tab teamMatchesTab = new Tab("TeamMatches");
+        teamMatchesTab.setClosable(false);
         Tab playerMatchesTab = new Tab("PlayerMatches");
+        playerMatchesTab.setClosable(false);
         Tab gamesTab = new Tab("Games", new GameFX().getGamesView());
-        playerTab = new Tab("Player", new PlayerFX().getPlayerView());
+        gamesTab.setClosable(false);
+        Tab playerTab = new Tab("Player", new PlayerFX().getPlayerView());
+        playerTab.setClosable(false);
 
         this.root.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab, playerMatchesTab, teamMatchesTab);
         this.root.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
