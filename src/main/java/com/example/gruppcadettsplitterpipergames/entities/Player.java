@@ -26,7 +26,7 @@ public class Player {   //Lynsey Fox
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
     /*
@@ -115,7 +115,7 @@ public class Player {   //Lynsey Fox
 
 @Override
     public String toString() {
-        return firstName + " "+ lastName + "\r\n";
+        return "\r\n" + firstName + " "+ lastName;
 }
 
 }

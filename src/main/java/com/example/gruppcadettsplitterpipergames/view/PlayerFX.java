@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PlayerFX {         //Lynsey Fox
 
-    private ObservableList<Player> playerList;
+    private ObservableList<Player> playerList = null;
     private PlayerDAO playerDAO;
     private AnchorPane playerView;
     GamesDAO gamesDAO = new GamesDAO();
@@ -305,6 +305,7 @@ public class PlayerFX {         //Lynsey Fox
 
 
     private void loadPlayersFromDB(TableView<Player> playerTableView) {
+
         playerList.setAll(playerDAO.getAllPlayers());
         playerTableView.setItems(playerList);
         System.out.println(playerDAO.getAllPlayers().toString());
