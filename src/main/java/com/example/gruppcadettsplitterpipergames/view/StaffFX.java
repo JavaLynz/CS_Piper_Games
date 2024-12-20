@@ -12,11 +12,16 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.*;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +42,7 @@ public class StaffFX {
         this.parent = parent;
     }
 
-    public void createStaffTab(){
+    public void createStaffTab() throws FileNotFoundException {
         this.parent.setMinSize(1000,400);
         this.staffTab = new AnchorPane();
         VBox container = new VBox();
@@ -47,7 +52,17 @@ public class StaffFX {
         AnchorPane.setBottomAnchor(container,5.0);
         AnchorPane.setLeftAnchor(container,5.0);
         AnchorPane.setRightAnchor(container,5.0);
+
+        ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
+        Circle logoClip = new Circle(50,50,40);
+        logo.setClip(logoClip);
+        logo.setPreserveRatio(true);
+        logo.setFitHeight(100);
         Text title = new Text("Staff");
+
+        BorderPane header = new BorderPane();
+        header.setRight(logo);
+        header.setCenter(title);
 
         this.staffTable = createStaffTable();
 
@@ -68,9 +83,9 @@ public class StaffFX {
         title.setStyle("-fx-font-size: 24; -fx-font-weight: bold");
         container.setStyle("-fx-background-color: silver; -fx-background-radius:0 0 5 5;");
 
-        fillTable(staffDAO.getAllStaff());
+        fillTable(staffDAO.getAllStaff());;
         btnContainer.getChildren().addAll(addBtn,searchBtn);
-        container.getChildren().addAll(title, staffTable, btnContainer);
+        container.getChildren().addAll(header, staffTable, btnContainer);
         staffTab.getChildren().addAll(container);
     }
 
@@ -555,7 +570,7 @@ public class StaffFX {
 
     //GETTERS AND SETTERS
 
-    public AnchorPane getStaffTab() {
+    public AnchorPane getStaffTab() throws FileNotFoundException {
         createStaffTab();
         return staffTab;
     }
