@@ -30,7 +30,7 @@ public class Address {          //Lynsey Fox
     @OneToMany (mappedBy= "address", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Player> players = new ArrayList<>();
 
-    @OneToMany (mappedBy = "staffId", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @OneToMany (mappedBy = "staffId", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Staff> staff = new ArrayList<>();
 
     public Address(String address, String district, String city, String postcode, String country) {

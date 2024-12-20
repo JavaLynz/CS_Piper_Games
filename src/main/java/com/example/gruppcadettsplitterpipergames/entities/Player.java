@@ -33,7 +33,7 @@ public class Player {   //Lynsey Fox
         @OneToMany (mappedBy ="playerMatchId")
         private List<PlayerMatch> playerMatches = new ArrayList<>();
     */
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "game_id")
     private Game game;
 

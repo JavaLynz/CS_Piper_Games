@@ -1,11 +1,14 @@
 package com.example.gruppcadettsplitterpipergames.DAO;
 
+import com.example.gruppcadettsplitterpipergames.entities.Game;
 import com.example.gruppcadettsplitterpipergames.entities.Player;
+import com.example.gruppcadettsplitterpipergames.entities.Team;
 import jakarta.persistence.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PlayerDAO {    //Lynsey Fox
@@ -51,6 +54,30 @@ public List<Player> getAllPlayers() {
     entityManager.close();
     return playersToReturn;
 }
+
+public List<Player> getPlayersByGame(Game game){
+       return getPlayersByGame(Collections.singletonList(game));
+    }
+
+public List<Player> getPlayersByGame(List<Game> games){
+    EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
+    List<Player> playersToReturn = new ArrayList<>();
+    TypedQuery<Player> result = entityManager.createQuery("SELECT p FROM Player p WHERE p.game IN :games", Player.class);
+    result.setParameter("games", games);
+    playersToReturn.addAll(result.getResultList());
+    entityManager.close();
+    return playersToReturn;
+}
+
+    public List<Player> getPlayersByTeam(Team team){
+        EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
+        List<Player> playersToReturn = new ArrayList<>();
+        TypedQuery<Player> result = entityManager.createQuery("SELECT p FROM Player p WHERE p.team = :variable", Player.class);
+        result.setParameter("variable", team);
+        playersToReturn.addAll(result.getResultList());
+        entityManager.close();
+        return playersToReturn;
+    }
 
 //UPDATE
 public void updatePlayer(Player playerToUpdate) {

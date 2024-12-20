@@ -16,20 +16,20 @@ INSERT INTO staff(staff_first_name, staff_last_name, staff_nick_name, address_id
 INSERT INTO staff(staff_first_name, staff_last_name, staff_nick_name, address_id, staff_email) VALUES ("Lynsey", "Fox", "Lynsey", 8, "l@p.com");
 
 
-INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Harrison', 'Ford', 'Harry', 1);
-INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Michael J', 'Fox', 'Mike',2);
-INSERT INTO players(player_first_name, player_last_name, player_nick_name,address_id) VALUES('Alexander', 'Skarsgård', 'Alex',3);
-INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Katherine', 'Winslet', 'Kate',4);
-INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Kiera', 'Knightly', 'Kiera',5);
-INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Johnny', 'Depp', 'Jon', 6);
-INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Jessica', 'Jones', 'JJ',7);
-INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Deborah', 'Sam', 'Deb',1);
-INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Oskar', 'Isaksson', 'Oskar',3);
-INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Lukas', 'Isaksson', 'Lukas',3);
-INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Madelene', 'Hall', 'Madde',9);
-INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Sebastian', 'Hall', 'Sebbe',9);
-INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Dante', 'Eriksson', 'Dante',10);
-INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Carola', 'Eriksson', 'Carola',10);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id, game_id, team_id) VALUES ('Harrison', 'Ford', 'Harry', 1, 1,1);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id,  game_id, team_id) VALUES ('Michael J', 'Fox', 'Mike',2,1,1);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name,address_id, game_id) VALUES('Alexander', 'Skarsgård', 'Alex',3,2);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id,game_id) VALUES ('Katherine', 'Winslet', 'Kate',4, 3);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id,game_id) VALUES ('Kiera', 'Knightly', 'Kiera',5,4);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id, game_id) VALUES ('Johnny', 'Depp', 'Jon', 6,2);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id,game_id) VALUES ('Jessica', 'Jones', 'JJ',7,4);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id,game_id) VALUES ('Deborah', 'Sam', 'Deb',1,4);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id,game_id) VALUES ('Oskar', 'Isaksson', 'Oskar',3,4);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id,game_id) VALUES ('Lukas', 'Isaksson', 'Lukas',3,4);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id,game_id) VALUES ('Madelene', 'Hall', 'Madde',9,4);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id,game_id) VALUES ('Sebastian', 'Hall', 'Sebbe',9,4);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id,game_id) VALUES ('Dante', 'Eriksson', 'Dante',10,4);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id,game_id) VALUES ('Carola', 'Eriksson', 'Carola',10,4);
 
 INSERT INTO games(game_name) VALUES ('Battleship');
 INSERT INTO games(game_name) VALUES ('Mario Kart');

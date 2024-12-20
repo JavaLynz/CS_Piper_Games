@@ -90,10 +90,10 @@ public class GameFX {           //Lynsey Fox
         buttonHolder.getChildren().addAll(refreshTable, searchGames, addGame);
         buttonHolder.setStyle("-fx-background-color: silver");
         buttonHolder.setAlignment(Pos.BOTTOM_CENTER);
-        AnchorPane.setBottomAnchor(gamesView, 10.0);
-        AnchorPane.setLeftAnchor(gamesView, 10.0);
-        AnchorPane.setRightAnchor(gamesView, 10.0);
-        AnchorPane.setTopAnchor(gamesView, 10.0);
+        AnchorPane.setBottomAnchor(container, 5.0);
+        AnchorPane.setLeftAnchor(container, 5.0);
+        AnchorPane.setRightAnchor(container, 5.0);
+        AnchorPane.setTopAnchor(container, 0.0);
         gamesView.getChildren().addAll(container);
         gamesView.setPadding(new Insets(15));
         gamesView.setPrefWidth(800);

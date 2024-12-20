@@ -25,6 +25,7 @@ import javafx.stage.Stage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -98,13 +99,14 @@ public class PlayerFX {         //Lynsey Fox
         buttonHolder.getChildren().addAll(refreshTable, searchGames, addGame);
         buttonHolder.setStyle("-fx-background-color: silver");
         buttonHolder.setAlignment(Pos.BOTTOM_CENTER);
-        AnchorPane.setBottomAnchor(playerView, 10.0);
-        AnchorPane.setLeftAnchor(playerView, 10.0);
-        AnchorPane.setRightAnchor(playerView, 10.0);
-        AnchorPane.setTopAnchor(playerView, 10.0);
+
+        AnchorPane.setBottomAnchor(container, 5.0);
+        AnchorPane.setLeftAnchor(container, 5.0);
+        AnchorPane.setRightAnchor(container, 5.0);
+        AnchorPane.setTopAnchor(container, 0.0);
         playerView.getChildren().addAll(container);
         playerView.setPadding(new Insets(15));
-        playerView.setPrefWidth(800);
+
         loadPlayersFromDB(playerTableView);
     }
 
@@ -215,6 +217,7 @@ public class PlayerFX {         //Lynsey Fox
 
         Label firstNameLabel = new Label("Update player's first name:");
         TextField firstName = new TextField();
+        firstName.setPromptText(playerToUpdate.getFirstName());
         firstName.setMaxWidth(100);
         if (firstName.getText()!= null){
             String playerFirstName = firstName.getText();
@@ -240,7 +243,7 @@ public class PlayerFX {         //Lynsey Fox
             if(firstName.getText() != null){
                 playerToUpdate.setFirstName(firstName.getText());
             }
-            playerToUpdate.setFirstName(firstName.getText());
+
             playerDAO.updatePlayer(playerToUpdate);
             try {
                 confirmUpdatePopup(playerToUpdate);
@@ -262,6 +265,11 @@ public class PlayerFX {         //Lynsey Fox
         layout.getChildren().addAll(logo,label, firstNameLabel, firstName,nickNameLabel, nickName, lastNameLabel, lastName,update, cancel);
         layout.setAlignment(Pos.CENTER);
 
+        AnchorPane.setLeftAnchor(layout, 5.0);
+        AnchorPane.setRightAnchor(layout, 5.0);
+        AnchorPane.setTopAnchor(layout, 5.0);
+        AnchorPane.setBottomAnchor(layout, 5.0);
+
         Scene scene = new Scene(layout);
         window.setScene(scene);
         window.showAndWait();
@@ -272,23 +280,16 @@ public class PlayerFX {         //Lynsey Fox
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
 
-        ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
-        Circle logoClip = new Circle(80,80,70);
-        logo.setTranslateY(0);
-        logo.setClip(logoClip);
-        logo.setPreserveRatio(true);
-        logo.setFitHeight(160.0);
-
         Button closeButton = new Button("Close");
         closeButton.setOnAction(e -> window.close());
 
         Label label = new Label("Player: "+ playerToUpdate.getFirstName() + " " + playerToUpdate.getNickName() + " " + playerToUpdate.getLastName() + " has been updated");
         label.setWrapText(true);
         AnchorPane root = new AnchorPane();
-        root.setPrefSize(150,350);
+        root.setPrefSize(350,350);
 
         VBox layout = new VBox(20);
-        layout.getChildren().addAll(logo,label, closeButton);
+        layout.getChildren().addAll(label, closeButton);
         layout.setAlignment(Pos.CENTER);
         root.getChildren().add(layout);
 
@@ -308,7 +309,6 @@ public class PlayerFX {         //Lynsey Fox
 
         playerList.setAll(playerDAO.getAllPlayers());
         playerTableView.setItems(playerList);
-        System.out.println(playerDAO.getAllPlayers().toString());
     }
 
     private void playerSearchPopUp() throws FileNotFoundException {
@@ -328,6 +328,7 @@ public class PlayerFX {         //Lynsey Fox
 
         TableView<Player> viewSearchedPlayer = createPlayerTableView();
         viewSearchedPlayer.setPrefHeight(150);
+        ObservableList searchedPlayerList = FXCollections.observableArrayList();
 
 
         Label title = new Label();
@@ -342,13 +343,28 @@ public class PlayerFX {         //Lynsey Fox
         Label gameBoxLabel = new Label("Game/s Played:");
         Label teamBoxLabel = new Label("Team:");
 
+        ObservableList<Game> gamesChoiceList = FXCollections.observableArrayList();
+        HashMap<String, Game> gameHashMap = new HashMap<>();
+        for (Game game: gamesDAO.getAllGames()) {
+            gameHashMap.put(game.getGameName(), game);
+            gamesChoiceList.add(game);
+        }
+        ListView<CheckBox> gamesChoice = new ListView<>();
+        gamesChoice.setMaxHeight(100);
+
+        for(Game game : gamesChoiceList) {
+            CheckBox checkBox = new CheckBox(game.getGameName());
+            gamesChoice.getItems().add(checkBox);
+        }
+
+/*
         ComboBox gameChoice = new ComboBox();
         HashMap<String, Game> gamesHashMap = new HashMap<>();
         for (Game game: gamesDAO.getAllGames()){
             gamesHashMap.put(String.valueOf(game.getGameName()),game);
             gameChoice.getItems().add(String.valueOf(game.getGameName()));
         }
-
+*/
         ComboBox teamChoice = new ComboBox();
         HashMap<String, Team> teamsHashMap = new HashMap<>();
         for (Team team: new TeamsDAO().getAllTeams()){
@@ -358,18 +374,29 @@ public class PlayerFX {         //Lynsey Fox
 
 
         HBox comboBoxes = new HBox(10);
-        comboBoxes.getChildren().addAll(gameBoxLabel, gameChoice, teamBoxLabel, teamChoice);
+        comboBoxes.getChildren().addAll(gameBoxLabel, gamesChoice, teamBoxLabel, teamChoice);
         comboBoxes.setAlignment(Pos.CENTER);
 
         Button search = new Button("Search");
         search.setDefaultButton(true);
         search.setOnAction(e -> {
-            if(gameChoice.getSelectionModel().getSelectedItem() == null){
-                List<Player> playersToGet = teamsHashMap.get(teamChoice.getSelectionModel().getSelectedItem()).getPlayers();
-                viewSearchedPlayer.getItems().add((Player) playersToGet);
+            if(gamesChoice.getSelectionModel().getSelectedItems() == null){
+                Team teamToSearch = teamsHashMap.get(teamChoice.getSelectionModel().getSelectedItem());
+                List<Player> playersFound = playerDAO.getPlayersByTeam(teamToSearch);
+                System.out.println("Found " + playersFound.size() + " players in team " + teamToSearch.getName());
+                searchedPlayerList.setAll(playersFound);
+                viewSearchedPlayer.setItems(searchedPlayerList);
             }else{
-                List <Player> playersToGet = gamesHashMap.get(gameChoice.getSelectionModel().getSelectedItem()).getPlayers();
-                viewSearchedPlayer.getItems().addAll(playersToGet);
+                List<Game> gamesToSearch = new ArrayList<>();
+                for(CheckBox checkBox: gamesChoice.getItems()){
+                    if(checkBox.isSelected()){
+                        gamesToSearch.add(gameHashMap.get(checkBox.getText()));
+                    }
+                }
+                List<Player> playersFound = playerDAO.getPlayersByGame(gamesToSearch);
+                searchedPlayerList.setAll(playersFound);
+                viewSearchedPlayer.setItems(searchedPlayerList);
+                System.out.println("Found " + playersFound.size() + " players in selected games: " + gamesToSearch.toString());
             }
 
         });
@@ -386,6 +413,10 @@ public class PlayerFX {         //Lynsey Fox
         layout.setAlignment(Pos.CENTER);
         VBox.setMargin(viewSearchedPlayer, new Insets(10));
 
+        AnchorPane.setLeftAnchor(layout, 5.0);
+        AnchorPane.setRightAnchor(layout, 5.0);
+        AnchorPane.setTopAnchor(layout, 5.0);
+        AnchorPane.setBottomAnchor(layout, 5.0);
 
         Scene scene = new Scene(layout);
         window.setScene(scene);
@@ -473,8 +504,13 @@ public class PlayerFX {         //Lynsey Fox
 
 
         VBox layout = new VBox(20);
-        layout.getChildren().addAll(logo,label, firstNameLabel, getNickName, save, cancel);
+        layout.getChildren().addAll(logo,label, firstNameLabel, getFirstName, nickNameLabel,getNickName, lastNameLabel, getLastName,save, cancel);
         layout.setAlignment(Pos.CENTER);
+
+        AnchorPane.setLeftAnchor(layout, 5.0);
+        AnchorPane.setRightAnchor(layout, 5.0);
+        AnchorPane.setTopAnchor(layout, 5.0);
+        AnchorPane.setBottomAnchor(layout, 5.0);
 
         Scene scene = new Scene(layout);
         window.setScene(scene);
@@ -486,23 +522,16 @@ public class PlayerFX {         //Lynsey Fox
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
 
-        ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
-        Circle logoClip = new Circle(80,80,70);
-        logo.setTranslateY(0);
-        logo.setClip(logoClip);
-        logo.setPreserveRatio(true);
-        logo.setFitHeight(160.0);
-
         Button closeButton = new Button("Close");
         closeButton.setOnAction(e -> window.close());
 
         Label label = new Label("Player: "+ playerToAdd.getFirstName() + " "+ playerToAdd.getNickName() + " " + playerToAdd.getLastName() +" has been added to the database");
         label.setWrapText(true);
         AnchorPane root = new AnchorPane();
-        root.setPrefSize(150,350);
+        root.setPrefSize(250,350);
 
         VBox layout = new VBox(20);
-        layout.getChildren().addAll(logo, label, closeButton);
+        layout.getChildren().addAll( label, closeButton);
         layout.setAlignment(Pos.CENTER);
         root.getChildren().add(layout);
 
@@ -574,13 +603,6 @@ public class PlayerFX {         //Lynsey Fox
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
 
-        ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
-        Circle logoClip = new Circle(80,80,70);
-        logo.setTranslateY(0);
-        logo.setClip(logoClip);
-        logo.setPreserveRatio(true);
-        logo.setFitHeight(160.0);
-
         Button closeButton = new Button("Close");
         closeButton.setOnAction(e -> window.close());
 
@@ -590,7 +612,7 @@ public class PlayerFX {         //Lynsey Fox
         root.setPrefSize(150,150);
 
         VBox layout = new VBox(20);
-        layout.getChildren().addAll(logo,label, closeButton);
+        layout.getChildren().addAll(label, closeButton);
         layout.setAlignment(Pos.CENTER);
         root.getChildren().add(layout);
 
