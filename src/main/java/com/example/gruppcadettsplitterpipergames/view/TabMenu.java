@@ -39,8 +39,9 @@ public class TabMenu{
         gamesTab.setClosable(false);
         Tab playerTab = new Tab("Player", new PlayerFX().getPlayerView());
         playerTab.setClosable(false);
+        Tab addressTab = new Tab("Address", new AddressFX(this.root).getAddressTab());
 
-        this.root.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab, playerMatchesTab, teamMatchesTab);
+        this.root.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab, playerMatchesTab, teamMatchesTab, addressTab);
         this.root.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
         Button logoutBtn = new Button("Logout");
