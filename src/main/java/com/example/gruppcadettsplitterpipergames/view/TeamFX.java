@@ -208,7 +208,7 @@ public class TeamFX {
 
 
             try (Connection connection = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/cadettsplitterspipergames", "root", "IOqw12");
+                    "jdbc:mysql://localhost:3306/cadettsplitterspipergames", "root", "MySQL574921!");
                  Statement statement = connection.createStatement();
                  ResultSet resultSet = statement.executeQuery("SELECT team_id, team_name FROM teams")) {
 

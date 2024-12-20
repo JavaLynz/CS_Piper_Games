@@ -22,7 +22,7 @@ public class Player {   //Lynsey Fox
     @Column(name = "player_nick_name", length = 20, nullable = false)
     private String nickName;
 
-    @ManyToOne (cascade = CascadeType.ALL)
+    @ManyToOne (cascade = CascadeType.PERSIST)
     @JoinColumn(name = "address_id")
     private Address address;
 
