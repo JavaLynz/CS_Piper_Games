@@ -71,23 +71,8 @@ public class TeamFX {
         playerListLabel.setStyle("-fx-font-weight: bold");
         playerListBox.setAlignment(Pos.TOP_CENTER);
 
-        ListView<Player> allplayers = new ListView();
-        allplayers.getItems().addAll(playerDAO.getAllPlayers());
-
         playerListBox.getChildren().addAll(playerListLabel,playersInTeamList);
-        tableBox.getChildren().addAll(teamTable, playerListBox, allplayers );
-
-        allplayers.setCellFactory(param -> new ListCell<Player>() {
-            @Override
-            protected void updateItem(Player player, boolean empty) {
-                super.updateItem(player, empty);
-                if (empty || player == null) {
-                    setText(null);
-                } else {
-                    setText(player.getFirstName() + " " + player.getLastName());
-                }
-            }
-        });
+        tableBox.getChildren().addAll(teamTable, playerListBox);
 
         loadTeamsFromDatabase(teamTable);
 
@@ -116,21 +101,6 @@ public class TeamFX {
                 }
             }
         });
-
-//        playersInTeamList.setCellFactory(param -> new ListCell<Player>() {
-//            @Override
-//            protected void updateItem(Player player, boolean empty) {
-//                super.updateItem(player, empty);
-//                if (empty || player == null) {
-//                    setText(null);
-//                } else {
-//                    setText(player.getFirstName() + " " + player.getLastName());
-//                }
-//            }
-//        });
-
-
-
 
 
         // CREATE

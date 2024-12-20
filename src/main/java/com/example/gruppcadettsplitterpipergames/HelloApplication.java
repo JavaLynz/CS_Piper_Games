@@ -98,8 +98,6 @@ public class HelloApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
-
-        System.out.println(playerDAO.getAllPlayers().toString());
     }
 
     public static void main(String[] args) {
