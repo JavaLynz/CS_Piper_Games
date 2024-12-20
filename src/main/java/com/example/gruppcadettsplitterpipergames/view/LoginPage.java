@@ -59,7 +59,6 @@ public class LoginPage {
             try {
                 Staff chosenStaff = staffHashMap.get(loginDropdown.getValue());
                 System.out.println("StaffID: " + chosenStaff.getStaffId()+ " logged into system.");
-
                 HashMap<Integer, String> currentUser = new HashMap<>();
                 currentUser.put(chosenStaff.getStaffId(), loginDropdown.getValue());
                 tabMenu.setCurrentUser(currentUser);

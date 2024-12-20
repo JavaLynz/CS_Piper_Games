@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.HashMap;
+import java.io.FileNotFoundException;
 
 
 public class TabMenu{
@@ -22,13 +23,19 @@ public class TabMenu{
 
 
 
-    public Scene tabMenuScene(Stage stage){
+    public Scene tabMenuScene(Stage stage) throws FileNotFoundException{
         stage.setResizable(true);
         staffFX.setCurrentUser(this.currentUser);
 
         Tab staffTab = new Tab("Staff", staffFX.getStaffTab());
+        Tab playerTab;
+        Tab teamTab = new Tab("Team");
+        Tab teamMatchesTab = new Tab("TeamMatches");
+        Tab playerMatchesTab = new Tab("PlayerMatches");
+        Tab gamesTab = new Tab("Games", new GameFX().getGamesView());
+        playerTab = new Tab("Player", new PlayerFX().getPlayerView());
 
-        this.root.getTabs().addAll(staffTab);
+        this.root.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab, playerMatchesTab, teamMatchesTab);
         this.root.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
         Button logoutBtn = new Button("Logout");

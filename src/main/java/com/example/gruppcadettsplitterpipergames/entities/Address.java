@@ -6,7 +6,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "addresses")
-public class Address {
+public class Address {          //Lynsey Fox
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "address_id")
