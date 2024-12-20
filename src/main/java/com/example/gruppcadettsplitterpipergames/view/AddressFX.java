@@ -1,11 +1,7 @@
 package com.example.gruppcadettsplitterpipergames.view;
 
 import com.example.gruppcadettsplitterpipergames.DAO.AddressDAO;
-import com.example.gruppcadettsplitterpipergames.DAO.PlayerDAO;
-import com.example.gruppcadettsplitterpipergames.DAO.StaffDAO;
 import com.example.gruppcadettsplitterpipergames.entities.Address;
-import com.example.gruppcadettsplitterpipergames.entities.Player;
-import com.example.gruppcadettsplitterpipergames.entities.Staff;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class AddressFX {
@@ -46,7 +43,6 @@ public class AddressFX {
     }
 
     public void createAddressTab() throws FileNotFoundException {
-        checkInhabitants();
 
         this.parent.setMinSize(800,400);
         this.addressTab = new AnchorPane();
@@ -63,7 +59,7 @@ public class AddressFX {
         logo.setClip(logoClip);
         logo.setPreserveRatio(true);
         logo.setFitHeight(100);
-        Text title = new Text("Staff");
+        Text title = new Text("Addresses");
 
         BorderPane header = new BorderPane();
         header.setRight(logo);
@@ -74,7 +70,7 @@ public class AddressFX {
         HBox btnContainer = new HBox(5);
         btnContainer.setAlignment(Pos.CENTER);
 
-        Button addBtn = new Button("Add new staff");
+        Button addBtn = new Button("Add new address");
         addBtn.setOnMouseClicked(mouseEvent -> {
             createPopup(1, null);
         });
@@ -210,7 +206,7 @@ public class AddressFX {
         root.setPrefSize(400,250);
         VBox container = new VBox(10);
         container.setPadding(new Insets(5));
-        stage.setTitle("Add new staff member");
+        stage.setTitle("Add new address");
 
         HBox addressRow1 = new HBox(5);
         TextField streetAddress = new TextField();
@@ -274,7 +270,7 @@ public class AddressFX {
         root.setPrefHeight(250);
         VBox container = new VBox(10);
         container.setPadding(new Insets(5));
-        stage.setTitle("Search for staff members");
+        stage.setTitle("Search addresses");
 
         HashMap<String, Address> addressHashMap = new HashMap<>();
         List<Address> addressSelection = new ArrayList<>();
@@ -418,30 +414,6 @@ public class AddressFX {
         container.getChildren().addAll(deleteBtn);
         root.setPrefHeight(100);
         return container;
-    }
-
-    public void checkInhabitants(){
-        StaffDAO staffDAO = new StaffDAO();
-        PlayerDAO playerDAO = new PlayerDAO();
-
-        for (Staff staff : staffDAO.getAllStaff()){
-            Address tempAddress = staffDAO.getStaffById(staff.getStaffId()).getAddress();
-            if (!tempAddress.getStaff().contains(staff)){
-                tempAddress.getStaff().add(staff);
-                addressDAO.updateAddress(tempAddress);
-            }
-        }
-        for (Player player : playerDAO.getAllPlayers()){
-            Address tempAddress = playerDAO.getPlayerById(player.getPlayerId()).getAddress();
-            if (!tempAddress.getPlayers().contains(player)){
-                tempAddress.getPlayers().add(player);
-                addressDAO.updateAddress(tempAddress);
-            }
-        }
-
-        for (Staff staff: addressDAO.getAddressById(8).getStaff() ){
-            System.out.println(staff.getFirstName());
-        }
     }
 
 
