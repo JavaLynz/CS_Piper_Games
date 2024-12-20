@@ -29,7 +29,7 @@ public class TabMenu{
 
         Tab staffTab = new Tab("Staff", staffFX.getStaffTab());
         Tab playerTab;
-        Tab teamTab = new Tab("Team");
+        Tab teamTab = new Tab("Team", new TeamFX().getView());
         Tab teamMatchesTab = new Tab("TeamMatches");
         Tab playerMatchesTab = new Tab("PlayerMatches");
         Tab gamesTab = new Tab("Games", new GameFX().getGamesView());
