@@ -119,7 +119,7 @@ public class StaffFX {
         addressPostcodeCol.setPrefWidth(70);
         TableColumn<Staff, String> addressCountryCol = new TableColumn<>("Country");
         addressCountryCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getCountry()));
-        addressCityCol.setPrefWidth(50);
+        addressCountryCol.setPrefWidth(50);
         TableColumn<Staff, String> emailCol = new TableColumn<>("e-mail");
         emailCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
         emailCol.setPrefWidth(150);
@@ -180,8 +180,6 @@ public class StaffFX {
 
     public void createPopup(int index, Staff staff){
         Stage stage = new Stage();
-        Button closeBtn = new Button("Close");
-        closeBtn.setOnMouseClicked(mouseEvent -> stage.close());
 
         AnchorPane root = new AnchorPane();
         root.setPrefSize(300,300);
@@ -209,6 +207,8 @@ public class StaffFX {
         AnchorPane.setLeftAnchor(content,5.0);
         AnchorPane.setRightAnchor(content,5.0);
 
+        Button closeBtn = new Button("Close");
+        closeBtn.setOnMouseClicked(mouseEvent -> stage.close());
 
         content.setStyle("-fx-background-color:silver; -fx-background-radius:5");
         content.getChildren().add(closeBtn);
