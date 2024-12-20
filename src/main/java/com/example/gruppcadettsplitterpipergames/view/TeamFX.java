@@ -100,8 +100,12 @@ public class TeamFX {
 
         Label emptyPlayerListLabel = new Label("No players to view");
         playersInTeamList.setPlaceholder(emptyPlayerListLabel);
-        playersInTeamList.setMaxHeight(250);
-        playersInTeamList.setMaxWidth(150);
+        playersInTeamList.setPrefWidth(150);
+        playersInTeamList.setPrefHeight(300);
+
+
+        //playersInTeamList.setMaxHeight(250);
+        // playersInTeamList.setMaxWidth(200);
         playersInTeamList.setStyle("-fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 2;");
         teamTable.setStyle(" -fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 2;");
 
@@ -112,10 +116,9 @@ public class TeamFX {
 
 
 
-        playerListBox.getChildren().addAll(playerListLabel,playersInTeamList);
+        playerListBox.getChildren().addAll(playersInTeamList);
         tableBox.getChildren().addAll(teamTable, playerListBox);
         teamTable.setPrefHeight(300);
-        playersInTeamList.setPrefHeight(teamTable.getPrefHeight());
 
         loadTeamsFromDatabase(teamTable);
 
@@ -200,7 +203,9 @@ public class TeamFX {
 
             HBox buttonBox = new HBox(10, buttonAdd, buttonCancel);
             buttonBox.setAlignment(Pos.CENTER_RIGHT);
-            gridPane.add(buttonBox, 1, 2);
+//            gridPane.add(buttonBox, 0, 2);
+            gridPane.add(buttonAdd, 0, 2);
+            gridPane.add(buttonCancel, 2, 2);
 
             buttonAdd.setOnAction(e -> {
                 String teamName = teamNameField.getText();
@@ -236,7 +241,7 @@ public class TeamFX {
             ObservableList<Team> teamByGameList = FXCollections.observableArrayList();
             Dialog<Boolean> dialog = new Dialog<>();
             dialog.setTitle("Filter by game");
-            dialog.setHeaderText("Filter teams by games played");
+            dialog.setHeaderText("Select games you want to list");
 
             Button buttonFilterByGame = new Button("Filter by selected games");
             Button buttonCloseFilterByGame = new Button("Close");
@@ -245,7 +250,7 @@ public class TeamFX {
             gridPane.setHgap(20);
             gridPane.setVgap(10);
             gridPane.add(buttonFilterByGame, 0, 4);
-            gridPane.add(buttonCloseFilterByGame, 0, 5);
+            gridPane.add(buttonCloseFilterByGame, 1, 4);
 
             dialog.getDialogPane().setContent(gridPane);
 
@@ -346,8 +351,8 @@ public class TeamFX {
             Button btnCancelDeleteTeam = new Button("Close");
 
             dialog.getDialogPane().setContent(gridPane);
-            gridPane.add(btnDeleteTeam, 1, 1);
-            gridPane.add(btnCancelDeleteTeam, 2, 1);
+            gridPane.add(btnDeleteTeam, 1, 3);
+            gridPane.add(btnCancelDeleteTeam, 2, 3);
 
             btnCancelDeleteTeam.setOnAction(e -> {
                 System.out.println("Cancel");
@@ -452,7 +457,7 @@ public class TeamFX {
             Button btnCancelUpdateTeam = new Button("Close");
             dialog.getDialogPane().setContent(gridPane);
             gridPane.add(btnUpdateTeam, 1, 6);
-            gridPane.add(btnCancelUpdateTeam, 2, 8);
+            gridPane.add(btnCancelUpdateTeam, 2, 6);
             gridPane.add(btnManagePlayers, 1, 3);
 
             btnManagePlayers.setDisable(true);
@@ -580,7 +585,7 @@ public class TeamFX {
     }
 
 
-    // Skapa tabell
+    // Skapa lagtabell
     private TableView<Team> createTableView() {
         TableView<Team> teamTable = new TableView<>();
 
@@ -590,7 +595,7 @@ public class TeamFX {
         idCol.setPrefWidth(80);
 
 
-        // Lag-kolumn
+        // Lagnamn-kolumn
         TableColumn<Team, String> nameCol = new TableColumn<>("Team Name");
         nameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         nameCol.setPrefWidth(200);
