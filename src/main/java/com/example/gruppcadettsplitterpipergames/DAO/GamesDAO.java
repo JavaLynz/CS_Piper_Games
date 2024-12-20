@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GamesDAO {
+public class GamesDAO {         //Lynsey Fox
 
     //CRUD operations
 
@@ -95,7 +95,7 @@ public class GamesDAO {
             transaction = entityManager.getTransaction();
             transaction.begin();
             if(!entityManager.contains(gameToDelete)) {
-                entityManager.merge(gameToDelete);
+                gameToDelete = entityManager.merge(gameToDelete);
             }
             entityManager.remove(gameToDelete);
             transaction.commit();

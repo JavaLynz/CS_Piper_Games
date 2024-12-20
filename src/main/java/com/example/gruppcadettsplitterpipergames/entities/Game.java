@@ -58,9 +58,9 @@ public class Game {     //Lynsey Fox
         this.teams = teams;
     }
 
-    @Override
+@Override
     public String toString() {
         return "ID: " + gameId + ", " + gameName;
-    }
+}
 
 }
