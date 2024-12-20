@@ -45,7 +45,6 @@ public class HelloApplication extends Application {
                 throw new RuntimeException(e);
             }
         });
-
         Scene scene = new Scene(root, 320, 240);
 
         root.setStyle("-fx-background-color: silver");
