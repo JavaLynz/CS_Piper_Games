@@ -1,9 +1,6 @@
 package com.example.gruppcadettsplitterpipergames;
 
-import com.example.gruppcadettsplitterpipergames.DAO.AddressDAO;
-import com.example.gruppcadettsplitterpipergames.DAO.GamesDAO;
-import com.example.gruppcadettsplitterpipergames.DAO.PlayerDAO;
-import com.example.gruppcadettsplitterpipergames.DAO.TeamsDAO;
+import com.example.gruppcadettsplitterpipergames.DAO.*;
 import com.example.gruppcadettsplitterpipergames.entities.Player;
 import com.example.gruppcadettsplitterpipergames.view.LoginPage;
 import com.example.gruppcadettsplitterpipergames.view.QuitConfirmBox;
@@ -26,12 +23,19 @@ public class HelloApplication extends Application {
 
      //   Logger.getLogger("org.hibernate").setLevel(Level.OFF);
 
-
+        AnchorPane root = new AnchorPane();
         LoginPage login = new LoginPage();
 
+        ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
+        Circle logoClip = new Circle(80,80,70);
+        logo.setTranslateX(80);
+        logo.setClip(logoClip);
+        logo.setPreserveRatio(true);
+        logo.setFitHeight(160.0);
+
         Button startAppBtn = new Button("Start Application");
-        AnchorPane.setTopAnchor(startAppBtn,100.0);
-        AnchorPane.setBottomAnchor(startAppBtn,100.0);
+        AnchorPane.setTopAnchor(startAppBtn,160.0);
+        AnchorPane.setBottomAnchor(startAppBtn,40.0);
         AnchorPane.setRightAnchor(startAppBtn,100.0);
         AnchorPane.setLeftAnchor(startAppBtn,100.0);
         startAppBtn.setOnMouseClicked(mouseEvent -> {
@@ -42,10 +46,8 @@ public class HelloApplication extends Application {
             }
         });
 
-
-        AnchorPane root = new AnchorPane();
         Scene scene = new Scene(root, 320, 240);
-        root.getChildren().addAll(startAppBtn);
+
         root.setStyle("-fx-background-color: silver");
         stage.setTitle("Welcome To Piper Games!");
 
@@ -54,6 +56,9 @@ public class HelloApplication extends Application {
             new QuitConfirmBox().display();
 
         });
+        root.getChildren().addAll(logo, startAppBtn);
+        stage.setResizable(false);
+
         stage.setScene(scene);
         stage.show();
     }

@@ -19,7 +19,8 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 
 public class LoginPage {
-    StaffDAO staffDAO = new StaffDAO();
+    private StaffDAO staffDAO = new StaffDAO();
+    private TabMenu tabMenu = new TabMenu();
 
 
     public Scene getLoginScene(Stage stage) throws FileNotFoundException {
@@ -49,9 +50,8 @@ public class LoginPage {
         loginDropdown.setMinWidth(300);
         HashMap<String, Staff> staffHashMap = new HashMap<>();
         for (Staff staff: staffDAO.getAllStaff()){
-            String fullName = staff.getFirstName() + " \""+staff.getNickName()+"\" "+staff.getLastName();
-            staffHashMap.put(fullName,staff);
-            loginDropdown.getItems().add(fullName);
+            staffHashMap.put(staff.getFullName(),staff);
+            loginDropdown.getItems().add(staff.getFullName());
         }
 
         Button loginBtn = new Button("Login");
@@ -59,11 +59,14 @@ public class LoginPage {
             try {
                 Staff chosenStaff = staffHashMap.get(loginDropdown.getValue());
                 System.out.println("StaffID: " + chosenStaff.getStaffId()+ " logged into system.");
-                //TODO: Add link to next page in application.
-                stage.setScene(new TabMenu().getTabMenuScene(stage));
+                HashMap<Integer, String> currentUser = new HashMap<>();
+                currentUser.put(chosenStaff.getStaffId(), loginDropdown.getValue());
+                tabMenu.setCurrentUser(currentUser);
+                stage.setScene(tabMenu.tabMenuScene(stage));
             } catch (Exception e) {
                 loginDropdown.setStyle("-fx-background-color: indianred");
                 System.out.println("Invalid login attempt.");
+                System.out.println(e.getMessage());
             }
         });
 
