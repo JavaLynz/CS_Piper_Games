@@ -5,6 +5,7 @@
 package com.example.gruppcadettsplitterpipergames.entities;
 
 import jakarta.persistence.*;
+import org.hibernate.engine.internal.Cascade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,13 +38,27 @@ public class Team {
     @JoinTable(name = "team_team_matches", joinColumns = @JoinColumn(name = "team_id"), inverseJoinColumns = @JoinColumn(name = "team_match_id"))
     private List<TeamMatches> teamMatches = new ArrayList<>();
 
-
+    // Konstruktorer
     public Team() {}
 
 
     public Team(String name, Game game) {
         this.name = name;
         this.game = game;
+    }
+
+    public void addPlayer(Player player) {
+        if (!players.contains(player)) {
+            players.add(player);
+            player.setTeam(this);
+        }
+    }
+
+    public void removePlayer(Player player) {
+        if (players.contains(player)) {
+            players.remove(player);
+            player.setTeam(null);
+        }
     }
 
     public int getId() {
