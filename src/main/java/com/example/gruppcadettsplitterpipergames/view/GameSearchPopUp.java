@@ -102,7 +102,7 @@ public class GameSearchPopUp { //Lynsey Fox
         VBox layout = new VBox(20);
         layout.getChildren().addAll(logo,title,label ,comboBoxes, viewSearchedGame,buttonHolder);
         layout.setAlignment(Pos.CENTER);
-        VBox.setMargin(viewSearchedGame, new Insets(10));
+        VBox.setMargin(buttonHolder, new Insets(10));
 
 
         Scene scene = new Scene(layout);

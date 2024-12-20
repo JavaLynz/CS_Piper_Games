@@ -69,7 +69,7 @@ public class PlayerFX {         //Lynsey Fox
 
         Button searchGames = new Button("Search");
         searchGames.setOnAction(e -> {
-            //search game pop up box
+
             try {
                 playerSearchPopUp();
 
@@ -84,7 +84,8 @@ public class PlayerFX {         //Lynsey Fox
         addGame.setOnAction(e1 -> {
             try {
                 if (addPlayerBox().get()) {
-                    loadPlayersFromDB(playerTableView);
+                    playerTableView.refresh();
+
                 }
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
@@ -128,6 +129,38 @@ public class PlayerFX {         //Lynsey Fox
         TableColumn<Player, String> lastNameCol = new TableColumn<>("Player Last Name");
         lastNameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLastName()));
         lastNameCol.setPrefWidth(200);
+
+        TableColumn<Player,String> gameCol = new TableColumn<>("Game");
+        gameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGame().getGameName()));
+        gameCol.setPrefWidth(200);
+
+        TableColumn<Player, String> teamCol = new TableColumn<>("Team");
+        teamCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTeam().getName()));
+        teamCol.setPrefWidth(200);
+
+        TableColumn<Player, String> streetAddressCol = new TableColumn<>("Street Address");
+        streetAddressCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getAddress()));
+        streetAddressCol.setPrefWidth(200);
+
+        TableColumn<Player, String> districtCol = new TableColumn<>("District");
+        districtCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getDistrict()));
+        districtCol.setPrefWidth(200);
+
+        TableColumn<Player, String> cityCol = new TableColumn<>("City");
+        cityCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getCity()));
+        cityCol.setPrefWidth(200);
+
+        TableColumn<Player,String> postcodeCol = new TableColumn<>("Postcode");
+        postcodeCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getPostcode()));
+        postcodeCol.setPrefWidth(200);
+
+        TableColumn<Player, String> countryCol = new TableColumn<>("Country");
+        countryCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getCountry()));
+        countryCol.setPrefWidth(200);
+
+        TableColumn<Player,String> emailCol = new TableColumn<>("Email");
+        emailCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
+        emailCol.setPrefWidth(200);
 
         TableColumn<Player,Void> updateCol =  new TableColumn<>("Update");
         updateCol.setCellFactory(col -> new TableCell<Player,Void>(){
@@ -188,7 +221,7 @@ public class PlayerFX {         //Lynsey Fox
             }
         });
 
-        playerTableView.getColumns().addAll(idCol, lastNameCol, updateCol, deleteCol);
+        playerTableView.getColumns().addAll(idCol, firstNameCol, NicknameCol, lastNameCol, gameCol, teamCol, streetAddressCol, districtCol, cityCol, postcodeCol, countryCol, emailCol, updateCol, deleteCol);
         return playerTableView;
 
     }
@@ -357,14 +390,6 @@ public class PlayerFX {         //Lynsey Fox
             gamesChoice.getItems().add(checkBox);
         }
 
-/*
-        ComboBox gameChoice = new ComboBox();
-        HashMap<String, Game> gamesHashMap = new HashMap<>();
-        for (Game game: gamesDAO.getAllGames()){
-            gamesHashMap.put(String.valueOf(game.getGameName()),game);
-            gameChoice.getItems().add(String.valueOf(game.getGameName()));
-        }
-*/
         ComboBox teamChoice = new ComboBox();
         HashMap<String, Team> teamsHashMap = new HashMap<>();
         for (Team team: new TeamsDAO().getAllTeams()){
@@ -377,10 +402,13 @@ public class PlayerFX {         //Lynsey Fox
         comboBoxes.getChildren().addAll(gameBoxLabel, gamesChoice, teamBoxLabel, teamChoice);
         comboBoxes.setAlignment(Pos.CENTER);
 
+
+        Button reset = new Button("Reset");
+        reset.setOnAction(e-> viewSearchedPlayer.getItems().clear());
         Button search = new Button("Search");
         search.setDefaultButton(true);
         search.setOnAction(e -> {
-            if(gamesChoice.getSelectionModel().getSelectedItems() == null){
+            if(gamesChoice.getSelectionModel().getSelectedItems().isEmpty()){
                 Team teamToSearch = teamsHashMap.get(teamChoice.getSelectionModel().getSelectedItem());
                 List<Player> playersFound = playerDAO.getPlayersByTeam(teamToSearch);
                 System.out.println("Found " + playersFound.size() + " players in team " + teamToSearch.getName());
@@ -406,7 +434,7 @@ public class PlayerFX {         //Lynsey Fox
 
         HBox buttonHolder = new HBox(10);
         buttonHolder.setAlignment(Pos.CENTER);
-        buttonHolder.getChildren().addAll(search, cancel);
+        buttonHolder.getChildren().addAll(search, reset,cancel);
 
         VBox layout = new VBox(20);
         layout.getChildren().addAll(logo,title,label ,comboBoxes, viewSearchedPlayer,buttonHolder);
@@ -455,6 +483,22 @@ public class PlayerFX {         //Lynsey Fox
         TextField getLastName = new TextField();
         getLastName.setMaxWidth(100);
 
+        Label gameLabel = new Label("Select Game");
+        ComboBox addPlayerGame = new ComboBox();
+        HashMap<String, Game> gameHashMap = new HashMap<>();
+        for(Game game : gamesDAO.getAllGames()){
+            gameHashMap.put(game.getGameName(), game);
+            addPlayerGame.getItems().add(game.getGameName());
+        }
+
+        Label teamLabel = new Label("Optional: Select Team");
+        ComboBox addPlayerTeam = new ComboBox();
+        HashMap<String, Team> teamHashMap = new HashMap<>();
+        for(Team team : new TeamsDAO().getAllTeams()){
+            teamHashMap.put(team.getName(), team);
+            addPlayerTeam.getItems().add(team.getName());
+        }
+
         Label errorLabel = new Label();
         errorLabel.setTextFill(Color.RED);
 
@@ -465,11 +509,16 @@ public class PlayerFX {         //Lynsey Fox
             String givenNickName = getNickName.getText().trim();
             String givenFirstName = getFirstName.getText().trim();
             String givenLastName = getLastName.getText().trim();
+            Game selectedGame = gameHashMap.get(addPlayerGame.getSelectionModel().getSelectedItem());
+            Team selectedTeam = teamHashMap.get(addPlayerTeam.getSelectionModel().getSelectedItem());
             boolean valid = true;
+            System.out.println("new player: " + givenFirstName + " " + givenLastName + " " + selectedGame.getGameName());
 
             getFirstName.setStyle("-fx-background-color: white");
             getNickName.setStyle("-fx-background-color: white");
             getLastName.setStyle("-fx-background-color: white");
+            addPlayerGame.setStyle("-fx-background-color: white");
+            addPlayerTeam.setStyle("-fx-background-color: white");
             errorLabel.setText("");
 
             if(givenFirstName.isEmpty()) {
@@ -487,9 +536,19 @@ public class PlayerFX {         //Lynsey Fox
                 valid = false;
             }
 
+            if(selectedGame == null) {
+                addPlayerGame.setStyle("-fx-background-color: red");
+                valid = false;
+            }
+
             if(valid){
-                Player playerToAdd = new Player(givenFirstName,givenNickName,givenLastName);
+                Player playerToAdd = new Player(givenFirstName,givenNickName,givenLastName, selectedGame);
                 playerDAO.savePlayer(playerToAdd);
+                if(selectedTeam != null){
+                    playerToAdd.setTeam(selectedTeam);
+                }
+                playerList.add(playerToAdd);
+                loadPlayersFromDB(createPlayerTableView());
                 window.close();
                 result.set(true);
             }
@@ -504,7 +563,7 @@ public class PlayerFX {         //Lynsey Fox
 
 
         VBox layout = new VBox(20);
-        layout.getChildren().addAll(logo,label, firstNameLabel, getFirstName, nickNameLabel,getNickName, lastNameLabel, getLastName,save, cancel);
+        layout.getChildren().addAll(logo,label, firstNameLabel, getFirstName, nickNameLabel,getNickName, lastNameLabel, getLastName,gameLabel, addPlayerGame, teamLabel, addPlayerTeam, save, cancel);
         layout.setAlignment(Pos.CENTER);
 
         AnchorPane.setLeftAnchor(layout, 5.0);
@@ -518,7 +577,7 @@ public class PlayerFX {         //Lynsey Fox
         return result;
     }
 
-    private void confirmPopup(Player playerToAdd) throws FileNotFoundException {
+    private void confirmPopup(Player playerToAdd){
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
 
@@ -571,15 +630,14 @@ public class PlayerFX {         //Lynsey Fox
         Button delete = new Button("Delete");
         Button cancel = new Button("Cancel");
         delete.setOnAction(e -> {
-            System.out.println("number of players: " + playerDAO.getAllPlayers().size());
-            System.out.println("Player to be deleted: " + playerToDelete.getFirstName() + " " + playerToDelete.getLastName());
             playerDAO.deletePlayer(playerToDelete);
             try {
                 confirmDeletePopup(playerToDelete);
             } catch (FileNotFoundException ex) {
                 throw new RuntimeException(ex);
             }
-            System.out.println("number of players: " + playerDAO.getAllPlayers().size());
+            playerList.remove(playerToDelete);
+            loadPlayersFromDB(createPlayerTableView());
             window.close();
         });
         cancel.setOnAction(e -> {

@@ -80,22 +80,15 @@ public class GameUpdateBox {
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
 
-         ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
-         Circle logoClip = new Circle(80,80,70);
-         logo.setTranslateY(0);
-         logo.setClip(logoClip);
-         logo.setPreserveRatio(true);
-         logo.setFitHeight(160.0);
-
         Button closeButton = new Button("Close");
         closeButton.setOnAction(e -> window.close());
 
         Label label = new Label("Game: "+ gameToUpdate.getGameName() + " has been updated");
         AnchorPane root = new AnchorPane();
-        root.setPrefSize(150,350);
+        root.setPrefSize(250,250);
 
         VBox layout = new VBox(20);
-        layout.getChildren().addAll(logo,label, closeButton);
+        layout.getChildren().addAll(label, closeButton);
         layout.setAlignment(Pos.CENTER);
         root.getChildren().add(layout);
 

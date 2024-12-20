@@ -21,7 +21,7 @@ public class Game {     //Lynsey Fox
     @OneToMany(orphanRemoval = true,cascade = CascadeType.ALL, mappedBy = "playerId", fetch = FetchType.EAGER)
     private List<Player> players = new ArrayList<>();
 
-    @OneToMany(orphanRemoval = true,cascade = CascadeType.ALL, mappedBy = "game")
+    @OneToMany(orphanRemoval = true,cascade = CascadeType.ALL, mappedBy = "game", fetch = FetchType.EAGER)
     private List<Team> teams = new ArrayList<>();
 
     public Game(String gameName) {

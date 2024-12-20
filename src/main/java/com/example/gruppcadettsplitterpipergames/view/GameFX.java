@@ -112,7 +112,18 @@ public class GameFX {           //Lynsey Fox
 
         TableColumn<Game, String> nameCol = new TableColumn<>("Game Name");
         nameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGameName()));
-        nameCol.setPrefWidth(200);
+        nameCol.setPrefWidth(150);
+
+        TableColumn<Game, String> teamCol = new TableColumn<>("No. of Teams");
+        teamCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getTeams().size())));
+        teamCol.setPrefWidth(75);
+
+        TableColumn<Game,String> playersCol = new TableColumn<>("No. of Players");
+        playersCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getPlayers().size())));
+        playersCol.setPrefWidth(75);
+
+
+
 
         TableColumn<Game,Void> updateCol =  new TableColumn<>("Update");
         updateCol.setCellFactory(col -> new TableCell<Game,Void>(){
@@ -173,7 +184,7 @@ public class GameFX {           //Lynsey Fox
             }
         });
 
-        gamesTableView.getColumns().addAll(idCol, nameCol, updateCol, deleteCol);
+        gamesTableView.getColumns().addAll(idCol, nameCol, playersCol, teamCol, updateCol, deleteCol);
         return gamesTableView;
 
     }

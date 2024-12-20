@@ -2,6 +2,9 @@ package com.example.gruppcadettsplitterpipergames.entities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "players")
 
@@ -22,6 +25,9 @@ public class Player {   //Lynsey Fox
     @Column(name = "player_nick_name", length = 20, nullable = false)
     private String nickName;
 
+    @Column(name = "email", length = 20, nullable = true)
+    private String email;
+
     @ManyToOne (cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private Address address;
@@ -29,10 +35,10 @@ public class Player {   //Lynsey Fox
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
-    /*
-        @OneToMany (mappedBy ="playerMatchId")
-        private List<PlayerMatch> playerMatches = new ArrayList<>();
-    */
+
+    @OneToMany (mappedBy ="matchId")
+    private List<PlayerMatches> playerMatches = new ArrayList<>();
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "game_id")
     private Game game;
@@ -41,10 +47,11 @@ public class Player {   //Lynsey Fox
     public Player() {
     }
 
-    public Player(String firstName, String lastName, String nickName) {
+    public Player(String firstName, String nickName, String lastName, Game game) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.nickName = nickName;
+        this.nickName = "'"+nickName+"'";
+        this.game = game;
 
     }
 
@@ -96,15 +103,15 @@ public class Player {   //Lynsey Fox
     public void setTeam(Team team) {
         this.team = team;
     }
-    /*
-        public int getPmatches() {
-            return pmatches;
-        }
 
-        public void setPmatches(int pmatch) {
-            this.pmatches = pmatch;
-        }
-    */
+    public List<PlayerMatches> getPmatches() {
+         return playerMatches;
+    }
+
+    public void setPmatches(int pmatch) {
+        this.playerMatches = playerMatches;
+    }
+
     public Game getGame() {
         return game;
     }
@@ -113,9 +120,18 @@ public class Player {   //Lynsey Fox
         this.game = game;
     }
 
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
 @Override
     public String toString() {
-        return "\r\n" + firstName + " "+ lastName;
+        return "\r\n" + firstName + " '"+ nickName + "' " + lastName;
 }
 
 }
