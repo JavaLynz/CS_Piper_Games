@@ -2,13 +2,12 @@ package com.example.gruppcadettsplitterpipergames.view;
 
 import com.example.gruppcadettsplitterpipergames.DAO.GamesDAO;
 import com.example.gruppcadettsplitterpipergames.entities.Game;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -29,20 +28,13 @@ public class GameSearchPopUp { //Lynsey Fox
     public GameSearchPopUp() throws FileNotFoundException {
     }
 
-    public void display(GamesDAO gamesDAO) throws FileNotFoundException {
+    public void display(GamesDAO gamesDAO) {
         Stage window = new Stage();
 
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Game Search");
         window.setMinWidth(400);
         window.setMinHeight(500);
-
-        ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
-        Circle logoClip = new Circle(80,80,70);
-        logo.setTranslateY(0);
-        logo.setClip(logoClip);
-        logo.setPreserveRatio(true);
-        logo.setFitHeight(160.0);
 
         TableView<Game> viewSearchedGame = gameFX.createGamesTableView();
         viewSearchedGame.setPrefHeight(150);
@@ -100,7 +92,7 @@ public class GameSearchPopUp { //Lynsey Fox
         buttonHolder.getChildren().addAll(search, cancel);
 
         VBox layout = new VBox(20);
-        layout.getChildren().addAll(logo,title,label ,comboBoxes, viewSearchedGame,buttonHolder);
+        layout.getChildren().addAll(title,label ,comboBoxes, viewSearchedGame,buttonHolder);
         layout.setAlignment(Pos.CENTER);
         VBox.setMargin(buttonHolder, new Insets(10));
 
@@ -109,4 +101,5 @@ public class GameSearchPopUp { //Lynsey Fox
         window.setScene(scene);
         window.showAndWait();
     }
+
 }

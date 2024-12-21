@@ -28,18 +28,18 @@ public class Player {   //Lynsey Fox
     @Column(name = "email", length = 20, nullable = true)
     private String email;
 
-    @ManyToOne (cascade = CascadeType.ALL)
+    @ManyToOne (cascade = CascadeType.PERSIST)
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @ManyToOne
+    @ManyToOne (cascade = CascadeType.PERSIST)
     @JoinColumn(name = "team_id")
     private Team team;
 
     @OneToMany (mappedBy ="matchId")
     private List<PlayerMatches> playerMatches = new ArrayList<>();
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "game_id")
     private Game game;
 
@@ -47,11 +47,10 @@ public class Player {   //Lynsey Fox
     public Player() {
     }
 
-    public Player(String firstName, String nickName, String lastName, Game game) {
+    public Player(String firstName, String nickName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.nickName = "'"+nickName+"'";
-        this.game = game;
 
     }
 

@@ -88,7 +88,7 @@ public class GamesDAO {         //Lynsey Fox
 
     //DELETE
 
-    public void deleteGame(Game gameToDelete) {
+    public boolean deleteGame(Game gameToDelete) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction transaction = null;
         try{
@@ -99,11 +99,13 @@ public class GamesDAO {         //Lynsey Fox
             }
             entityManager.remove(gameToDelete);
             transaction.commit();
+            return true;
         }catch(Exception e){
             System.out.println(e.getMessage());
             if(transaction != null && entityManager != null && entityManager.getTransaction().isActive()){
                 transaction.rollback();
             }
+            return false;
         }finally{
             entityManager.close();
         }

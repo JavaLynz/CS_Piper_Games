@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
@@ -39,12 +40,13 @@ public class GameFX {           //Lynsey Fox
         HBox buttonHolder = new HBox(30);
         buttonHolder.setAlignment(Pos.CENTER);
 
+        // logo code from Benjamin
         ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
-        Circle logoClip = new Circle(80,80,70);
-        logo.setTranslateY(0);
+        Circle logoClip = new Circle(50,50,40);
         logo.setClip(logoClip);
         logo.setPreserveRatio(true);
-        logo.setFitHeight(160.0);
+        logo.setFitHeight(100);
+        BorderPane header = new BorderPane();header.setRight(logo);header.setCenter(title);
 
         TableView<Game> gamesTableView = createGamesTableView();
         gamesTableView.setPrefHeight(250);
@@ -71,15 +73,9 @@ public class GameFX {           //Lynsey Fox
 
         Button addGame = new Button("Add Game");
         addGame.setOnAction(e1 -> {
-            try {
-                if(new AddGameBox(gamesDAO).display()){
+          if(new AddGameBox(gamesDAO).display()){
                     loadGamesFromDB(gamesTableView);
-                }
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-
-
+          }
         });
 
         Button refreshTable = new Button("Refresh Table");
@@ -100,7 +96,6 @@ public class GameFX {           //Lynsey Fox
         loadGamesFromDB(gamesTableView);
 
 
-
     }
 
     public TableView<Game> createGamesTableView() {
@@ -112,17 +107,15 @@ public class GameFX {           //Lynsey Fox
 
         TableColumn<Game, String> nameCol = new TableColumn<>("Game Name");
         nameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGameName()));
-        nameCol.setPrefWidth(150);
+        nameCol.setPrefWidth(100);
 
         TableColumn<Game, String> teamCol = new TableColumn<>("No. of Teams");
         teamCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getTeams().size())));
-        teamCol.setPrefWidth(75);
+        teamCol.setPrefWidth(125);
 
         TableColumn<Game,String> playersCol = new TableColumn<>("No. of Players");
         playersCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getPlayers().size())));
-        playersCol.setPrefWidth(75);
-
-
+        playersCol.setPrefWidth(125);
 
 
         TableColumn<Game,Void> updateCol =  new TableColumn<>("Update");
@@ -142,6 +135,7 @@ public class GameFX {           //Lynsey Fox
                         throw new RuntimeException(e);
                     }
                     System.out.println("Game updated: " + gameToUpdate);
+
 
                 });
             }

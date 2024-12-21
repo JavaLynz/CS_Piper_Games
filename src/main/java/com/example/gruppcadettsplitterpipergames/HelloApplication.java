@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-
      //Logger.getLogger("org.hibernate").setLevel(Level.OFF);
 
         AnchorPane root = new AnchorPane();

@@ -3,6 +3,7 @@ package com.example.gruppcadettsplitterpipergames.view;
 import com.example.gruppcadettsplitterpipergames.DAO.GamesDAO;
 import com.example.gruppcadettsplitterpipergames.DAO.PlayerDAO;
 import com.example.gruppcadettsplitterpipergames.DAO.TeamsDAO;
+import com.example.gruppcadettsplitterpipergames.entities.Address;
 import com.example.gruppcadettsplitterpipergames.entities.Game;
 import com.example.gruppcadettsplitterpipergames.entities.Player;
 import com.example.gruppcadettsplitterpipergames.entities.Team;
@@ -16,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -32,10 +34,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PlayerFX {         //Lynsey Fox
 
-    private ObservableList<Player> playerList = null;
+    private ObservableList<Player> playerList;
     private PlayerDAO playerDAO;
     private AnchorPane playerView;
     GamesDAO gamesDAO = new GamesDAO();
+    private TableView<Player> playerTableView;
 
     public PlayerFX() throws FileNotFoundException {
         playerDAO = new PlayerDAO();
@@ -52,50 +55,34 @@ public class PlayerFX {         //Lynsey Fox
         container.setStyle("-fx-background-color: silver");
         HBox buttonHolder = new HBox(30);
         buttonHolder.setAlignment(Pos.CENTER);
-
+        // logo code from Benjamin
         ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
-        Circle logoClip = new Circle(80, 80, 70);
-        logo.setTranslateY(0);
+        Circle logoClip = new Circle(50,50,40);
         logo.setClip(logoClip);
         logo.setPreserveRatio(true);
-        logo.setFitHeight(160.0);
+        logo.setFitHeight(100);
+        BorderPane header = new BorderPane();header.setRight(logo);header.setCenter(title);
 
-        TableView<Player> playerTableView = createPlayerTableView();
+        playerTableView = createPlayerTableView();
         playerTableView.setPrefHeight(250);
 
-        container.getChildren().addAll(logo, title, playerTableView, buttonHolder);
+        container.getChildren().addAll(header, title, playerTableView, buttonHolder);
         container.setMinWidth(800);
         container.setMinHeight(600);
 
         Button searchGames = new Button("Search");
-        searchGames.setOnAction(e -> {
-
-            try {
-                playerSearchPopUp();
-
-            } catch (FileNotFoundException ex) {
-                throw new RuntimeException(ex);
-            }
-
-        });
+        searchGames.setOnAction(e -> playerSearchPopUp());
 
 
         Button addGame = new Button("Add Player");
         addGame.setOnAction(e1 -> {
-            try {
-                if (addPlayerBox().get()) {
-                    playerTableView.refresh();
-
+            if (addPlayerBox().get()) {
+                loadPlayersFromDB(playerDAO.getAllPlayers());
                 }
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        });
+            });
 
         Button refreshTable = new Button("Refresh Table");
-        refreshTable.setOnAction(e1 -> {
-            loadPlayersFromDB(playerTableView);
-        });
+        refreshTable.setOnAction(e1 -> loadPlayersFromDB(playerDAO.getAllPlayers()));
 
         buttonHolder.getChildren().addAll(refreshTable, searchGames, addGame);
         buttonHolder.setStyle("-fx-background-color: silver");
@@ -108,7 +95,7 @@ public class PlayerFX {         //Lynsey Fox
         playerView.getChildren().addAll(container);
         playerView.setPadding(new Insets(15));
 
-        loadPlayersFromDB(playerTableView);
+        loadPlayersFromDB(playerDAO.getAllPlayers());
     }
 
     public TableView<Player> createPlayerTableView() {
@@ -131,31 +118,52 @@ public class PlayerFX {         //Lynsey Fox
         lastNameCol.setPrefWidth(200);
 
         TableColumn<Player,String> gameCol = new TableColumn<>("Game");
-        gameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGame().getGameName()));
+        gameCol.setCellValueFactory(cellData -> {
+            Game game = cellData.getValue().getGame();
+            return new SimpleStringProperty(game != null ? game.getGameName() : "");
+        });
         gameCol.setPrefWidth(200);
 
         TableColumn<Player, String> teamCol = new TableColumn<>("Team");
-        teamCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTeam().getName()));
+        teamCol.setCellValueFactory(cellData -> {
+            Team team = cellData.getValue().getTeam();
+            return new SimpleStringProperty(team != null ? team.getName() : "");
+        });
         teamCol.setPrefWidth(200);
 
         TableColumn<Player, String> streetAddressCol = new TableColumn<>("Street Address");
-        streetAddressCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getAddress()));
+        streetAddressCol.setCellValueFactory(cellData -> {
+            Address address = cellData.getValue().getAddress();
+            return new SimpleStringProperty(address != null ? address.getAddress() : "");
+        });
         streetAddressCol.setPrefWidth(200);
 
         TableColumn<Player, String> districtCol = new TableColumn<>("District");
-        districtCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getDistrict()));
+        districtCol.setCellValueFactory(cellData -> {
+            Address address = cellData.getValue().getAddress();
+            return new SimpleStringProperty(address != null ? address.getDistrict() : "");
+        });
         districtCol.setPrefWidth(200);
 
         TableColumn<Player, String> cityCol = new TableColumn<>("City");
-        cityCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getCity()));
+        cityCol.setCellValueFactory(cellData -> {
+                    Address address = cellData.getValue().getAddress();
+                    return new SimpleStringProperty(address != null ? address.getCity() : "");
+        });
         cityCol.setPrefWidth(200);
 
         TableColumn<Player,String> postcodeCol = new TableColumn<>("Postcode");
-        postcodeCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getPostcode()));
+        postcodeCol.setCellValueFactory(cellData -> {
+                    Address address = cellData.getValue().getAddress();
+                    return new SimpleStringProperty(address != null ? address.getPostcode() : "");
+        });
         postcodeCol.setPrefWidth(200);
 
         TableColumn<Player, String> countryCol = new TableColumn<>("Country");
-        countryCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getCountry()));
+        countryCol.setCellValueFactory(cellData -> {
+                    Address address = cellData.getValue().getAddress();
+                    return new SimpleStringProperty(address != null ? address.getCountry() : "");
+        });
         countryCol.setPrefWidth(200);
 
         TableColumn<Player,String> emailCol = new TableColumn<>("Email");
@@ -168,18 +176,12 @@ public class PlayerFX {         //Lynsey Fox
 
             {
                 updatePlayer.setOnAction(e1 -> {
-                    TableColumn idColumn = (TableColumn) playerTableView.getColumns().get(0);
+                    TableColumn idColumn =  playerTableView.getColumns().get(0);
                     int id = Integer.parseInt ((String) idColumn.getCellObservableValue(getIndex()).getValue());
                     Player playerToUpdate = playerDAO.getPlayerById(id);
-                    try {
-                        if(playerUpdateBox(playerToUpdate)){
-                            loadPlayersFromDB(playerTableView);
+                    if(playerUpdateBox(playerToUpdate)){
+                        loadPlayersFromDB(playerDAO.getAllPlayers());
                         }
-                    } catch (FileNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
-                    System.out.println("Player updated: " + playerToUpdate + ". Number of players: " + playerDAO.getAllPlayers().size());
-
                 });
             }
             @Override
@@ -197,17 +199,12 @@ public class PlayerFX {         //Lynsey Fox
             Button deletePlayer = new Button("Delete Player");
             {
                 deletePlayer.setOnAction(e1 -> {
-                    TableColumn idColumn = (TableColumn) playerTableView.getColumns().get(0);
+                    TableColumn idColumn = playerTableView.getColumns().get(0);
                     int id = Integer.parseInt ((String) idColumn.getCellObservableValue(getIndex()).getValue());
                     Player playerToDelete = playerDAO.getPlayerById(id);
-                    try {
-                        if(deleteConfirmBox(playerToDelete).get()){
-                            loadPlayersFromDB(playerTableView);
-                        }
-                    } catch (FileNotFoundException e) {
-                        throw new RuntimeException(e);
+                    if(deleteConfirmBox(playerToDelete).get()){
+                            loadPlayersFromDB(playerDAO.getAllPlayers());
                     }
-
                 });
             }
             @Override
@@ -226,7 +223,7 @@ public class PlayerFX {         //Lynsey Fox
 
     }
 
-    private boolean playerUpdateBox(Player playerToUpdate) throws FileNotFoundException {
+    private boolean playerUpdateBox(Player playerToUpdate) {
         AtomicBoolean result = new AtomicBoolean(false);
 
         Stage window = new Stage();
@@ -235,56 +232,40 @@ public class PlayerFX {         //Lynsey Fox
         window.setMinWidth(400);
         window.setMinHeight(500);
 
-        ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
-        Circle logoClip = new Circle(80,80,70);
-        logo.setTranslateY(0);
-        logo.setClip(logoClip);
-        logo.setPreserveRatio(true);
-        logo.setFitHeight(160.0);
-
         Label label = new Label();
         label.setText("Update Player: " + playerToUpdate.getFirstName() + " " + playerToUpdate.getNickName() + " " + playerToUpdate.getLastName());
         label.setAlignment(Pos.CENTER);
         label.setStyle("-fx-font-size: 20");
         label.setWrapText(true);
 
-        Label firstNameLabel = new Label("Update player's first name:");
+        Label firstNameLabel = new Label("Update player's first name: " + playerToUpdate.getFirstName());
         TextField firstName = new TextField();
         firstName.setPromptText(playerToUpdate.getFirstName());
         firstName.setMaxWidth(100);
-        if (firstName.getText()!= null){
-            String playerFirstName = firstName.getText();
-        }
 
-        Label nickNameLabel = new Label("Update player's nick name:");
+        Label nickNameLabel = new Label("Update player's nick name: " + playerToUpdate.getNickName());
         TextField nickName = new TextField();
         nickName.setMaxWidth(100);
-        if (nickName.getText()!= null){
-            String playerNickName = nickName.getText();
-        }
 
-        Label lastNameLabel = new Label("Update player's last name:");
+        Label lastNameLabel = new Label("Update player's last name: "+ playerToUpdate.getLastName());
         TextField lastName = new TextField();
         lastName.setMaxWidth(100);
-        if (lastName.getText()!= null){
-            String playerLastName = lastName.getText();
-        }
 
         Button update = new Button("Update");
         update.setDefaultButton(true);
         update.setOnAction(e -> {
-            if(firstName.getText() != null){
+            if(!firstName.getText().isEmpty()){
                 playerToUpdate.setFirstName(firstName.getText());
+            } else if (!nickName.getText().isEmpty()) {
+                playerToUpdate.setNickName(nickName.getText());
+            } else if (!lastName.getText().isEmpty()) {
+                playerToUpdate.setLastName(lastName.getText());
             }
 
             playerDAO.updatePlayer(playerToUpdate);
-            try {
-                confirmUpdatePopup(playerToUpdate);
-            } catch (FileNotFoundException ex) {
-                throw new RuntimeException(ex);
-            }
             window.close();
             result.set(true);
+            System.out.println(result.get());
         });
 
         Button cancel = new Button("Cancel");
@@ -295,7 +276,7 @@ public class PlayerFX {         //Lynsey Fox
 
 
         VBox layout = new VBox(20);
-        layout.getChildren().addAll(logo,label, firstNameLabel, firstName,nickNameLabel, nickName, lastNameLabel, lastName,update, cancel);
+        layout.getChildren().addAll(label, firstNameLabel, firstName,nickNameLabel, nickName, lastNameLabel, lastName,update, cancel);
         layout.setAlignment(Pos.CENTER);
 
         AnchorPane.setLeftAnchor(layout, 5.0);
@@ -309,42 +290,15 @@ public class PlayerFX {         //Lynsey Fox
 
         return result.get();
     }
-    private void confirmUpdatePopup(Player playerToUpdate) throws FileNotFoundException {
-        Stage window = new Stage();
-        window.initModality(Modality.APPLICATION_MODAL);
 
-        Button closeButton = new Button("Close");
-        closeButton.setOnAction(e -> window.close());
 
-        Label label = new Label("Player: "+ playerToUpdate.getFirstName() + " " + playerToUpdate.getNickName() + " " + playerToUpdate.getLastName() + " has been updated");
-        label.setWrapText(true);
-        AnchorPane root = new AnchorPane();
-        root.setPrefSize(350,350);
+    private void loadPlayersFromDB(List<Player> playersToShow) {
 
-        VBox layout = new VBox(20);
-        layout.getChildren().addAll(label, closeButton);
-        layout.setAlignment(Pos.CENTER);
-        root.getChildren().add(layout);
-
-        AnchorPane.setLeftAnchor(layout, 5.0);
-        AnchorPane.setRightAnchor(layout, 5.0);
-        AnchorPane.setTopAnchor(layout, 5.0);
-        AnchorPane.setBottomAnchor(layout, 5.0);
-
-        Scene scene = new Scene(root);
-        window.setScene(scene);
-        window.showAndWait();
-        window.setAlwaysOnTop(true);
+        playerList.setAll(playersToShow);
+        this.playerTableView.setItems(playerList);
     }
 
-
-    private void loadPlayersFromDB(TableView<Player> playerTableView) {
-
-        playerList.setAll(playerDAO.getAllPlayers());
-        playerTableView.setItems(playerList);
-    }
-
-    private void playerSearchPopUp() throws FileNotFoundException {
+    private void playerSearchPopUp() {
         Stage window = new Stage();
 
         window.initModality(Modality.APPLICATION_MODAL);
@@ -352,17 +306,9 @@ public class PlayerFX {         //Lynsey Fox
         window.setMinWidth(400);
         window.setMinHeight(500);
 
-        ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
-        Circle logoClip = new Circle(80,80,70);
-        logo.setTranslateY(0);
-        logo.setClip(logoClip);
-        logo.setPreserveRatio(true);
-        logo.setFitHeight(160.0);
-
         TableView<Player> viewSearchedPlayer = createPlayerTableView();
         viewSearchedPlayer.setPrefHeight(150);
-        ObservableList searchedPlayerList = FXCollections.observableArrayList();
-
+        ObservableList<Player> searchedPlayerList = FXCollections.observableArrayList();
 
         Label title = new Label();
         title.setText("Search: ");
@@ -371,7 +317,6 @@ public class PlayerFX {         //Lynsey Fox
 
         Label label = new Label();
         label.setText("Choose search term: ");
-
 
         Label gameBoxLabel = new Label("Game/s Played:");
         Label teamBoxLabel = new Label("Team:");
@@ -396,6 +341,7 @@ public class PlayerFX {         //Lynsey Fox
             teamsHashMap.put(team.getName(),team);
             teamChoice.getItems().add(team.getName());
         }
+        teamChoice.setOnAction(e-> teamChoice.getSelectionModel().getSelectedItem());
 
 
         HBox comboBoxes = new HBox(10);
@@ -404,17 +350,28 @@ public class PlayerFX {         //Lynsey Fox
 
 
         Button reset = new Button("Reset");
-        reset.setOnAction(e-> viewSearchedPlayer.getItems().clear());
-        Button search = new Button("Search");
-        search.setDefaultButton(true);
-        search.setOnAction(e -> {
-            if(gamesChoice.getSelectionModel().getSelectedItems().isEmpty()){
+        reset.setOnAction(e-> {
+            searchedPlayerList.clear();
+            viewSearchedPlayer.setItems(searchedPlayerList);
+            for( CheckBox checkBox : gamesChoice.getItems()) {
+                checkBox.setSelected(false);
+            }
+            teamChoice.getSelectionModel().clearSelection();
+        });
+
+        Button searchByTeam = new Button("Search by Team");
+        searchByTeam.setOnAction(e -> {
+
                 Team teamToSearch = teamsHashMap.get(teamChoice.getSelectionModel().getSelectedItem());
                 List<Player> playersFound = playerDAO.getPlayersByTeam(teamToSearch);
                 System.out.println("Found " + playersFound.size() + " players in team " + teamToSearch.getName());
                 searchedPlayerList.setAll(playersFound);
                 viewSearchedPlayer.setItems(searchedPlayerList);
-            }else{
+            });
+
+        Button searchByGame = new Button("Search by Game");
+        searchByGame.setOnAction(e -> {
+
                 List<Game> gamesToSearch = new ArrayList<>();
                 for(CheckBox checkBox: gamesChoice.getItems()){
                     if(checkBox.isSelected()){
@@ -425,7 +382,6 @@ public class PlayerFX {         //Lynsey Fox
                 searchedPlayerList.setAll(playersFound);
                 viewSearchedPlayer.setItems(searchedPlayerList);
                 System.out.println("Found " + playersFound.size() + " players in selected games: " + gamesToSearch.toString());
-            }
 
         });
 
@@ -434,10 +390,10 @@ public class PlayerFX {         //Lynsey Fox
 
         HBox buttonHolder = new HBox(10);
         buttonHolder.setAlignment(Pos.CENTER);
-        buttonHolder.getChildren().addAll(search, reset,cancel);
+        buttonHolder.getChildren().addAll(searchByGame, searchByTeam, reset,cancel);
 
         VBox layout = new VBox(20);
-        layout.getChildren().addAll(logo,title,label ,comboBoxes, viewSearchedPlayer,buttonHolder);
+        layout.getChildren().addAll(title,label ,comboBoxes, viewSearchedPlayer,buttonHolder);
         layout.setAlignment(Pos.CENTER);
         VBox.setMargin(viewSearchedPlayer, new Insets(10));
 
@@ -451,20 +407,13 @@ public class PlayerFX {         //Lynsey Fox
         window.showAndWait();
     }
 
-    private AtomicBoolean addPlayerBox() throws FileNotFoundException {
+    private AtomicBoolean addPlayerBox() {
         AtomicBoolean result = new AtomicBoolean(false);
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Add New Player");
         window.setMinWidth(400);
         window.setMinHeight(500);
-
-        ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
-        Circle logoClip = new Circle(80,80,70);
-        logo.setTranslateY(0);
-        logo.setClip(logoClip);
-        logo.setPreserveRatio(true);
-        logo.setFitHeight(160.0);
 
         Label label = new Label();
         label.setText("Add Player");
@@ -494,7 +443,7 @@ public class PlayerFX {         //Lynsey Fox
         Label teamLabel = new Label("Optional: Select Team");
         ComboBox addPlayerTeam = new ComboBox();
         HashMap<String, Team> teamHashMap = new HashMap<>();
-        for(Team team : new TeamsDAO().getAllTeams()){
+        for(Team team : new TeamsDAO().getTeamsByGameNames((List<Game>) addPlayerGame.getSelectionModel().getSelectedItem())){
             teamHashMap.put(team.getName(), team);
             addPlayerTeam.getItems().add(team.getName());
         }
@@ -509,8 +458,8 @@ public class PlayerFX {         //Lynsey Fox
             String givenNickName = getNickName.getText().trim();
             String givenFirstName = getFirstName.getText().trim();
             String givenLastName = getLastName.getText().trim();
-            Game selectedGame = gameHashMap.get(addPlayerGame.getSelectionModel().getSelectedItem());
-            Team selectedTeam = teamHashMap.get(addPlayerTeam.getSelectionModel().getSelectedItem());
+            Game selectedGame = gameHashMap.get((String)addPlayerGame.getSelectionModel().getSelectedItem());
+            Team selectedTeam = teamHashMap.get(String.valueOf(addPlayerTeam.getSelectionModel().getSelectedItem()));
             boolean valid = true;
             System.out.println("new player: " + givenFirstName + " " + givenLastName + " " + selectedGame.getGameName());
 
@@ -536,21 +485,28 @@ public class PlayerFX {         //Lynsey Fox
                 valid = false;
             }
 
-            if(selectedGame == null) {
-                addPlayerGame.setStyle("-fx-background-color: red");
-                valid = false;
-            }
-
             if(valid){
-                Player playerToAdd = new Player(givenFirstName,givenNickName,givenLastName, selectedGame);
+                Player playerToAdd = new Player(givenFirstName,givenNickName,givenLastName);
                 playerDAO.savePlayer(playerToAdd);
                 if(selectedTeam != null){
                     playerToAdd.setTeam(selectedTeam);
+                    playerDAO.updatePlayer(playerToAdd);
                 }
-                playerList.add(playerToAdd);
-                loadPlayersFromDB(createPlayerTableView());
+                if(selectedGame != null){
+                    playerToAdd.setGame(selectedGame);
+                    playerDAO.updatePlayer(playerToAdd);
+                }
+                if(playerDAO.savePlayer(playerToAdd)){
+                    System.out.println("Player " + playerToAdd.getFirstName() + " " + playerToAdd.getLastName() + " has been added");
+                }else {
+                    System.out.println("Player not added");
+                }
+
+
+                loadPlayersFromDB(playerDAO.getAllPlayers());
                 window.close();
                 result.set(true);
+
             }
 
         });
@@ -563,7 +519,7 @@ public class PlayerFX {         //Lynsey Fox
 
 
         VBox layout = new VBox(20);
-        layout.getChildren().addAll(logo,label, firstNameLabel, getFirstName, nickNameLabel,getNickName, lastNameLabel, getLastName,gameLabel, addPlayerGame, teamLabel, addPlayerTeam, save, cancel);
+        layout.getChildren().addAll(label, firstNameLabel, getFirstName, nickNameLabel,getNickName, lastNameLabel, getLastName,gameLabel, addPlayerGame, teamLabel, addPlayerTeam, save, cancel);
         layout.setAlignment(Pos.CENTER);
 
         AnchorPane.setLeftAnchor(layout, 5.0);
@@ -577,35 +533,8 @@ public class PlayerFX {         //Lynsey Fox
         return result;
     }
 
-    private void confirmPopup(Player playerToAdd){
-        Stage window = new Stage();
-        window.initModality(Modality.APPLICATION_MODAL);
 
-        Button closeButton = new Button("Close");
-        closeButton.setOnAction(e -> window.close());
-
-        Label label = new Label("Player: "+ playerToAdd.getFirstName() + " "+ playerToAdd.getNickName() + " " + playerToAdd.getLastName() +" has been added to the database");
-        label.setWrapText(true);
-        AnchorPane root = new AnchorPane();
-        root.setPrefSize(250,350);
-
-        VBox layout = new VBox(20);
-        layout.getChildren().addAll( label, closeButton);
-        layout.setAlignment(Pos.CENTER);
-        root.getChildren().add(layout);
-
-        AnchorPane.setLeftAnchor(layout, 5.0);
-        AnchorPane.setRightAnchor(layout, 5.0);
-        AnchorPane.setTopAnchor(layout, 5.0);
-        AnchorPane.setBottomAnchor(layout, 5.0);
-
-        Scene scene = new Scene(root);
-        window.setScene(scene);
-        window.showAndWait();
-        window.setAlwaysOnTop(true);
-    }
-
-    public AtomicBoolean deleteConfirmBox(Player playerToDelete) throws FileNotFoundException {
+    public AtomicBoolean deleteConfirmBox(Player playerToDelete){
         AtomicBoolean result = new AtomicBoolean(false);
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
@@ -613,13 +542,6 @@ public class PlayerFX {         //Lynsey Fox
         window.setMinWidth(400);
         window.setResizable(false);
         window.setMinHeight(400);
-
-        ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
-        Circle logoClip = new Circle(80,80,70);
-        logo.setTranslateY(0);
-        logo.setClip(logoClip);
-        logo.setPreserveRatio(true);
-        logo.setFitHeight(160.0);
 
         Label title = new Label("Confirm Delete");
         title.setAlignment(Pos.CENTER);
@@ -630,15 +552,19 @@ public class PlayerFX {         //Lynsey Fox
         Button delete = new Button("Delete");
         Button cancel = new Button("Cancel");
         delete.setOnAction(e -> {
-            playerDAO.deletePlayer(playerToDelete);
-            try {
-                confirmDeletePopup(playerToDelete);
-            } catch (FileNotFoundException ex) {
-                throw new RuntimeException(ex);
+            if(playerDAO.deletePlayer(playerToDelete)) {
+                System.out.println("********************DELETE****************************");
+                System.out.println("********************DELETE****************************");
+                System.out.println("********************DELETE****************************");
+                System.out.println("********************DELETE****************************");
+                System.out.println("********************DELETE****************************");
+                System.out.println("DeletePlayer status: " + playerDAO.deletePlayer(playerToDelete));
+                loadPlayersFromDB(playerDAO.getAllPlayers());
+                window.close();
+            }else{
+                System.out.println("Player not deleted");
+                System.out.println("*******NOT DELETED********");
             }
-            playerList.remove(playerToDelete);
-            loadPlayersFromDB(createPlayerTableView());
-            window.close();
         });
         cancel.setOnAction(e -> {
             result.set(false);
@@ -646,7 +572,7 @@ public class PlayerFX {         //Lynsey Fox
         });
 
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(logo,title,label, delete, cancel);
+        layout.getChildren().addAll(title,label, delete, cancel);
         layout.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(layout);
@@ -655,34 +581,6 @@ public class PlayerFX {         //Lynsey Fox
 
         return result;
 
-    }
-
-    private void confirmDeletePopup(Player playerToDelete) throws FileNotFoundException {
-        Stage window = new Stage();
-        window.initModality(Modality.APPLICATION_MODAL);
-
-        Button closeButton = new Button("Close");
-        closeButton.setOnAction(e -> window.close());
-
-        Label label = new Label("Player: "+ playerToDelete.getFirstName() + " " + playerToDelete.getNickName() + " " + playerToDelete.getLastName() + " has been deleted");
-        label.setWrapText(true);
-        AnchorPane root = new AnchorPane();
-        root.setPrefSize(150,150);
-
-        VBox layout = new VBox(20);
-        layout.getChildren().addAll(label, closeButton);
-        layout.setAlignment(Pos.CENTER);
-        root.getChildren().add(layout);
-
-        AnchorPane.setLeftAnchor(layout, 5.0);
-        AnchorPane.setRightAnchor(layout, 5.0);
-        AnchorPane.setTopAnchor(layout, 5.0);
-        AnchorPane.setBottomAnchor(layout, 5.0);
-
-        Scene scene = new Scene(root);
-        window.setScene(scene);
-        window.showAndWait();
-        window.setAlwaysOnTop(true);
     }
 
     public AnchorPane getPlayerView() {

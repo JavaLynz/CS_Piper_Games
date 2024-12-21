@@ -107,7 +107,7 @@ public void updatePlayer(Player playerToUpdate) {
 }
 
 // DELETE
-public void deletePlayer(Player playerToDelete) {
+public boolean deletePlayer(Player playerToDelete) {
     EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
     EntityTransaction transaction = null;
     try {
@@ -118,11 +118,13 @@ public void deletePlayer(Player playerToDelete) {
         }
         entityManager.remove(playerToDelete);
         transaction.commit();
+        return true;
     }catch (Exception e) {
         System.out.println(e.getMessage());
         if(entityManager != null && transaction != null && transaction.isActive()) {
             transaction.rollback();
         }
+        return false;
     } finally {
         entityManager.close();
     }

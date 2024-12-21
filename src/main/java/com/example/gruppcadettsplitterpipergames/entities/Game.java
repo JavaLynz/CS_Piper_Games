@@ -18,7 +18,7 @@ public class Game {     //Lynsey Fox
     @Column(name = "game_name", nullable = false)
     private String gameName;
 
-    @OneToMany(orphanRemoval = true,cascade = CascadeType.ALL, mappedBy = "playerId", fetch = FetchType.EAGER)
+    @OneToMany(orphanRemoval = true,cascade = CascadeType.ALL, mappedBy = "game", fetch = FetchType.EAGER)
     private List<Player> players = new ArrayList<>();
 
     @OneToMany(orphanRemoval = true,cascade = CascadeType.ALL, mappedBy = "game", fetch = FetchType.EAGER)
