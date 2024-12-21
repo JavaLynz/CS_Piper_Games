@@ -20,7 +20,6 @@ public class PlayerMatchesFX {
     private ObservableList<PlayerMatches> playerMatchesList;
 
     public PlayerMatchesFX() {
-        // Updated calls: matching the new style: getAllPlayerMatches()
         playerMatchesDAO = new PlayerMatchesDAO();
         playerMatchesList = FXCollections.observableArrayList(playerMatchesDAO.getAllPlayerMatches());
         initializeUI();
@@ -29,7 +28,6 @@ public class PlayerMatchesFX {
     private void initializeUI() {
         playerMatchesTab = new Tab("Player Matches");
 
-        // TableView Setup
         tableView = new TableView<>();
         tableView.setItems(playerMatchesList);
 
@@ -64,7 +62,6 @@ public class PlayerMatchesFX {
 
         buttonBox.getChildren().addAll(addButton, updateButton, deleteButton, refreshButton);
 
-        // Updated method references for the new DAO style
         addButton.setOnAction(e -> addMatch());
         updateButton.setOnAction(e -> updateMatch());
         deleteButton.setOnAction(e -> deleteMatch());
@@ -128,7 +125,6 @@ public class PlayerMatchesFX {
                 match.setPlayer2Name(player2Field.getText());
                 match.setResult(resultField.getText());
 
-                // Updated calls: savePlayerMatch or updatePlayerMatch
                 if (isUpdate) {
                     playerMatchesDAO.updatePlayerMatch(match);
                 } else {
@@ -147,12 +143,10 @@ public class PlayerMatchesFX {
     }
 
     private void addMatch() {
-        // show form with isUpdate=false => calls savePlayerMatch in the end
         showMatchForm(null, false);
     }
 
     private void updateMatch() {
-        // show form with isUpdate=true => calls updatePlayerMatch in the end
         PlayerMatches selectedMatch = tableView.getSelectionModel().getSelectedItem();
         if (selectedMatch != null) {
             showMatchForm(selectedMatch, true);
@@ -165,7 +159,6 @@ public class PlayerMatchesFX {
     private void deleteMatch() {
         PlayerMatches selectedMatch = tableView.getSelectionModel().getSelectedItem();
         if (selectedMatch != null) {
-            // updated call: deletePlayerMatch
             playerMatchesDAO.deletePlayerMatch(selectedMatch);
             refreshMatches();
         } else {
@@ -175,7 +168,6 @@ public class PlayerMatchesFX {
     }
 
     private void refreshMatches() {
-        // updated call: getAllPlayerMatches
         playerMatchesList.setAll(playerMatchesDAO.getAllPlayerMatches());
         tableView.refresh();
     }

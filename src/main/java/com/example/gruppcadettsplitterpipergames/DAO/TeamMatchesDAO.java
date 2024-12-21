@@ -12,7 +12,6 @@ public class TeamMatchesDAO {
     private static final EntityManagerFactory ENTITY_MANAGER_FACTORY =
             Persistence.createEntityManagerFactory("myconfig");
 
-    // CREATE
     public boolean saveTeamMatch(TeamMatches match) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction transaction = null;
@@ -33,7 +32,6 @@ public class TeamMatchesDAO {
         }
     }
 
-    // READ ALL
     public List<TeamMatches> getAllTeamMatches() {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         List<TeamMatches> matches = new ArrayList<>();
@@ -50,7 +48,6 @@ public class TeamMatchesDAO {
         return matches;
     }
 
-    // READ ONE
     public TeamMatches getTeamMatchById(int id) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         TeamMatches match = null;
@@ -64,7 +61,6 @@ public class TeamMatchesDAO {
         return match;
     }
 
-    // UPDATE
     public boolean updateTeamMatch(TeamMatches match) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction transaction = null;
@@ -74,7 +70,6 @@ public class TeamMatchesDAO {
             if (!entityManager.contains(match)) {
                 match = entityManager.merge(match);
             }
-            // If you want to do more update logic, you can place it here
             transaction.commit();
             return true;
         } catch (Exception e) {
@@ -88,7 +83,6 @@ public class TeamMatchesDAO {
         }
     }
 
-    // DELETE
     public boolean deleteTeamMatch(TeamMatches match) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction transaction = null;
@@ -112,7 +106,6 @@ public class TeamMatchesDAO {
         }
     }
 
-    // DELETE BY ID
     public boolean deleteTeamMatchById(int id) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction transaction = null;

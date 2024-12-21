@@ -11,7 +11,6 @@ public class PlayerMatchesDAO {
     private static final EntityManagerFactory ENTITY_MANAGER_FACTORY =
             Persistence.createEntityManagerFactory("myconfig");
 
-    // CREATE
     public boolean savePlayerMatch(PlayerMatches playerMatch) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction transaction = null;
@@ -32,7 +31,6 @@ public class PlayerMatchesDAO {
         }
     }
 
-    // READ ONE
     public PlayerMatches getPlayerMatchById(int id) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         PlayerMatches matchToReturn = entityManager.find(PlayerMatches.class, id);
@@ -40,7 +38,6 @@ public class PlayerMatchesDAO {
         return matchToReturn;
     }
 
-    // READ ALL
     public List<PlayerMatches> getAllPlayerMatches() {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         List<PlayerMatches> matchesToReturn = new ArrayList<>();
@@ -51,7 +48,6 @@ public class PlayerMatchesDAO {
         return matchesToReturn;
     }
 
-    // UPDATE
     public void updatePlayerMatch(PlayerMatches matchToUpdate) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction transaction = null;
@@ -78,7 +74,6 @@ public class PlayerMatchesDAO {
         }
     }
 
-    // DELETE
     public void deletePlayerMatch(PlayerMatches matchToDelete) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction transaction = null;

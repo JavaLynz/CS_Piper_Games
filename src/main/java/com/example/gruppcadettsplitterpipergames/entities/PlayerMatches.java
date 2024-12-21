@@ -21,7 +21,7 @@ public class PlayerMatches {
     private String result;
 
     @ManyToOne
-    @JoinColumn(name = "game_id", nullable = false) // Specifies the foreign key column in the `player_matches` table
+    @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
     @Transient

@@ -23,10 +23,10 @@ public class TeamMatchesFX {
     private ObservableList<TeamMatches> teamMatchesList;
 
     public TeamMatchesFX() {
-        // Updated DAO calls to the new naming style:
+
         teamMatchesDAO = new TeamMatchesDAO();
         teamDAO = new TeamsDAO();
-        // Replaces 'showTeamMatches()' with 'getAllTeamMatches()'
+
         teamMatchesList = FXCollections.observableArrayList(teamMatchesDAO.getAllTeamMatches());
         initializeUI();
     }
@@ -34,21 +34,18 @@ public class TeamMatchesFX {
     private void initializeUI() {
         teamMatchesTab = new Tab("Team Matches");
 
-        // TableView Setup
+
         tableView = new TableView<>();
         tableView.setItems(teamMatchesList);
 
-        // Updated reference to match the entity's field/method: getMatchId()
         TableColumn<TeamMatches, Integer> idColumn = new TableColumn<>("ID");
         idColumn.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getMatchId()));
 
-        // If you do not have getMatchName() in the entity,
-        // either remove this column or create a computed value (e.g. team1 + " vs " + team2).
         TableColumn<TeamMatches, String> matchInfoColumn = new TableColumn<>("Match Info");
         matchInfoColumn.setCellValueFactory(data -> {
             TeamMatches tm = data.getValue();
-            // Example: combine team names if you want a 'match name' style
+
             String displayName = tm.getTeam1Name() + " vs " + tm.getTeam2Name();
             return new javafx.beans.property.SimpleStringProperty(displayName);
         });
@@ -68,7 +65,6 @@ public class TeamMatchesFX {
 
         buttonBox.getChildren().addAll(addButton, updateButton, deleteButton, refreshButton);
 
-        // Updated to reference new naming for DAO calls
         addButton.setOnAction(e -> addMatch());
         updateButton.setOnAction(e -> updateMatch());
         deleteButton.setOnAction(e -> deleteMatch());
@@ -97,16 +93,12 @@ public class TeamMatchesFX {
         Label matchDateLabel = new Label("Match Date:");
         TextField matchDateField = new TextField();
 
-        // If updating an existing match, populate the fields
         if (isUpdate && existingMatch != null) {
             team1Field.setText(existingMatch.getTeam1Name());
             team2Field.setText(existingMatch.getTeam2Name());
             resultField.setText(existingMatch.getResult());
             matchDateField.setText(existingMatch.getMatchDate());
         }
-
-        // Optional: handle 'Game' selection if relevant (similar to your PlayerMatchesFX approach)
-        // or a list of teams if your entity truly has a collection of Team objects.
 
         GridPane grid = new GridPane();
         grid.setHgap(10);
@@ -145,10 +137,8 @@ public class TeamMatchesFX {
                 match.setMatchDate(matchDateField.getText());
 
                 if (isUpdate) {
-                    // Updated: teamMatchesDAO.updateTeamMatch(...)
                     teamMatchesDAO.updateTeamMatch(match);
                 } else {
-                    // Updated: teamMatchesDAO.saveTeamMatch(...)
                     teamMatchesDAO.saveTeamMatch(match);
                 }
                 refreshMatches();
@@ -181,7 +171,6 @@ public class TeamMatchesFX {
     private void deleteMatch() {
         TeamMatches selectedMatch = tableView.getSelectionModel().getSelectedItem();
         if (selectedMatch != null) {
-            // Updated: teamMatchesDAO.deleteTeamMatch(...)
             teamMatchesDAO.deleteTeamMatch(selectedMatch);
             refreshMatches();
         } else {
@@ -191,7 +180,6 @@ public class TeamMatchesFX {
     }
 
     private void refreshMatches() {
-        // Updated: getAllTeamMatches() instead of showTeamMatches()
         teamMatchesList.setAll(teamMatchesDAO.getAllTeamMatches());
         tableView.refresh();
     }
