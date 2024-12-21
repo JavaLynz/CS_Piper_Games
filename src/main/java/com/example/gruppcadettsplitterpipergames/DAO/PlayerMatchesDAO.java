@@ -1,68 +1,125 @@
 package com.example.gruppcadettsplitterpipergames.DAO;
 
 import com.example.gruppcadettsplitterpipergames.entities.PlayerMatches;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerMatchesDAO {
 
-    private EntityManagerFactory emf;
+    private static final EntityManagerFactory ENTITY_MANAGER_FACTORY =
+            Persistence.createEntityManagerFactory("myconfig");
 
-    public PlayerMatchesDAO() {
-        emf = Persistence.createEntityManagerFactory("cadettsplitterspipergames");
-    }
-
-    public List<PlayerMatches> showMatches() {
-        EntityManager em = emf.createEntityManager();
+    // CREATE
+    public boolean savePlayerMatch(PlayerMatches playerMatch) {
+        EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
+        EntityTransaction transaction = null;
         try {
-            return em.createQuery("SELECT pm FROM PlayerMatches pm", PlayerMatches.class).getResultList();
-        } finally {
-            em.close();
-        }
-    }
-
-    public void addMatch(PlayerMatches match) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            em.getTransaction().begin();
-            em.persist(match);
-            em.getTransaction().commit();
-        } finally {
-            em.close();
-        }
-    }
-
-    public void removeMatch(PlayerMatches match) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            em.getTransaction().begin();
-            PlayerMatches toDelete = em.find(PlayerMatches.class, match.getPlayerMatchId());
-            if (toDelete != null) {
-                em.remove(toDelete);
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+            entityManager.persist(playerMatch);
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            if (entityManager != null && transaction != null && transaction.isActive()) {
+                transaction.rollback();
             }
-            em.getTransaction().commit();
+            return false;
         } finally {
-            em.close();
+            entityManager.close();
         }
     }
 
-    public void updateMatch(PlayerMatches match) {
-        EntityManager em = emf.createEntityManager();
+    // READ ONE
+    public PlayerMatches getPlayerMatchById(int id) {
+        EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
+        PlayerMatches matchToReturn = entityManager.find(PlayerMatches.class, id);
+        entityManager.close();
+        return matchToReturn;
+    }
+
+    // READ ALL
+    public List<PlayerMatches> getAllPlayerMatches() {
+        EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
+        List<PlayerMatches> matchesToReturn = new ArrayList<>();
+        TypedQuery<PlayerMatches> query = entityManager.createQuery(
+                "SELECT pm FROM PlayerMatches pm", PlayerMatches.class);
+        matchesToReturn.addAll(query.getResultList());
+        entityManager.close();
+        return matchesToReturn;
+    }
+
+    // UPDATE
+    public void updatePlayerMatch(PlayerMatches matchToUpdate) {
+        EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
+        EntityTransaction transaction = null;
         try {
-            em.getTransaction().begin();
-            PlayerMatches toUpdate = em.find(PlayerMatches.class, match.getPlayerMatchId());
-            if (toUpdate != null) {
-                toUpdate.setPlayer1Name(match.getPlayer1Name());
-                toUpdate.setPlayer2Name(match.getPlayer2Name());
-                toUpdate.setResult(match.getResult());
-                toUpdate.setGame(match.getGame());
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+            if (entityManager.contains(matchToUpdate)) {
+                System.out.println("PlayerMatch is in the database");
+                entityManager.persist(matchToUpdate);
+            } else {
+                System.out.println("PlayerMatch is not in the database");
+                PlayerMatches revivedMatch = entityManager.merge(matchToUpdate);
+                System.out.println("Merged match with ID: " + revivedMatch.getPlayerMatchId());
             }
-            em.getTransaction().commit();
+            entityManager.merge(matchToUpdate);
+            transaction.commit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            if (entityManager != null && transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
         } finally {
-            em.close();
+            entityManager.close();
+        }
+    }
+
+    // DELETE
+    public void deletePlayerMatch(PlayerMatches matchToDelete) {
+        EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
+        EntityTransaction transaction = null;
+        try {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+            if (!entityManager.contains(matchToDelete)) {
+                matchToDelete = entityManager.merge(matchToDelete);
+            }
+            entityManager.remove(matchToDelete);
+            transaction.commit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            if (entityManager != null && transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    public boolean deletePlayerMatchById(int id) {
+        EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
+        EntityTransaction transaction = null;
+        try {
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+            PlayerMatches matchToDelete = entityManager.find(PlayerMatches.class, id);
+            if (matchToDelete != null) {
+                entityManager.remove(matchToDelete);
+            }
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            if (entityManager != null && transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            return false;
+        } finally {
+            entityManager.close();
         }
     }
 }

@@ -1,118 +1,199 @@
 package com.example.gruppcadettsplitterpipergames.view;
 
 import com.example.gruppcadettsplitterpipergames.DAO.TeamMatchesDAO;
+import com.example.gruppcadettsplitterpipergames.DAO.TeamsDAO;
+import com.example.gruppcadettsplitterpipergames.entities.Team;
 import com.example.gruppcadettsplitterpipergames.entities.TeamMatches;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.property.ReadOnlyStringWrapper;
-
-import java.util.List;
+import javafx.scene.layout.*;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class TeamMatchesFX {
 
     private Tab teamMatchesTab;
     private TableView<TeamMatches> tableView;
+    private TeamMatchesDAO teamMatchesDAO;
+    private TeamsDAO teamDAO;
     private ObservableList<TeamMatches> teamMatchesList;
 
-    private TeamMatchesDAO teamMatchesDAO;
-
     public TeamMatchesFX() {
-        this.teamMatchesDAO = new TeamMatchesDAO(); // DAO instance to manage database operations
+        // Updated DAO calls to the new naming style:
+        teamMatchesDAO = new TeamMatchesDAO();
+        teamDAO = new TeamsDAO();
+        // Replaces 'showTeamMatches()' with 'getAllTeamMatches()'
+        teamMatchesList = FXCollections.observableArrayList(teamMatchesDAO.getAllTeamMatches());
         initializeUI();
     }
 
     private void initializeUI() {
         teamMatchesTab = new Tab("Team Matches");
-        BorderPane root = new BorderPane();
 
-        // TableView setup
+        // TableView Setup
         tableView = new TableView<>();
-
-        TableColumn<TeamMatches, Integer> idColumn = new TableColumn<>("ID");
-        idColumn.setCellValueFactory(data -> new ReadOnlyObjectWrapper<>(data.getValue().getMatchId()));
-
-        TableColumn<TeamMatches, String> team1Column = new TableColumn<>("Team 1");
-        team1Column.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getTeam1Name()));
-
-        TableColumn<TeamMatches, String> team2Column = new TableColumn<>("Team 2");
-        team2Column.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getTeam2Name()));
-
-        TableColumn<TeamMatches, String> winnerColumn = new TableColumn<>("Winner");
-        winnerColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getWinner()));
-
-        TableColumn<TeamMatches, String> loserColumn = new TableColumn<>("Loser");
-        loserColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getLoser()));
-
-        TableColumn<TeamMatches, String> dateColumn = new TableColumn<>("Date");
-        dateColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().getMatchDate()));
-
-        tableView.getColumns().addAll(idColumn, team1Column, team2Column, winnerColumn, loserColumn, dateColumn);
-
-        // Load initial data
-        teamMatchesList = FXCollections.observableArrayList();
-        loadMatches();
         tableView.setItems(teamMatchesList);
 
-        Label placeholder = new Label("No matches available.");
-        tableView.setPlaceholder(placeholder);
+        // Updated reference to match the entity's field/method: getMatchId()
+        TableColumn<TeamMatches, Integer> idColumn = new TableColumn<>("ID");
+        idColumn.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getMatchId()));
 
-        root.setCenter(tableView);
+        // If you do not have getMatchName() in the entity,
+        // either remove this column or create a computed value (e.g. team1 + " vs " + team2).
+        TableColumn<TeamMatches, String> matchInfoColumn = new TableColumn<>("Match Info");
+        matchInfoColumn.setCellValueFactory(data -> {
+            TeamMatches tm = data.getValue();
+            // Example: combine team names if you want a 'match name' style
+            String displayName = tm.getTeam1Name() + " vs " + tm.getTeam2Name();
+            return new javafx.beans.property.SimpleStringProperty(displayName);
+        });
 
-        // Buttons
+        tableView.getColumns().addAll(idColumn, matchInfoColumn);
+
+        Label emptyTableLabel = new Label("No team matches available.");
+        tableView.setPlaceholder(emptyTableLabel);
+
         HBox buttonBox = new HBox(10);
         buttonBox.setStyle("-fx-padding: 10; -fx-alignment: center;");
 
         Button addButton = new Button("Add Match");
         Button updateButton = new Button("Update Match");
         Button deleteButton = new Button("Delete Match");
+        Button refreshButton = new Button("Refresh");
 
+        buttonBox.getChildren().addAll(addButton, updateButton, deleteButton, refreshButton);
+
+        // Updated to reference new naming for DAO calls
         addButton.setOnAction(e -> addMatch());
         updateButton.setOnAction(e -> updateMatch());
         deleteButton.setOnAction(e -> deleteMatch());
+        refreshButton.setOnAction(e -> refreshMatches());
 
-        buttonBox.getChildren().addAll(addButton, updateButton, deleteButton);
+        BorderPane root = new BorderPane();
+        root.setCenter(tableView);
         root.setBottom(buttonBox);
 
         teamMatchesTab.setContent(root);
     }
 
-    private void loadMatches() {
-        List<TeamMatches> matches = teamMatchesDAO.showMatches();
-        teamMatchesList.setAll(matches);
+    private void showMatchForm(TeamMatches existingMatch, boolean isUpdate) {
+        Stage dialogStage = new Stage();
+        dialogStage.setTitle(isUpdate ? "Update Match" : "Add New Match");
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+
+        Label team1Label = new Label("Team 1 Name:");
+        TextField team1Field = new TextField();
+        Label team2Label = new Label("Team 2 Name:");
+        TextField team2Field = new TextField();
+
+        Label resultLabel = new Label("Result:");
+        TextField resultField = new TextField();
+
+        Label matchDateLabel = new Label("Match Date:");
+        TextField matchDateField = new TextField();
+
+        // If updating an existing match, populate the fields
+        if (isUpdate && existingMatch != null) {
+            team1Field.setText(existingMatch.getTeam1Name());
+            team2Field.setText(existingMatch.getTeam2Name());
+            resultField.setText(existingMatch.getResult());
+            matchDateField.setText(existingMatch.getMatchDate());
+        }
+
+        // Optional: handle 'Game' selection if relevant (similar to your PlayerMatchesFX approach)
+        // or a list of teams if your entity truly has a collection of Team objects.
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20));
+        grid.add(team1Label, 0, 0);
+        grid.add(team1Field, 1, 0);
+        grid.add(team2Label, 0, 1);
+        grid.add(team2Field, 1, 1);
+        grid.add(resultLabel, 0, 2);
+        grid.add(resultField, 1, 2);
+        grid.add(matchDateLabel, 0, 3);
+        grid.add(matchDateField, 1, 3);
+
+        Button okButton = new Button("Ok");
+        Button cancelButton = new Button("Cancel");
+
+        HBox buttonBox = new HBox(10, okButton, cancelButton);
+        buttonBox.setAlignment(Pos.CENTER);
+        buttonBox.setPadding(new Insets(10));
+
+        VBox dialogLayout = new VBox(10, grid, buttonBox);
+        dialogLayout.setPadding(new Insets(20));
+        Scene dialogScene = new Scene(dialogLayout, 400, 250);
+        dialogStage.setScene(dialogScene);
+
+        okButton.setOnAction(e -> {
+            if (!team1Field.getText().isEmpty()
+                    && !team2Field.getText().isEmpty()
+                    && !matchDateField.getText().isEmpty()) {
+
+                TeamMatches match = (existingMatch == null) ? new TeamMatches() : existingMatch;
+                match.setTeam1Name(team1Field.getText());
+                match.setTeam2Name(team2Field.getText());
+                match.setResult(resultField.getText());
+                match.setMatchDate(matchDateField.getText());
+
+                if (isUpdate) {
+                    // Updated: teamMatchesDAO.updateTeamMatch(...)
+                    teamMatchesDAO.updateTeamMatch(match);
+                } else {
+                    // Updated: teamMatchesDAO.saveTeamMatch(...)
+                    teamMatchesDAO.saveTeamMatch(match);
+                }
+                refreshMatches();
+                dialogStage.close();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.WARNING, "Fields with * are required!", ButtonType.OK);
+                alert.showAndWait();
+            }
+        });
+
+        cancelButton.setOnAction(e -> dialogStage.close());
+
+        dialogStage.showAndWait();
     }
 
     private void addMatch() {
-        // Logic to add a match (e.g., open a dialog to input details)
-        TeamMatches newMatch = new TeamMatches("Team A", "Team B", "Team A", "Team B", "2024-12-18");
-        boolean success = teamMatchesDAO.addMatch(newMatch);
-        if (success) {
-            teamMatchesList.add(newMatch);
-        }
+        showMatchForm(null, false);
     }
 
     private void updateMatch() {
         TeamMatches selectedMatch = tableView.getSelectionModel().getSelectedItem();
         if (selectedMatch != null) {
-            // Logic to update the selected match (e.g., open a dialog to edit details)
-            selectedMatch.setWinner("Updated Winner");
-            selectedMatch.setLoser("Updated Loser");
-            teamMatchesDAO.updateMatch(selectedMatch);
-            tableView.refresh();
+            showMatchForm(selectedMatch, true);
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "No match selected to update!", ButtonType.OK);
+            alert.showAndWait();
         }
     }
 
     private void deleteMatch() {
         TeamMatches selectedMatch = tableView.getSelectionModel().getSelectedItem();
         if (selectedMatch != null) {
-            boolean success = teamMatchesDAO.removeMatchById(selectedMatch.getMatchId());
-            if (success) {
-                teamMatchesList.remove(selectedMatch);
-            }
+            // Updated: teamMatchesDAO.deleteTeamMatch(...)
+            teamMatchesDAO.deleteTeamMatch(selectedMatch);
+            refreshMatches();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "No match selected to delete!", ButtonType.OK);
+            alert.showAndWait();
         }
+    }
+
+    private void refreshMatches() {
+        // Updated: getAllTeamMatches() instead of showTeamMatches()
+        teamMatchesList.setAll(teamMatchesDAO.getAllTeamMatches());
+        tableView.refresh();
     }
 
     public Tab getTeamMatchesTab() {

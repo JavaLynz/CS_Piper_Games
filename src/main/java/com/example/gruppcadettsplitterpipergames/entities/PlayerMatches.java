@@ -24,6 +24,11 @@ public class PlayerMatches {
     @JoinColumn(name = "game_id", nullable = false) // Specifies the foreign key column in the `player_matches` table
     private Game game;
 
+    @Transient
+    public String getGameTitle() {
+        return (game != null) ? game.getGameName() : null;
+    }
+
     public PlayerMatches() {}
 
     public PlayerMatches(String player1Name, String player2Name, String result, Game game) {

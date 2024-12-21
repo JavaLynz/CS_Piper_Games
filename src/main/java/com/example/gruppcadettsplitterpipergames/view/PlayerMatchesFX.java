@@ -20,8 +20,9 @@ public class PlayerMatchesFX {
     private ObservableList<PlayerMatches> playerMatchesList;
 
     public PlayerMatchesFX() {
+        // Updated calls: matching the new style: getAllPlayerMatches()
         playerMatchesDAO = new PlayerMatchesDAO();
-        playerMatchesList = FXCollections.observableArrayList(playerMatchesDAO.showMatches());
+        playerMatchesList = FXCollections.observableArrayList(playerMatchesDAO.getAllPlayerMatches());
         initializeUI();
     }
 
@@ -33,16 +34,20 @@ public class PlayerMatchesFX {
         tableView.setItems(playerMatchesList);
 
         TableColumn<PlayerMatches, Integer> idColumn = new TableColumn<>("ID");
-        idColumn.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getPlayerMatchId()));
+        idColumn.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getPlayerMatchId()));
 
         TableColumn<PlayerMatches, String> player1Column = new TableColumn<>("Player 1");
-        player1Column.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getPlayer1Name()));
+        player1Column.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(data.getValue().getPlayer1Name()));
 
         TableColumn<PlayerMatches, String> player2Column = new TableColumn<>("Player 2");
-        player2Column.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getPlayer2Name()));
+        player2Column.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(data.getValue().getPlayer2Name()));
 
         TableColumn<PlayerMatches, String> resultColumn = new TableColumn<>("Result");
-        resultColumn.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getResult()));
+        resultColumn.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(data.getValue().getResult()));
 
         tableView.getColumns().addAll(idColumn, player1Column, player2Column, resultColumn);
 
@@ -59,6 +64,7 @@ public class PlayerMatchesFX {
 
         buttonBox.getChildren().addAll(addButton, updateButton, deleteButton, refreshButton);
 
+        // Updated method references for the new DAO style
         addButton.setOnAction(e -> addMatch());
         updateButton.setOnAction(e -> updateMatch());
         deleteButton.setOnAction(e -> deleteMatch());
@@ -113,16 +119,20 @@ public class PlayerMatchesFX {
         dialogStage.setScene(dialogScene);
 
         okButton.setOnAction(e -> {
-            if (!player1Field.getText().isEmpty() && !player2Field.getText().isEmpty() && !resultField.getText().isEmpty()) {
-                PlayerMatches match = existingMatch == null ? new PlayerMatches() : existingMatch;
+            if (!player1Field.getText().isEmpty()
+                    && !player2Field.getText().isEmpty()
+                    && !resultField.getText().isEmpty()) {
+
+                PlayerMatches match = (existingMatch == null) ? new PlayerMatches() : existingMatch;
                 match.setPlayer1Name(player1Field.getText());
                 match.setPlayer2Name(player2Field.getText());
                 match.setResult(resultField.getText());
 
+                // Updated calls: savePlayerMatch or updatePlayerMatch
                 if (isUpdate) {
-                    playerMatchesDAO.updateMatch(match);
+                    playerMatchesDAO.updatePlayerMatch(match);
                 } else {
-                    playerMatchesDAO.addMatch(match);
+                    playerMatchesDAO.savePlayerMatch(match);
                 }
                 refreshMatches();
                 dialogStage.close();
@@ -133,15 +143,16 @@ public class PlayerMatchesFX {
         });
 
         cancelButton.setOnAction(e -> dialogStage.close());
-
         dialogStage.showAndWait();
     }
 
     private void addMatch() {
+        // show form with isUpdate=false => calls savePlayerMatch in the end
         showMatchForm(null, false);
     }
 
     private void updateMatch() {
+        // show form with isUpdate=true => calls updatePlayerMatch in the end
         PlayerMatches selectedMatch = tableView.getSelectionModel().getSelectedItem();
         if (selectedMatch != null) {
             showMatchForm(selectedMatch, true);
@@ -154,13 +165,18 @@ public class PlayerMatchesFX {
     private void deleteMatch() {
         PlayerMatches selectedMatch = tableView.getSelectionModel().getSelectedItem();
         if (selectedMatch != null) {
-            playerMatchesDAO.removeMatch(selectedMatch);
+            // updated call: deletePlayerMatch
+            playerMatchesDAO.deletePlayerMatch(selectedMatch);
             refreshMatches();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "No match selected to delete!", ButtonType.OK);
+            alert.showAndWait();
         }
     }
 
     private void refreshMatches() {
-        playerMatchesList.setAll(playerMatchesDAO.showMatches());
+        // updated call: getAllPlayerMatches
+        playerMatchesList.setAll(playerMatchesDAO.getAllPlayerMatches());
         tableView.refresh();
     }
 
