@@ -20,6 +20,14 @@ public class TabMenu{
     private TabPane root = new TabPane();
     private HashMap<Integer,String> currentUser;
     private StaffFX staffFX = new StaffFX(this.root);
+    /*private PlayerMatchesFX playerMatchesFX;
+    private TeamMatchesFX teamMatchesFX;*/
+
+
+    /*public TabMenu() {
+        playerMatchesFX = new PlayerMatchesFX();
+        teamMatchesFX = new TeamMatchesFX();
+    }*/
 
 
 
@@ -27,20 +35,21 @@ public class TabMenu{
         stage.setResizable(true);
         staffFX.setCurrentUser(this.currentUser);
 
+
         Tab staffTab = new Tab("Staff", staffFX.getStaffTab());
         staffTab.setClosable(false);
         Tab teamTab = new Tab("Team", new TeamFX().getView());
         teamTab.setClosable(false);
-        Tab teamMatchesTab = new Tab("TeamMatches");
-        teamMatchesTab.setClosable(false);
-        Tab playerMatchesTab = new Tab("PlayerMatches");
+        /*Tab playerMatchesTab = playerMatchesFX.getPlayerMatchesTab();
         playerMatchesTab.setClosable(false);
+        Tab teamMatchesTab = teamMatchesFX.getTeamMatchesTab();
+        teamMatchesTab.setClosable(false);*/
         Tab gamesTab = new Tab("Games", new GameFX().getGamesView());
         gamesTab.setClosable(false);
         Tab playerTab = new Tab("Player", new PlayerFX().getPlayerView());
         playerTab.setClosable(false);
 
-        this.root.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab, playerMatchesTab, teamMatchesTab);
+        this.root.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab/*, playerMatchesTab, teamMatchesTab*/);
         this.root.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
         Button logoutBtn = new Button("Logout");

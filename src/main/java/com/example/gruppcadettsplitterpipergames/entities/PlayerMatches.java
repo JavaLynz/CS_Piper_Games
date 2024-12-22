@@ -1,8 +1,6 @@
-//CF
 package com.example.gruppcadettsplitterpipergames.entities;
 
 import jakarta.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "player_matches")
@@ -11,80 +9,83 @@ public class PlayerMatches {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "match_id")
-    private int matchId;
+    private int playerMatchId;
 
-    @Column(name = "match_date", nullable = false)
-    private String matchDate;
+    @Column(name = "player1_name", nullable = false, length = 50)
+    private String player1Name;
+
+    @Column(name = "player2_name", nullable = false, length = 50)
+    private String player2Name;
+
+    @Column(name = "result", nullable = false, length = 20)
+    private String result;
 
     @ManyToOne
-    @JoinColumn(name = "player1_id", nullable = false)
-    private Player player1;
+    @JoinColumn(name = "game_id", nullable = false)
+    private Game game;
 
-    @ManyToOne
-    @JoinColumn(name = "player2_id", nullable = false)
-    private Player player2;
-
-    @Column(name = "player1_score", nullable = false)
-    private int player1Score;
-
-    @Column(name = "player2_score", nullable = false)
-    private int player2Score;
+    @Transient
+    public String getGameTitle() {
+        return (game != null) ? game.getGameName() : null;
+    }
 
     public PlayerMatches() {}
 
-    public PlayerMatches(String matchDate, Player player1, Player player2, int player1Score, int player2Score) {
-        this.matchDate = matchDate;
-        this.player1 = player1;
-        this.player2 = player2;
-        this.player1Score = player1Score;
-        this.player2Score = player2Score;
+    public PlayerMatches(String player1Name, String player2Name, String result, Game game) {
+        this.player1Name = player1Name;
+        this.player2Name = player2Name;
+        this.result = result;
+        this.game = game;
     }
 
-    public int getMatchId() {
-        return matchId;
+    public int getPlayerMatchId() {
+        return playerMatchId;
     }
 
-    public void setMatchId(int matchId) {
-        this.matchId = matchId;
+    public void setPlayerMatchId(int playerMatchId) {
+        this.playerMatchId = playerMatchId;
     }
 
-    public String getMatchDate() {
-        return matchDate;
+    public String getPlayer1Name() {
+        return player1Name;
     }
 
-    public void setMatchDate(String matchDate) {
-        this.matchDate = matchDate;
+    public void setPlayer1Name(String player1Name) {
+        this.player1Name = player1Name;
     }
 
-    public Player getPlayer1() {
-        return player1;
+    public String getPlayer2Name() {
+        return player2Name;
     }
 
-    public void setPlayer1(Player player1) {
-        this.player1 = player1;
+    public void setPlayer2Name(String player2Name) {
+        this.player2Name = player2Name;
     }
 
-    public Player getPlayer2() {
-        return player2;
+    public String getResult() {
+        return result;
     }
 
-    public void setPlayer2(Player player2) {
-        this.player2 = player2;
+    public void setResult(String result) {
+        this.result = result;
     }
 
-    public int getPlayer1Score() {
-        return player1Score;
+    public Game getGame() {
+        return game;
     }
 
-    public void setPlayer1Score(int player1Score) {
-        this.player1Score = player1Score;
+    public void setGame(Game game) {
+        this.game = game;
     }
 
-    public int getPlayer2Score() {
-        return player2Score;
-    }
-
-    public void setPlayer2Score(int player2Score) {
-        this.player2Score = player2Score;
+    @Override
+    public String toString() {
+        return "PlayerMatches{" +
+                "playerMatchId=" + playerMatchId +
+                ", player1Name='" + player1Name + '\'' +
+                ", player2Name='" + player2Name + '\'' +
+                ", result='" + result + '\'' +
+                ", game=" + game +
+                '}';
     }
 }
