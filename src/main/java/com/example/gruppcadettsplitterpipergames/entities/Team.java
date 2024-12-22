@@ -5,6 +5,8 @@
 package com.example.gruppcadettsplitterpipergames.entities;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.engine.internal.Cascade;
 
 import java.util.ArrayList;
@@ -25,12 +27,13 @@ public class Team {
 
 
     // Flera lag till ett spel
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinColumn(name = "game_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Game game;
 
     // Ett lag till flera spelare
-    @OneToMany(mappedBy = "team", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "team", fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private List<Player> players = new ArrayList<>();
 
     //Flera lag till flera matcher

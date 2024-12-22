@@ -22,19 +22,12 @@ public class GameUpdateBox {
 
     public boolean result = false;
 
-    public boolean display(Game gameToUpdate, GamesDAO gamesDAO) throws FileNotFoundException {
+    public boolean display(Game gameToUpdate, GamesDAO gamesDAO) {
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Update Game");
         window.setMinWidth(400);
         window.setMinHeight(500);
-
-        ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
-        Circle logoClip = new Circle(80,80,70);
-        logo.setTranslateY(0);
-        logo.setClip(logoClip);
-        logo.setPreserveRatio(true);
-        logo.setFitHeight(160.0);
 
         Label label = new Label();
         label.setText("Update Game: " + gameToUpdate.getGameName());
@@ -62,7 +55,7 @@ public class GameUpdateBox {
 
 
         VBox layout = new VBox(20);
-        layout.getChildren().addAll(logo,label, gameNameLabel, gameName,update, cancel);
+        layout.getChildren().addAll(label, gameNameLabel, gameName,update, cancel);
         layout.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(layout);

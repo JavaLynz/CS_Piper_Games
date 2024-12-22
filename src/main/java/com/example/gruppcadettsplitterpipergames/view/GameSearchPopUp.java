@@ -66,6 +66,13 @@ public class GameSearchPopUp { //Lynsey Fox
             nameChoice.getItems().add(game.getGameName());
         }
 
+        Button reset = new Button("Reset");
+        reset.setOnAction(e-> {
+            Game gameToGet= null;
+            viewSearchedGame.getItems().clear();
+            idChoice.getSelectionModel().clearSelection();
+            nameChoice.getSelectionModel().clearSelection();
+        });
 
         HBox comboBoxes = new HBox(10);
         comboBoxes.getChildren().addAll(idBoxLabel,idChoice,nameBoxLabel, nameChoice);
@@ -89,7 +96,7 @@ public class GameSearchPopUp { //Lynsey Fox
 
         HBox buttonHolder = new HBox(10);
         buttonHolder.setAlignment(Pos.CENTER);
-        buttonHolder.getChildren().addAll(search, cancel);
+        buttonHolder.getChildren().addAll(search, reset, cancel);
 
         VBox layout = new VBox(20);
         layout.getChildren().addAll(title,label ,comboBoxes, viewSearchedGame,buttonHolder);

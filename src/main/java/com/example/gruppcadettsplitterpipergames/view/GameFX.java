@@ -18,12 +18,14 @@ import javafx.scene.shape.Circle;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.List;
 
 
 public class GameFX {           //Lynsey Fox
     private final GamesDAO gamesDAO;
     private AnchorPane gamesView;
     private final ObservableList<Game> gamesList;
+    TableView<Game> gamesTableView;
 
     public GameFX() throws FileNotFoundException {
         gamesDAO = new GamesDAO();
@@ -48,7 +50,7 @@ public class GameFX {           //Lynsey Fox
         logo.setFitHeight(100);
         BorderPane header = new BorderPane();header.setRight(logo);header.setCenter(title);
 
-        TableView<Game> gamesTableView = createGamesTableView();
+        gamesTableView = createGamesTableView();
         gamesTableView.setPrefHeight(250);
 
 
@@ -59,14 +61,12 @@ public class GameFX {           //Lynsey Fox
 
         Button searchGames = new Button("Search");
         searchGames.setOnAction(e -> {
-            //search game pop up box
             try {
                 new GameSearchPopUp().display(gamesDAO);
             } catch (FileNotFoundException ex) {
                 throw new RuntimeException(ex);
             }
-
-            loadGamesFromDB(gamesTableView);
+            loadGamesFromDB(gamesDAO.getAllGames());
 
         });
 
@@ -74,13 +74,13 @@ public class GameFX {           //Lynsey Fox
         Button addGame = new Button("Add Game");
         addGame.setOnAction(e1 -> {
           if(new AddGameBox(gamesDAO).display()){
-                    loadGamesFromDB(gamesTableView);
+                    loadGamesFromDB(gamesDAO.getAllGames());
           }
         });
 
         Button refreshTable = new Button("Refresh Table");
         refreshTable.setOnAction(e1 -> {
-            loadGamesFromDB(gamesTableView);
+            loadGamesFromDB(gamesDAO.getAllGames());
 
         });
         buttonHolder.getChildren().addAll(refreshTable, searchGames, addGame);
@@ -93,7 +93,7 @@ public class GameFX {           //Lynsey Fox
         gamesView.getChildren().addAll(container);
         gamesView.setPadding(new Insets(15));
         gamesView.setPrefWidth(800);
-        loadGamesFromDB(gamesTableView);
+        loadGamesFromDB(gamesDAO.getAllGames());
 
 
     }
@@ -127,12 +127,8 @@ public class GameFX {           //Lynsey Fox
                     TableColumn idColumn = (TableColumn) gamesTableView.getColumns().get(0);
                     int id = Integer.parseInt ((String) idColumn.getCellObservableValue(getIndex()).getValue());
                     Game gameToUpdate = gamesDAO.getGameById(id);
-                    try {
-                        if(new GameUpdateBox().display(gameToUpdate, gamesDAO)){
-                            loadGamesFromDB(gamesTableView);
-                        }
-                    } catch (FileNotFoundException e) {
-                        throw new RuntimeException(e);
+                    if(new GameUpdateBox().display(gameToUpdate, gamesDAO)){
+                            loadGamesFromDB(gamesDAO.getAllGames());
                     }
                     System.out.println("Game updated: " + gameToUpdate);
 
@@ -157,13 +153,14 @@ public class GameFX {           //Lynsey Fox
                     TableColumn idColumn = (TableColumn) gamesTableView.getColumns().get(0);
                     int id = Integer.parseInt ((String) idColumn.getCellObservableValue(getIndex()).getValue());
                     Game gameToDelete = gamesDAO.getGameById(id);
+
                     try {
                         if(new DeleteConfirmBox().display(gameToDelete, gamesDAO)){
-                            loadGamesFromDB(gamesTableView);
-                        }
+                            loadGamesFromDB(gamesDAO.getAllGames());
+                          }
                     } catch (FileNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
+                      throw new RuntimeException(e);
+                   }
 
                 });
             }
@@ -184,9 +181,9 @@ public class GameFX {           //Lynsey Fox
     }
 
 
-    private void loadGamesFromDB(TableView<Game> gamesTableView) {
-        gamesList.setAll(gamesDAO.getAllGames());
-        gamesTableView.setItems(gamesList);
+    private void loadGamesFromDB(List<Game> gamesToShow) {
+        gamesList.setAll(gamesToShow);
+        this.gamesTableView.setItems(gamesList);
     }
 
     public AnchorPane getGamesView() {

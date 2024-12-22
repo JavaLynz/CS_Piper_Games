@@ -434,7 +434,9 @@ public class PlayerFX {         //Lynsey Fox
 
         Label gameLabel = new Label("Select Game");
         ComboBox addPlayerGame = new ComboBox();
+        List<Game> gamesToSearch = new ArrayList<>();
         HashMap<String, Game> gameHashMap = new HashMap<>();
+
         for(Game game : gamesDAO.getAllGames()){
             gameHashMap.put(game.getGameName(), game);
             addPlayerGame.getItems().add(game.getGameName());
@@ -443,11 +445,15 @@ public class PlayerFX {         //Lynsey Fox
         Label teamLabel = new Label("Optional: Select Team");
         ComboBox addPlayerTeam = new ComboBox();
         HashMap<String, Team> teamHashMap = new HashMap<>();
-        for(Team team : new TeamsDAO().getTeamsByGameNames((List<Game>) addPlayerGame.getSelectionModel().getSelectedItem())){
-            teamHashMap.put(team.getName(), team);
-            addPlayerTeam.getItems().add(team.getName());
-        }
 
+        addPlayerGame.setOnAction(e-> {
+            gamesToSearch.add(gameHashMap.get(addPlayerGame.getSelectionModel().getSelectedItem()));
+
+            for(Team team : new TeamsDAO().getTeamsByGameNames(gamesToSearch)){
+                teamHashMap.put(team.getName(), team);
+                addPlayerTeam.getItems().add(team.getName());
+            }
+        });
         Label errorLabel = new Label();
         errorLabel.setTextFill(Color.RED);
 
@@ -485,17 +491,21 @@ public class PlayerFX {         //Lynsey Fox
                 valid = false;
             }
 
+            if( ((String) addPlayerGame.getSelectionModel().getSelectedItem()).isEmpty()) {
+                addPlayerGame.setStyle("-fx-background-color: red");
+                valid = false;
+            }
+
             if(valid){
                 Player playerToAdd = new Player(givenFirstName,givenNickName,givenLastName);
                 playerDAO.savePlayer(playerToAdd);
+                playerToAdd.setGame(selectedGame);
+                playerDAO.updatePlayer(playerToAdd);
                 if(selectedTeam != null){
                     playerToAdd.setTeam(selectedTeam);
                     playerDAO.updatePlayer(playerToAdd);
                 }
-                if(selectedGame != null){
-                    playerToAdd.setGame(selectedGame);
-                    playerDAO.updatePlayer(playerToAdd);
-                }
+                //testing
                 if(playerDAO.savePlayer(playerToAdd)){
                     System.out.println("Player " + playerToAdd.getFirstName() + " " + playerToAdd.getLastName() + " has been added");
                 }else {
@@ -552,19 +562,11 @@ public class PlayerFX {         //Lynsey Fox
         Button delete = new Button("Delete");
         Button cancel = new Button("Cancel");
         delete.setOnAction(e -> {
-            if(playerDAO.deletePlayer(playerToDelete)) {
-                System.out.println("********************DELETE****************************");
-                System.out.println("********************DELETE****************************");
-                System.out.println("********************DELETE****************************");
-                System.out.println("********************DELETE****************************");
-                System.out.println("********************DELETE****************************");
-                System.out.println("DeletePlayer status: " + playerDAO.deletePlayer(playerToDelete));
-                loadPlayersFromDB(playerDAO.getAllPlayers());
-                window.close();
-            }else{
-                System.out.println("Player not deleted");
-                System.out.println("*******NOT DELETED********");
-            }
+            playerDAO.deletePlayer(playerToDelete);
+            System.out.println("DeletePlayer status: " + playerDAO.deletePlayer(playerToDelete));
+            window.close();
+            loadPlayersFromDB(playerDAO.getAllPlayers());
+
         });
         cancel.setOnAction(e -> {
             result.set(false);

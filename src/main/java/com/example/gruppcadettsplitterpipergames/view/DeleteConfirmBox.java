@@ -38,10 +38,9 @@ public class DeleteConfirmBox {     // Lynsey Fox
         Button delete = new Button("Delete");
         Button cancel = new Button("Cancel");
         delete.setOnAction(e -> {
-            System.out.println("number of games: " + gamesDAO.getAllGames().size());
-            System.out.println("Game to delete: " + gameToDelete.getGameName());
-            gamesDAO.deleteGame(gameToDelete);
-            System.out.println("Delete status: " + gamesDAO.deleteGame(gameToDelete));
+            if(gamesDAO.deleteGameById(gameToDelete.getGameId())) {
+                System.out.println("Delete status: " + gamesDAO.deleteGameById(gameToDelete.getGameId()));
+            }
             answer = true;
             window.close();
         });

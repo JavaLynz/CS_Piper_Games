@@ -1,6 +1,8 @@
 package com.example.gruppcadettsplitterpipergames.entities;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,20 +30,25 @@ public class Player {   //Lynsey Fox
     @Column(name = "email", length = 20, nullable = true)
     private String email;
 
-    @ManyToOne (cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "address_id")
+    @ManyToOne (fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinColumn(name = "address_id",foreignKey = @ForeignKey(name = "fk_address_id"))
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private Address address;
 
-    @ManyToOne (cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "team_id")
+    @ManyToOne (fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinColumn(name = "team_id", referencedColumnName = "team_id", foreignKey = @ForeignKey(name = "fk_team_id"))
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private Team team;
 
-    @OneToMany (mappedBy ="matchId")
+    @OneToMany (mappedBy ="matchId",fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private List<PlayerMatches> playerMatches = new ArrayList<>();
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-    @JoinColumn(name = "game_id")
+    @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
+    @JoinColumn(name = "game_id", foreignKey = @ForeignKey(name = "fk_game_id"))
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Game game;
+
+
 
 
     public Player() {
@@ -50,7 +57,7 @@ public class Player {   //Lynsey Fox
     public Player(String firstName, String nickName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.nickName = "'"+nickName+"'";
+        this.nickName = nickName;
 
     }
 
