@@ -22,6 +22,9 @@ public class LoginPage {
     private StaffDAO staffDAO = new StaffDAO();
     private TabMenu tabMenu = new TabMenu();
 
+    public LoginPage() throws FileNotFoundException {
+    }
+
 
     public Scene getLoginScene(Stage stage) throws FileNotFoundException {
         //Components and styling for basic layout

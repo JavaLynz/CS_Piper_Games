@@ -41,7 +41,7 @@ public class PlayerFX {         //Lynsey Fox
     private TableView<Player> playerTableView;
 
     public PlayerFX() throws FileNotFoundException {
-        playerDAO = new PlayerDAO();
+        this.playerDAO = new PlayerDAO();
 
         playerList = FXCollections.observableArrayList();
         playerView = new AnchorPane();
@@ -292,7 +292,7 @@ public class PlayerFX {         //Lynsey Fox
     }
 
 
-    private void loadPlayersFromDB(List<Player> playersToShow) {
+    public void loadPlayersFromDB(List<Player> playersToShow) {
 
         playerList.setAll(playersToShow);
         this.playerTableView.setItems(playerList);

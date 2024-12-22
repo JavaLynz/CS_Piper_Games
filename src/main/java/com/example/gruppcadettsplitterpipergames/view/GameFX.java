@@ -181,7 +181,7 @@ public class GameFX {           //Lynsey Fox
     }
 
 
-    private void loadGamesFromDB(List<Game> gamesToShow) {
+    public void loadGamesFromDB(List<Game> gamesToShow) {
         gamesList.setAll(gamesToShow);
         this.gamesTableView.setItems(gamesList);
     }

@@ -1,5 +1,7 @@
 package com.example.gruppcadettsplitterpipergames.view;
 
+import com.example.gruppcadettsplitterpipergames.DAO.GamesDAO;
+import com.example.gruppcadettsplitterpipergames.DAO.PlayerDAO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -20,7 +22,11 @@ public class TabMenu{
     private TabPane root = new TabPane();
     private HashMap<Integer,String> currentUser;
     private StaffFX staffFX = new StaffFX(this.root);
+    private PlayerFX playerFX = new PlayerFX();
+    private GameFX gameFX = new GameFX();
 
+    public TabMenu() throws FileNotFoundException {
+    }
 
 
     public Scene tabMenuScene(Stage stage) throws FileNotFoundException{
@@ -35,17 +41,23 @@ public class TabMenu{
         teamMatchesTab.setClosable(false);
         Tab playerMatchesTab = new Tab("PlayerMatches");
         playerMatchesTab.setClosable(false);
-        Tab gamesTab = new Tab("Games", new GameFX().getGamesView());
+        Tab gamesTab = new Tab("Games", gameFX.getGamesView());
         gamesTab.setClosable(false);
-        Tab playerTab = new Tab("Player", new PlayerFX().getPlayerView());
+        gamesTab.setOnSelectionChanged(event -> {gameFX.loadGamesFromDB(new GamesDAO().getAllGames());});
+        Tab playerTab = new Tab("Player", playerFX.getPlayerView());
         playerTab.setClosable(false);
+        playerTab.setOnSelectionChanged(e-> playerFX.loadPlayersFromDB(new PlayerDAO().getAllPlayers()));
 
         this.root.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab, playerMatchesTab, teamMatchesTab);
         this.root.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
         Button logoutBtn = new Button("Logout");
         logoutBtn.setOnMouseClicked(mouseEvent -> {
-            createLogoutPrompt(stage);
+            try {
+                createLogoutPrompt(stage);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         });
 
 
@@ -57,7 +69,7 @@ public class TabMenu{
         return new Scene(this.root);
     }
 
-    public void createLogoutPrompt(Stage mainStage){
+    public void createLogoutPrompt(Stage mainStage) throws FileNotFoundException {
         LoginPage login = new LoginPage();
         Stage stage = new Stage();
         AnchorPane root = new AnchorPane();
