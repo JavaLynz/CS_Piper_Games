@@ -28,8 +28,8 @@ INSERT INTO players(player_first_name, player_last_name, player_nick_name, addre
 INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Lukas', 'Isaksson', 'Lukas',3);
 INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Madelene', 'Hall', 'Madde',9);
 INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Sebastian', 'Hall', 'Sebbe',9);
-INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Dante', 'Eriksson', 'Dante',10);
-INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Carola', 'Eriksson', 'Carola',10);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Dante', 'Eriksson', 'Dante',9);
+INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id) VALUES ('Carola', 'Eriksson', 'Carola',9);
 
 INSERT INTO games(game_name) VALUES ('Battleship');
 INSERT INTO games(game_name) VALUES ('Mario Kart');

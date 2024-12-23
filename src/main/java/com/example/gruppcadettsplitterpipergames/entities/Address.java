@@ -27,10 +27,10 @@ public class Address {          //Lynsey Fox
     @Column (name = "country", length = 20, nullable = false)
     private String country;
 
-    @OneToMany (mappedBy= "address", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany (mappedBy= "address", orphanRemoval = false, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private List<Player> players = new ArrayList<>();
 
-    @OneToMany (mappedBy = "staffId", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @OneToMany (mappedBy = "address", orphanRemoval = false, fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private List<Staff> staff = new ArrayList<>();
 
     public Address(String address, String district, String city, String postcode, String country) {

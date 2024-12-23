@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+
 import java.util.HashMap;
 import java.io.FileNotFoundException;
 
@@ -23,6 +24,15 @@ public class TabMenu{
     private StaffFX staffFX = new StaffFX(this.root);
     private TeamFX teamFX;
     private TeamsDAO teamsDAO = new TeamsDAO();
+    /*private PlayerMatchesFX playerMatchesFX;
+    private TeamMatchesFX teamMatchesFX;*/
+
+
+    /*public TabMenu() {
+        playerMatchesFX = new PlayerMatchesFX();
+        teamMatchesFX = new TeamMatchesFX();
+    }*/
+    private AddressFX addressFX = new AddressFX(this.root);
 
 
 
@@ -43,8 +53,6 @@ public class TabMenu{
             }
         });
         teamTab.setClosable(false);
-
-
         Tab teamMatchesTab = new Tab("TeamMatches");
         teamMatchesTab.setClosable(false);
         Tab playerMatchesTab = new Tab("PlayerMatches");
@@ -116,6 +124,4 @@ public class TabMenu{
     public void setCurrentUser(HashMap<Integer, String> currentUser) {
         this.currentUser = currentUser;
     }
-
-
 }
