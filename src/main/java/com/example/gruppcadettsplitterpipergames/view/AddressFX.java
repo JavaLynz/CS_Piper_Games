@@ -78,10 +78,16 @@ public class AddressFX {
         searchBtn.setOnMouseClicked(mouseEvent -> {
             createPopup(2, null);
         });
+        Button refreshBtn = new Button("Refresh");
+        refreshBtn.setOnMouseClicked(mouseEvent -> {
+            fillTable(addressDAO.getAllAddress());
+        });
+
         addBtn.setPrefSize(200,40);
         searchBtn.setPrefSize(200,40);
+        refreshBtn.setPrefSize(200,40);
 
-        btnContainer.getChildren().addAll(addBtn, searchBtn);
+        btnContainer.getChildren().addAll(addBtn, searchBtn, refreshBtn);
         title.setStyle("-fx-font-size: 24; -fx-font-weight: bold");
         container.setStyle("-fx-background-color: silver; -fx-background-radius:0 0 5 5;");
         container.getChildren().addAll(header, addressTable, btnContainer);
