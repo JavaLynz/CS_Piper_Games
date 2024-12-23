@@ -9,20 +9,20 @@ import java.util.List;
 
 public class TeamMatchesDAO {
 
-    private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("myconfig");
+    private static final EntityManagerFactory ENTITY_MANAGER_FACTORY =
+            Persistence.createEntityManagerFactory("myconfig");
 
-
-    public boolean addTeamMatch(TeamMatches teamMatch) {
+    public boolean saveTeamMatch(TeamMatches match) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction transaction = null;
         try {
             transaction = entityManager.getTransaction();
             transaction.begin();
-            entityManager.persist(teamMatch);
+            entityManager.persist(match);
             transaction.commit();
             return true;
         } catch (Exception e) {
-            System.out.println("Error adding TeamMatch: " + e.getMessage());
+            System.out.println(e.getMessage());
             if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
             }
@@ -31,39 +31,44 @@ public class TeamMatchesDAO {
             entityManager.close();
         }
     }
-
-
-    public TeamMatches getTeamMatchById(int id) {
-        EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
-        try {
-            return entityManager.find(TeamMatches.class, id);
-        } finally {
-            entityManager.close();
-        }
-    }
-
 
     public List<TeamMatches> getAllTeamMatches() {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
-        List<TeamMatches> teamMatches = new ArrayList<>();
+        List<TeamMatches> matches = new ArrayList<>();
         try {
-            TypedQuery<TeamMatches> query = entityManager.createQuery("SELECT tm FROM TeamMatches tm", TeamMatches.class);
-            teamMatches = query.getResultList();
+            TypedQuery<TeamMatches> query = entityManager.createQuery(
+                    "SELECT t FROM TeamMatches t", TeamMatches.class
+            );
+            matches = query.getResultList();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         } finally {
             entityManager.close();
         }
-        return teamMatches;
+        return matches;
     }
 
+    public TeamMatches getTeamMatchById(int id) {
+        EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
+        TeamMatches match = null;
+        try {
+            match = entityManager.find(TeamMatches.class, id);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally {
+            entityManager.close();
+        }
+        return match;
+    }
 
-    public boolean updateTeamMatch(TeamMatches teamMatch) {
+    public boolean updateTeamMatch(TeamMatches match) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction transaction = null;
         try {
             transaction = entityManager.getTransaction();
             transaction.begin();
-            if (!entityManager.contains(teamMatch)) {
-                entityManager.merge(teamMatch);
+            if (!entityManager.contains(match)) {
+                match = entityManager.merge(match);
             }
             transaction.commit();
             return true;
@@ -78,16 +83,16 @@ public class TeamMatchesDAO {
         }
     }
 
-    public boolean removeTeamMatch(TeamMatches teamMatch) {
+    public boolean deleteTeamMatch(TeamMatches match) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction transaction = null;
         try {
             transaction = entityManager.getTransaction();
             transaction.begin();
-            if (!entityManager.contains(teamMatch)) {
-                teamMatch = entityManager.merge(teamMatch);
+            if (!entityManager.contains(match)) {
+                match = entityManager.merge(match);
             }
-            entityManager.remove(teamMatch);
+            entityManager.remove(match);
             transaction.commit();
             return true;
         } catch (Exception e) {
@@ -101,22 +106,19 @@ public class TeamMatchesDAO {
         }
     }
 
-
-    public boolean removeTeamMatchById(int id) {
+    public boolean deleteTeamMatchById(int id) {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         EntityTransaction transaction = null;
         try {
             transaction = entityManager.getTransaction();
             transaction.begin();
-            TeamMatches teamMatch = entityManager.find(TeamMatches.class, id);
-            if (teamMatch != null) {
-                entityManager.remove(teamMatch);
+            TeamMatches match = entityManager.find(TeamMatches.class, id);
+            if (match != null) {
+                entityManager.remove(match);
                 transaction.commit();
                 return true;
-            } else {
-                System.out.println("TeamMatch Id" + id + "finns ej.");
-                return false;
             }
+            return false;
         } catch (Exception e) {
             System.out.println(e.getMessage());
             if (transaction != null && transaction.isActive()) {

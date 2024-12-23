@@ -34,6 +34,7 @@ public class Address {          //Lynsey Fox
     private List<Player> players = new ArrayList<>();
 
     @OneToMany (mappedBy = "address", cascade = {CascadeType.PERSIST,CascadeType.MERGE})
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     private List<Staff> staff = new ArrayList<>();
 
     public Address(String address, String district, String city, String postcode, String country) {

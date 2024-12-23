@@ -1,8 +1,6 @@
-//CF
 package com.example.gruppcadettsplitterpipergames.entities;
 
 import jakarta.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "team_matches")
@@ -19,23 +17,24 @@ public class TeamMatches {
     @Column(name = "team2_name", nullable = false, length = 50)
     private String team2Name;
 
-    @Column(name = "score_team1", nullable = false)
-    private int scoreTeam1;
-
-    @Column(name = "score_team2", nullable = false)
-    private int scoreTeam2;
+    @Column(name = "result", length = 20)
+    private String result;
 
     @Column(name = "match_date", nullable = false)
     private String matchDate;
 
+    @ManyToOne
+    @JoinColumn(name = "game_id", nullable = false)
+    private Game game;
+
     public TeamMatches() {}
 
-    public TeamMatches(String team1Name, String team2Name, int scoreTeam1, int scoreTeam2, String matchDate) {
+    public TeamMatches(String team1Name, String team2Name, String result, String matchDate, Game game) {
         this.team1Name = team1Name;
         this.team2Name = team2Name;
-        this.scoreTeam1 = scoreTeam1;
-        this.scoreTeam2 = scoreTeam2;
+        this.result = result;
         this.matchDate = matchDate;
+        this.game = game;
     }
 
     public int getMatchId() {
@@ -62,20 +61,12 @@ public class TeamMatches {
         this.team2Name = team2Name;
     }
 
-    public int getScoreTeam1() {
-        return scoreTeam1;
+    public String getResult() {
+        return result;
     }
 
-    public void setScoreTeam1(int scoreTeam1) {
-        this.scoreTeam1 = scoreTeam1;
-    }
-
-    public int getScoreTeam2() {
-        return scoreTeam2;
-    }
-
-    public void setScoreTeam2(int scoreTeam2) {
-        this.scoreTeam2 = scoreTeam2;
+    public void setResult(String result) {
+        this.result = result;
     }
 
     public String getMatchDate() {
@@ -84,5 +75,13 @@ public class TeamMatches {
 
     public void setMatchDate(String matchDate) {
         this.matchDate = matchDate;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 }

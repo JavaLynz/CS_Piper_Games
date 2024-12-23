@@ -22,6 +22,15 @@ public class TabMenu{
     private TabPane root = new TabPane();
     private HashMap<Integer,String> currentUser;
     private StaffFX staffFX = new StaffFX(this.root);
+    /*private PlayerMatchesFX playerMatchesFX;
+    private TeamMatchesFX teamMatchesFX;*/
+
+
+    /*public TabMenu() {
+        playerMatchesFX = new PlayerMatchesFX();
+        teamMatchesFX = new TeamMatchesFX();
+    }*/
+    private AddressFX addressFX = new AddressFX(this.root);
     private PlayerFX playerFX = new PlayerFX();
     private GameFX gameFX = new GameFX();
 
@@ -32,6 +41,7 @@ public class TabMenu{
     public Scene tabMenuScene(Stage stage) throws FileNotFoundException{
         stage.setResizable(true);
         staffFX.setCurrentUser(this.currentUser);
+        staffFX.setAddressFX(addressFX);
 
         Tab staffTab = new Tab("Staff", staffFX.getStaffTab());
         staffTab.setClosable(false);
@@ -47,17 +57,14 @@ public class TabMenu{
         Tab playerTab = new Tab("Player", playerFX.getPlayerView());
         playerTab.setClosable(false);
         playerTab.setOnSelectionChanged(e-> playerFX.loadPlayersFromDB(new PlayerDAO().getAllPlayers()));
+        Tab addressTab = new Tab("Address", addressFX.getAddressTab());
 
-        this.root.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab, playerMatchesTab, teamMatchesTab);
+        this.root.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab/*, playerMatchesTab, teamMatchesTab*/, addressTab);
         this.root.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
         Button logoutBtn = new Button("Logout");
         logoutBtn.setOnMouseClicked(mouseEvent -> {
-            try {
-                createLogoutPrompt(stage);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            createLogoutPrompt(stage);
         });
 
 

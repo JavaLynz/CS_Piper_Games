@@ -49,8 +49,6 @@ public class Player {   //Lynsey Fox
     private Game game;
 
 
-
-
     public Player() {
     }
 
