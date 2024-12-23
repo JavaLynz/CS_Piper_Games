@@ -44,6 +44,7 @@ public class TabMenu{
     public Scene tabMenuScene(Stage stage) throws FileNotFoundException{
         teamFX = new TeamFX();
 
+        root.setPrefWidth(1100);
         stage.setResizable(true);
         staffFX.setCurrentUser(this.currentUser);
 
@@ -70,12 +71,16 @@ public class TabMenu{
         playerTab.setOnSelectionChanged(e-> playerFX.loadPlayersFromDB(new PlayerDAO().getAllPlayers()));
         Tab addressTab = new Tab("Address", addressFX.getAddressTab());
 
-        this.root.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab, playerMatchesTab, teamMatchesTab);
+        this.root.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab, playerMatchesTab, teamMatchesTab, addressTab);
         this.root.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
         Button logoutBtn = new Button("Logout");
         logoutBtn.setOnMouseClicked(mouseEvent -> {
-            createLogoutPrompt(stage);
+            try {
+                createLogoutPrompt(stage);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         });
 
 

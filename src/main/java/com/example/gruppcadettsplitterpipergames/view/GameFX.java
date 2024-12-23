@@ -52,6 +52,7 @@ public class GameFX {           //Lynsey Fox
 
         gamesTableView = createGamesTableView();
         gamesTableView.setPrefHeight(250);
+        gamesTableView.setMaxWidth(600);
 
 
         container.getChildren().addAll(logo, title, gamesTableView,buttonHolder);
