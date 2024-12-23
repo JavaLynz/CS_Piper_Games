@@ -44,81 +44,76 @@ import java.util.List;
 public class TeamFX {
 
     private BorderPane view;
-    private TeamsDAO teamsDAO;
+    private TeamsDAO teamsDAO = new TeamsDAO();
     private GamesDAO gameDAO;
     private PlayerDAO playerDAO;
     private ObservableList<Team> teamList;
-
+    private TableView<Team> teamTable;
 
     public TeamFX() throws FileNotFoundException {
         gameDAO = new GamesDAO();
         teamsDAO = new TeamsDAO();
         playerDAO = new PlayerDAO();
+        teamTable = new TableView<>();
+
         view = new BorderPane();
         teamList = FXCollections.observableArrayList();
-        ListView<Player> playersInTeamList = new ListView();
 
-
-        HBox buttonsBox = new HBox(20);
-        HBox tableBox = new HBox(20);
-        VBox playerListBox = new VBox(5);
+        ListView<Player> playersInTeamList = new ListView<>();
 
         Button btnAdd = new Button("Add new team");
-        btnAdd.setPrefSize(200, 50);
+        btnAdd.setPrefSize(150, 50);
         Button btnUpdate = new Button("Update team");
-        btnUpdate.setPrefSize(200, 50);
+        btnUpdate.setPrefSize(150, 50);
         Button btnDelete = new Button("Delete Team");
-        btnDelete.setPrefSize(200, 50);
+        btnDelete.setPrefSize(150, 50);
         Button btnRead = new Button("Filter by Game");
-        btnRead.setPrefSize(200, 50);
-        buttonsBox.getChildren().addAll(btnAdd, btnUpdate, btnDelete, btnRead);
-        view.setBottom(buttonsBox);
+        btnRead.setPrefSize(150, 50);
+        Button refreshButton = new Button("Refresh");
+        refreshButton.setPrefSize(150, 50);
+
+        HBox buttonsBox = new HBox(20);
+        buttonsBox.getChildren().addAll(btnAdd, btnUpdate, btnDelete, btnRead, refreshButton);
         buttonsBox.setPadding(new Insets(0, 0, 40, 40));
+        view.setBottom(buttonsBox);
 
 
-        view.setLeft(tableBox);
-        tableBox.setAlignment(Pos.TOP_LEFT);
-        view.setStyle("-fx-background-color:silver");
-
+        HBox tableBox = new HBox(20);
         TableView<Team> teamTable = createTableView();
         teamTable.setPrefWidth(800);
-        tableBox.setFillHeight(false);
+        teamTable.setStyle(" -fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 2;");
 
-
-        ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
-        Circle logoClip = new Circle(50,50,40);
-        logo.setClip(logoClip);
-        logo.setPreserveRatio(true);
-        logo.setFitHeight(100);
-        Text title = new Text("Teams");
-        title.setStyle("-fx-font-size: 24;-fx-font-weight: bold;");
-        BorderPane header = new BorderPane();
-        header.setRight(logo);
-        header.setCenter(title);
-
-        view.setTop(header);
-
+        VBox playerListBox = new VBox(5);
         Label emptyPlayerListLabel = new Label("No players to view");
         playersInTeamList.setPlaceholder(emptyPlayerListLabel);
         playersInTeamList.setPrefWidth(150);
         playersInTeamList.setPrefHeight(300);
-
-
-        //playersInTeamList.setMaxHeight(250);
-        // playersInTeamList.setMaxWidth(200);
         playersInTeamList.setStyle("-fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 2;");
-        teamTable.setStyle(" -fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 2;");
 
         Label playerListLabel = new Label("Players in selected team");
         playerListLabel.setStyle("-fx-font-weight: bold");
+
         playerListBox.setAlignment(Pos.TOP_CENTER);
-        playerListBox.setPadding(new Insets(0, 0, 0, 0));
+        playerListBox.getChildren().addAll(playerListLabel, playersInTeamList);
 
-
-
-        playerListBox.getChildren().addAll(playersInTeamList);
+        tableBox.setAlignment(Pos.TOP_LEFT);
+        tableBox.setFillHeight(false);
         tableBox.getChildren().addAll(teamTable, playerListBox);
-        teamTable.setPrefHeight(300);
+        view.setLeft(tableBox);
+
+        ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
+        Circle logoClip = new Circle(50, 50, 40);
+        logo.setClip(logoClip);
+        logo.setPreserveRatio(true);
+        logo.setFitHeight(100);
+
+        Text title = new Text("Teams");
+        title.setStyle("-fx-font-size: 24;-fx-font-weight: bold;");
+
+        BorderPane header = new BorderPane();
+        header.setRight(logo);
+        header.setCenter(title);
+        view.setTop(header);
 
         loadTeamsFromDatabase(teamTable);
 
@@ -143,6 +138,12 @@ public class TeamFX {
                     setText(player.getFirstName() + " " + player.getLastName());
                 }
             }
+        });
+
+
+
+        refreshButton.setOnAction(event -> {
+            loadTeamsFromDatabase(teamTable);
         });
 
 
@@ -188,7 +189,7 @@ public class TeamFX {
 
 
             GridPane gridPane = new GridPane();
-            gridPane.setHgap(20);
+            gridPane.setHgap(10);
             gridPane.setVgap(10);
 
             gridPane.add(new Label("Team Name"), 0, 0);
@@ -204,8 +205,8 @@ public class TeamFX {
             HBox buttonBox = new HBox(10, buttonAdd, buttonCancel);
             buttonBox.setAlignment(Pos.CENTER_RIGHT);
 //            gridPane.add(buttonBox, 0, 2);
-            gridPane.add(buttonAdd, 0, 2);
-            gridPane.add(buttonCancel, 2, 2);
+            gridPane.add(buttonAdd, 0, 3);
+            gridPane.add(buttonCancel, 2, 3);
 
             buttonAdd.setOnAction(e -> {
                 String teamName = teamNameField.getText();
@@ -305,75 +306,101 @@ public class TeamFX {
 
         // DELETE
         btnDelete.setOnAction(event -> {
-            System.out.println("Delete team");
+           Team selectedTeam = teamTable.getSelectionModel().getSelectedItem();
+           if(selectedTeam != null) {
+               Dialog<Boolean> dialog = new Dialog<>();
+               dialog.setTitle("Delete team");
+               dialog.setHeaderText("Do you want to delete the selected team?");
 
-            Dialog<Boolean> dialog = new Dialog<>();
-            dialog.setTitle("Delete team");
-            dialog.setHeaderText("Choose team to delete");
+               Button btnDeleteTeam = new Button("Delete");
+               Button btnCancel = new Button("Cancel");
 
-            ComboBox<Team> teamCombo = new ComboBox<>();
-            teamCombo.setPromptText("Select a team to delete");
-            teamCombo.getItems().addAll(teamsDAO.getAllTeams());
+               GridPane gridPane = new GridPane();
+               gridPane.setHgap(20);
+               dialog.getDialogPane().setContent(gridPane);
+               gridPane.add(btnDeleteTeam, 1, 0);
+               gridPane.add(btnCancel,3 , 0);
+
+               btnDeleteTeam.setOnAction(e -> {
+                   teamsDAO.deleteTeam(selectedTeam);
+                   teamTable.getItems().remove(selectedTeam);
+                   teamTable.refresh();
+                   System.out.println("Team " + selectedTeam.getName() + " deleted");
+                   dialog.setResult(Boolean.TRUE);
+                   dialog.close();
+               });
+
+               btnCancel.setOnAction(e -> {
+                   System.out.println("Cancel");
+                   dialog.setResult(Boolean.TRUE);
+                   dialog.close();
+               });
+
+                dialog.showAndWait();
+           } else {
+               System.out.println("No team selected");
+           }
+            });
 
 
             // CellFactory för att skriva ut lagnamnen i ComboBox
-            teamCombo.setCellFactory(param -> new ListCell<Team>() {
-                @Override
-                protected void updateItem(Team team, boolean empty) {
-                    super.updateItem(team, empty);
-                    if (empty || team == null) {
-                        setText(null);
-                    } else {
-                        setText(team.getName());
-                    }
-                }
-            });
+//            teamCombo.setCellFactory(param -> new ListCell<Team>() {
+//                @Override
+//                protected void updateItem(Team team, boolean empty) {
+//                    super.updateItem(team, empty);
+//                    if (empty || team == null) {
+//                        setText(null);
+//                    } else {
+//                        setText(team.getName());
+//                    }
+//                }
+//            });
+//
+//            teamCombo.setButtonCell((new ListCell<Team>() {
+//                @Override
+//                protected void updateItem(Team team, boolean empty) {
+//                    super.updateItem(team, empty);
+//                    if (empty || team == null) {
+//                        setText(null);
+//                    } else {
+//                        setText(team.getName());
+//                    }
+//                }
+//            }));
 
-            teamCombo.setButtonCell((new ListCell<Team>() {
-                @Override
-                protected void updateItem(Team team, boolean empty) {
-                    super.updateItem(team, empty);
-                    if (empty || team == null) {
-                        setText(null);
-                    } else {
-                        setText(team.getName());
-                    }
-                }
-            }));
 
-
-            GridPane gridPane = new GridPane();
-            gridPane.setHgap(20);
-            gridPane.setVgap(10);
-            gridPane.add(teamCombo, 1, 0);
-
-            Button btnDeleteTeam = new Button("Delete team");
-            Button btnCancelDeleteTeam = new Button("Close");
-
-            dialog.getDialogPane().setContent(gridPane);
-            gridPane.add(btnDeleteTeam, 1, 3);
-            gridPane.add(btnCancelDeleteTeam, 2, 3);
-
-            btnCancelDeleteTeam.setOnAction(e -> {
-                System.out.println("Cancel");
-                dialog.setResult(Boolean.TRUE);
-                dialog.close();
-            });
-
-            btnDeleteTeam.setOnAction(e -> {
-                Team teamToDelete = teamCombo.getValue();
-                if (teamToDelete != null) {
-                    teamsDAO.deleteTeam(teamToDelete);
-                    teamTable.getItems().removeIf(t -> t.getId() == teamToDelete.getId());
-                    teamTable.refresh();
-                    System.out.println("Team " + teamToDelete + " was deleted!");
-                    dialog.close();
-                } else {
-                    System.out.println("No team selected");
-                }
-            });
-            dialog.showAndWait();
-        });
+//            GridPane gridPane = new GridPane();
+//            gridPane.setHgap(20);
+//            gridPane.setVgap(10);
+////            gridPane.add(teamCombo, 1, 0);
+//
+//            Button btnDeleteTeam = new Button("Delete team");
+//            Button btnCancelDeleteTeam = new Button("Close");
+//
+//            dialog.getDialogPane().setContent(gridPane);
+//            gridPane.add(btnDeleteTeam, 1, 3);
+//            gridPane.add(btnCancelDeleteTeam, 2, 3);
+//
+//            btnCancelDeleteTeam.setOnAction(e -> {
+//                System.out.println("Cancel");
+//                dialog.setResult(Boolean.TRUE);
+//                dialog.close();
+//            });
+//
+//            btnDeleteTeam.setOnAction(e -> {
+//                Team teamToDelete = teamCombo.getValue();
+//                if (teamToDelete != null) {
+//                    teamsDAO.deleteTeam(teamToDelete);
+//                    teamTable.getItems().removeIf(t -> t.getId() == teamToDelete.getId());
+//                    teamTable.refresh();
+//                    System.out.println("Team " + teamToDelete + " was deleted!");
+//                    dialog.close();
+//                } else {
+//                    System.out.println("No team selected");
+//                }
+//            });
+//            dialog.showAndWait();
+//        });
 
         // UPDATE
         btnUpdate.setOnAction(event -> {
@@ -480,7 +507,7 @@ public class TeamFX {
                 Team teamToUpdate = teamCombo.getValue();
 
 
-                ListView<Player> playersInTeam = new ListView();
+                ListView<Player> playersInTeam = new ListView<>();
                 playersInTeam.getItems().addAll(teamToUpdate.getPlayers());
                 playersInTeam.setCellFactory(param -> new ListCell<Player>() {
                     @Override
@@ -495,7 +522,7 @@ public class TeamFX {
                 });
 
 
-                ListView<Player> playersList = new ListView();
+                ListView<Player> playersList = new ListView<>();
                 playersList.getItems().addAll(playerDAO.getAllPlayers());
                 playersList.setCellFactory(param -> new ListCell<Player>() {
                     @Override
@@ -559,14 +586,19 @@ public class TeamFX {
             });
 
             btnUpdateTeam.setOnAction(e -> {
+                String newName = changeNameField.getText().trim();  // Tar bort eventuella mellanslag innan och efter texten
                 Team teamToUpdate = teamCombo.getValue();
                 Game selectedGame = gameCombo.getValue();
-                if (teamToUpdate == null || selectedGame == null) {
-                    System.out.println("Invalid");
 
-                } else {
-                    teamToUpdate.setName(changeNameField.getText());
-                    teamToUpdate.setGame(selectedGame);
+                if (teamToUpdate == null) {
+                    System.out.println("You must choose a team");
+                } else if (teamToUpdate != null) {
+                    if (!newName.isEmpty()) {
+                        teamToUpdate.setName(newName);
+                    }
+                    if (selectedGame != null) {
+                        teamToUpdate.setGame(selectedGame);
+                    }
                     teamsDAO.updateTeam(teamToUpdate);
                     teamTable.getItems().setAll(teamsDAO.getAllTeams());
                     System.out.println("Team " + teamToUpdate + " has been updated!");
@@ -612,7 +644,7 @@ public class TeamFX {
         return teamTable;
     }
 
-    private void loadTeamsFromDatabase(TableView<Team> teamTable) {
+    public void loadTeamsFromDatabase(TableView<Team> teamTable) {
         teamList.clear();
         teamList.setAll(teamsDAO.getAllTeams());
         teamTable.setItems(teamList);
@@ -625,5 +657,13 @@ public class TeamFX {
 
     public void setView(BorderPane view) {
         this.view = view;
+    }
+
+    public TableView<Team> getTeamTable() {
+        return teamTable;
+    }
+
+    public void setTeamTable(TableView<Team> teamTable) {
+        this.teamTable = teamTable;
     }
 }

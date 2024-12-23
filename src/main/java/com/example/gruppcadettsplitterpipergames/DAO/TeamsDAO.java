@@ -122,7 +122,6 @@ public class TeamsDAO {
         EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
         List<Team> teams = new ArrayList<>();
         try {
-            // JPQL query to filter teams by multiple game names
             String queryString = "SELECT t FROM Team t WHERE t.game IN :selectedGames";
             TypedQuery<Team> query = entityManager.createQuery(queryString, Team.class);
             query.setParameter("selectedGames", selectedGames);
