@@ -45,4 +45,9 @@ INSERT INTO teams(team_name, game_id) VALUES ("Natus Vincere",3);
 INSERT INTO teams(team_name, game_id) VALUES ("FaZe Clan", 4);
 INSERT INTO teams(team_name, game_id) VALUES ("Evil Geniuses", 4);
 
+update players set team_id = 1 where player_id in (1,2);
+update players set team_id = 2 where player_id in (3,4);
+update players set team_id = 3 where player_id in (5,6);
+update players set team_id = 4 where player_id in (7,8);
+
 

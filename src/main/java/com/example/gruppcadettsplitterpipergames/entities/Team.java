@@ -25,12 +25,12 @@ public class Team {
 
 
     // Flera lag till ett spel
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
     // Ett lag till flera spelare
-    @OneToMany(mappedBy = "team", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "team", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Player> players = new ArrayList<>();
 
     //Flera lag till flera matcher
@@ -101,4 +101,14 @@ public class Team {
         this.teamMatches = teamMatches;
     }
 
+    @Override
+    public String toString() {
+        return "Team{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", game=" + game +
+                ", players=" + players +
+                ", teamMatches=" + teamMatches +
+                '}';
+    }
 }
