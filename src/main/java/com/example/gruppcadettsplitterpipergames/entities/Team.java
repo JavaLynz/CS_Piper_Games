@@ -27,7 +27,7 @@ public class Team {
 
 
     // Flera lag till ett spel
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "game_id", nullable = false)
 
     private Game game;
