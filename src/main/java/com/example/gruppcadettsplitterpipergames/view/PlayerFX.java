@@ -1,5 +1,6 @@
 package com.example.gruppcadettsplitterpipergames.view;
 
+import com.example.gruppcadettsplitterpipergames.DAO.AddressDAO;
 import com.example.gruppcadettsplitterpipergames.DAO.GamesDAO;
 import com.example.gruppcadettsplitterpipergames.DAO.PlayerDAO;
 import com.example.gruppcadettsplitterpipergames.DAO.TeamsDAO;
@@ -202,8 +203,9 @@ public class PlayerFX {         //Lynsey Fox
                     TableColumn idColumn = playerTableView.getColumns().get(0);
                     int id = Integer.parseInt ((String) idColumn.getCellObservableValue(getIndex()).getValue());
                     Player playerToDelete = playerDAO.getPlayerById(id);
-                    playerToDelete.setAddress(null);
-                    playerDAO.updatePlayer(playerToDelete);
+                    //debugging line
+                    System.out.println("Player to be deleted: " + playerToDelete.toString());
+                    playerDAO.deletePlayerById(playerToDelete.getPlayerId());
                     if(deleteConfirmBox(playerToDelete).get()){
                             loadPlayersFromDB(playerDAO.getAllPlayers());
                     }
@@ -240,28 +242,138 @@ public class PlayerFX {         //Lynsey Fox
         label.setStyle("-fx-font-size: 20");
         label.setWrapText(true);
 
-        Label firstNameLabel = new Label("Update player's first name: " + playerToUpdate.getFirstName());
+        Label firstNameLabel = new Label("Update player's first name: ");
         TextField firstName = new TextField();
-        firstName.setPromptText(playerToUpdate.getFirstName());
+        firstName.setText(playerToUpdate.getFirstName());
         firstName.setMaxWidth(100);
+        HBox row1 = new HBox(firstNameLabel, firstName);
 
-        Label nickNameLabel = new Label("Update player's nick name: " + playerToUpdate.getNickName());
+        Label nickNameLabel = new Label("Update player's nick name: ");
         TextField nickName = new TextField();
+        nickName.setText(playerToUpdate.getNickName());
         nickName.setMaxWidth(100);
+        HBox row2 = new HBox(nickNameLabel, nickName);
 
-        Label lastNameLabel = new Label("Update player's last name: "+ playerToUpdate.getLastName());
+        Label lastNameLabel = new Label("Update player's last name: ");
         TextField lastName = new TextField();
+        lastName.setText(playerToUpdate.getLastName());
         lastName.setMaxWidth(100);
+        HBox row3 = new HBox(lastNameLabel, lastName);
+
+        Label chooseGameLabel = new Label("Choose a game: ");
+        ComboBox<String> chooseGame = new ComboBox<>();
+        chooseGame.getSelectionModel().select(playerToUpdate.getGame().getGameName());
+        chooseGame.setMaxWidth(100);
+        List<Game> gamesToSearch = new ArrayList<>();
+        HashMap<String, Game> gameHashMap = new HashMap<>();
+
+        for(Game game : gamesDAO.getAllGames()){
+            gameHashMap.put(game.getGameName(), game);
+            chooseGame.getItems().add(game.getGameName());
+        }
+
+
+
+        Label chooseTeamLabel = new Label("Choose a team (Optional): ");
+        ComboBox<String> chooseTeam = new ComboBox<>();
+        chooseTeam.setMaxWidth(100);
+        if(playerToUpdate.getTeam() != null && playerToUpdate.getTeam().getName() != null){
+            chooseTeam.getSelectionModel().select(playerToUpdate.getTeam().getName());
+        }
+        HashMap<String, Team> teamHashMap = new HashMap<>();
+
+        Button confirmGame = new Button("Confirm game choice");
+        confirmGame.setOnAction(e1 -> {
+            gamesToSearch.add(gameHashMap.get(chooseGame.getSelectionModel().getSelectedItem()));
+            System.out.println("Game chosen: "+gameHashMap.get(chooseGame.getSelectionModel().getSelectedItem()).getGameName());
+        });
+
+            for(Team team : new TeamsDAO().getTeamsByGameNames(gamesToSearch)){
+                teamHashMap.put(team.getName(), team);
+                chooseTeam.getItems().add(team.getName());
+            }
+
+        HBox row4 = new HBox(chooseGameLabel, chooseGame, confirmGame);
+        HBox row5 = new HBox(chooseTeamLabel, chooseTeam);
+
+        Label chooseAddressLabel = new Label("Choose an existing address: ");
+        chooseAddressLabel.setMaxWidth(100);
+        ComboBox<String> chooseAddress = new ComboBox<>();
+        chooseAddress.setMaxWidth(100);
+        HashMap<String, Address> addressHashMap = new HashMap<>();
+        for(Address address: new AddressDAO().getAllAddress()){
+            addressHashMap.put(address.getAddress(), address);
+            chooseAddress.getItems().add(address.getAddress());
+        }
+
+        HBox row6 = new HBox(chooseAddressLabel, chooseAddress);
+
+        Label addNewAddressLabel = new Label("Add a new address: ");
+
+        Label newStreetAddressLabel = new Label("Add a new street address: ");
+        newStreetAddressLabel.setMaxWidth(100);
+        TextField newStreetAddress = new TextField();
+        newStreetAddress.setMaxWidth(100);
+        HBox row7 = new HBox(newStreetAddressLabel, newStreetAddress);
+
+        Label newDistrictLabel = new Label("Choose a district: ");
+        newDistrictLabel.setMaxWidth(100);
+        TextField newDistrict = new TextField();
+        newDistrict.setMaxWidth(100);
+
+        HBox row8 = new HBox(newDistrictLabel, newDistrict);
+
+        Label newCityLabel = new Label("Enter a city: ");
+        newCityLabel.setMaxWidth(100);
+        TextField newCity = new TextField();
+        newCity.setMaxWidth(100);
+
+        HBox row9 = new HBox(newCityLabel, newCity);
+
+        Label newPostcodeLabel = new Label("Enter a postcode: ");
+        newPostcodeLabel.setMaxWidth(100);
+        TextField newPostcode = new TextField();
+        newPostcode.setMaxWidth(100);
+
+        HBox row10 = new HBox(newPostcodeLabel, newPostcode);
+
+        Label newCountryLabel = new Label("Enter a country: ");
+        newCountryLabel.setMaxWidth(100);
+        TextField newCountry = new TextField();
+        newCountry.setMaxWidth(100);
+
+        HBox row11 = new HBox(newCountryLabel, newCountry);
+
+        Label newEmailLabel = new Label("Enter a email: ");
+        newEmailLabel.setMaxWidth(100);
+        TextField newEmail = new TextField();
+        newEmail.setMaxWidth(100);
+
+        HBox row12 = new HBox(newEmailLabel, newEmail);
+
 
         Button update = new Button("Update");
         update.setDefaultButton(true);
         update.setOnAction(e -> {
-            if(!firstName.getText().isEmpty()){
-                playerToUpdate.setFirstName(firstName.getText());
-            } else if (!nickName.getText().isEmpty()) {
-                playerToUpdate.setNickName(nickName.getText());
-            } else if (!lastName.getText().isEmpty()) {
-                playerToUpdate.setLastName(lastName.getText());
+            playerToUpdate.setFirstName(firstName.getText().trim());
+            playerToUpdate.setNickName(nickName.getText());
+            playerToUpdate.setLastName(lastName.getText());
+            playerToUpdate.setGame(gameHashMap.get(chooseGame.getSelectionModel().getSelectedItem()));
+            playerToUpdate.setTeam(teamHashMap.get(chooseTeam.getSelectionModel().getSelectedItem()));
+            playerToUpdate.setEmail(newEmail.getText());
+            //set Address if choosing from existing
+            if(chooseAddress.getSelectionModel().getSelectedItem() != null){
+                playerToUpdate.setAddress(addressHashMap.get(chooseAddress.getSelectionModel().getSelectedItem()));
+            }else{
+                //save new address
+                Address newAddress = new Address();
+                newAddress.setAddress(newStreetAddress.getText());
+                newAddress.setDistrict(newDistrict.getText());
+                newAddress.setCity(newCity.getText());
+                newAddress.setPostcode(newPostcode.getText());
+                newAddress.setCountry(newCountry.getText());
+                new AddressDAO().saveAddress(newAddress);
+                playerToUpdate.setAddress(newAddress);
             }
 
             playerDAO.updatePlayer(playerToUpdate);
@@ -278,7 +390,7 @@ public class PlayerFX {         //Lynsey Fox
 
 
         VBox layout = new VBox(20);
-        layout.getChildren().addAll(label, firstNameLabel, firstName,nickNameLabel, nickName, lastNameLabel, lastName,update, cancel);
+        layout.getChildren().addAll(label,row1, row2, row3,row4,row5, row6, addNewAddressLabel,row7,row8,row9,row10,row11,row12,update, cancel);
         layout.setAlignment(Pos.CENTER);
 
         AnchorPane.setLeftAnchor(layout, 5.0);
@@ -435,7 +547,7 @@ public class PlayerFX {         //Lynsey Fox
         getLastName.setMaxWidth(100);
 
         Label gameLabel = new Label("Select Game");
-        ComboBox addPlayerGame = new ComboBox();
+        ComboBox<String> addPlayerGame = new ComboBox<String>();
         List<Game> gamesToSearch = new ArrayList<>();
         HashMap<String, Game> gameHashMap = new HashMap<>();
 
@@ -448,7 +560,8 @@ public class PlayerFX {         //Lynsey Fox
         ComboBox addPlayerTeam = new ComboBox();
         HashMap<String, Team> teamHashMap = new HashMap<>();
 
-        addPlayerGame.setOnAction(e-> {
+        Button confirmGameButton = new Button("Confirm Game");
+        confirmGameButton.setOnAction(e-> {
             gamesToSearch.add(gameHashMap.get(addPlayerGame.getSelectionModel().getSelectedItem()));
 
             for(Team team : new TeamsDAO().getTeamsByGameNames(gamesToSearch)){
@@ -493,11 +606,6 @@ public class PlayerFX {         //Lynsey Fox
                 valid = false;
             }
 
-            if( ((String) addPlayerGame.getSelectionModel().getSelectedItem()).isEmpty()) {
-                addPlayerGame.setStyle("-fx-background-color: red");
-                valid = false;
-            }
-
             if(valid){
                 Player playerToAdd = new Player(givenFirstName,givenNickName,givenLastName);
                 playerDAO.savePlayer(playerToAdd);
@@ -531,7 +639,7 @@ public class PlayerFX {         //Lynsey Fox
 
 
         VBox layout = new VBox(20);
-        layout.getChildren().addAll(label, firstNameLabel, getFirstName, nickNameLabel,getNickName, lastNameLabel, getLastName,gameLabel, addPlayerGame, teamLabel, addPlayerTeam, save, cancel);
+        layout.getChildren().addAll(label, firstNameLabel, getFirstName, nickNameLabel,getNickName, lastNameLabel, getLastName,gameLabel, addPlayerGame, confirmGameButton, teamLabel, addPlayerTeam, save, cancel);
         layout.setAlignment(Pos.CENTER);
 
         AnchorPane.setLeftAnchor(layout, 5.0);
@@ -545,7 +653,7 @@ public class PlayerFX {         //Lynsey Fox
         return result;
     }
 
-
+        //den har funktion har fungerat tidigare men inte längre, jag har försökt att justera flera saker men inte lyckades
     public AtomicBoolean deleteConfirmBox(Player playerToDelete){
         AtomicBoolean result = new AtomicBoolean(false);
         Stage window = new Stage();

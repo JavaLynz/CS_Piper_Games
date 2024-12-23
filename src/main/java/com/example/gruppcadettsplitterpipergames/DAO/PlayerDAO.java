@@ -137,7 +137,12 @@ public boolean deletePlayerById(int id) {
         transaction = entityManager.getTransaction();
         transaction.begin();
         Player playerToDelete = entityManager.find(Player.class, id);
-        entityManager.remove(entityManager.contains(playerToDelete) ? playerToDelete : playerToDelete);
+        //debugging line
+        System.out.println(playerToDelete.toString());
+        if (!entityManager.contains(playerToDelete)) {
+            playerToDelete = entityManager.merge(playerToDelete);
+        }
+        entityManager.remove(playerToDelete);
         transaction.commit();
         return true;
     }catch (Exception e) {
