@@ -202,6 +202,8 @@ public class PlayerFX {         //Lynsey Fox
                     TableColumn idColumn = playerTableView.getColumns().get(0);
                     int id = Integer.parseInt ((String) idColumn.getCellObservableValue(getIndex()).getValue());
                     Player playerToDelete = playerDAO.getPlayerById(id);
+                    playerToDelete.setAddress(null);
+                    playerDAO.updatePlayer(playerToDelete);
                     if(deleteConfirmBox(playerToDelete).get()){
                             loadPlayersFromDB(playerDAO.getAllPlayers());
                     }
