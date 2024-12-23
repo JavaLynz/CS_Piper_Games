@@ -393,25 +393,31 @@ public class AddressFX {
         Text alert = new Text();
         alert.setTextAlignment(TextAlignment.CENTER);
         container.getChildren().add(alert);
-        alert.setText("Are you sure you want to delete:\n\n" +
-                address.getAddress()+ "\n" +
-                address.getDistrict()+ "\n" +
-                address.getCity()+ "\n" +
-                address.getPostcode()+ "\n" +
-                address.getCountry());
-        Button deleteBtn = new Button("Delete");
-        deleteBtn.setOnMouseClicked(mouseEvent -> {
-            try {
-                System.out.println("Deleted Here");
-                addressDAO.deleteAddress(address);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
+        if (!address.getStaff().isEmpty() || !address.getPlayers().isEmpty()){
+            alert.setText("There are currently " + (address.getStaff().size() + address.getPlayers().size()) +
+                    " people living at this address.\n\n" +
+                    "Unable to delete address");
+        } else {
+            alert.setText("Are you sure you want to delete:\n\n" +
+                    address.getAddress()+ "\n" +
+                    address.getDistrict()+ "\n" +
+                    address.getCity()+ "\n" +
+                    address.getPostcode()+ "\n" +
+                    address.getCountry());
+            Button deleteBtn = new Button("Delete");
+            deleteBtn.setOnMouseClicked(mouseEvent -> {
+                try {
+                    System.out.println("Deleted Here");
+                    addressDAO.deleteAddress(address);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
 
-            stage.close();
-            fillTable(addressDAO.getAllAddress());
-        });
-        container.getChildren().addAll(deleteBtn);
+                stage.close();
+                fillTable(addressDAO.getAllAddress());
+            });
+            container.getChildren().add(deleteBtn);
+        }
         root.setPrefHeight(100);
         return container;
     }
