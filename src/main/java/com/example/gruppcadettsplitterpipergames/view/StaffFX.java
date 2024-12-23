@@ -12,11 +12,16 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.*;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +34,7 @@ public class StaffFX {
     private TableView staffTable;
     private AnchorPane staffTab;
     private HashMap<Integer,String> currentUser;
+    private AddressFX addressFX;
 
     public StaffFX() {
     }
@@ -37,7 +43,7 @@ public class StaffFX {
         this.parent = parent;
     }
 
-    public void createStaffTab(){
+    public void createStaffTab() throws FileNotFoundException {
         this.parent.setMinSize(1000,400);
         this.staffTab = new AnchorPane();
         VBox container = new VBox();
@@ -47,7 +53,17 @@ public class StaffFX {
         AnchorPane.setBottomAnchor(container,5.0);
         AnchorPane.setLeftAnchor(container,5.0);
         AnchorPane.setRightAnchor(container,5.0);
+
+        ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
+        Circle logoClip = new Circle(50,50,40);
+        logo.setClip(logoClip);
+        logo.setPreserveRatio(true);
+        logo.setFitHeight(100);
         Text title = new Text("Staff");
+
+        BorderPane header = new BorderPane();
+        header.setRight(logo);
+        header.setCenter(title);
 
         this.staffTable = createStaffTable();
 
@@ -68,9 +84,9 @@ public class StaffFX {
         title.setStyle("-fx-font-size: 24; -fx-font-weight: bold");
         container.setStyle("-fx-background-color: silver; -fx-background-radius:0 0 5 5;");
 
-        fillTable(staffDAO.getAllStaff());
+        fillTable(staffDAO.getAllStaff());;
         btnContainer.getChildren().addAll(addBtn,searchBtn);
-        container.getChildren().addAll(title, staffTable, btnContainer);
+        container.getChildren().addAll(header, staffTable, btnContainer);
         staffTab.getChildren().addAll(container);
     }
 
@@ -104,7 +120,7 @@ public class StaffFX {
         addressPostcodeCol.setPrefWidth(70);
         TableColumn<Staff, String> addressCountryCol = new TableColumn<>("Country");
         addressCountryCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAddress().getCountry()));
-        addressCityCol.setPrefWidth(50);
+        addressCountryCol.setPrefWidth(50);
         TableColumn<Staff, String> emailCol = new TableColumn<>("e-mail");
         emailCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEmail()));
         emailCol.setPrefWidth(150);
@@ -165,8 +181,6 @@ public class StaffFX {
 
     public void createPopup(int index, Staff staff){
         Stage stage = new Stage();
-        Button closeBtn = new Button("Close");
-        closeBtn.setOnMouseClicked(mouseEvent -> stage.close());
 
         AnchorPane root = new AnchorPane();
         root.setPrefSize(300,300);
@@ -194,6 +208,8 @@ public class StaffFX {
         AnchorPane.setLeftAnchor(content,5.0);
         AnchorPane.setRightAnchor(content,5.0);
 
+        Button closeBtn = new Button("Close");
+        closeBtn.setOnMouseClicked(mouseEvent -> stage.close());
 
         content.setStyle("-fx-background-color:silver; -fx-background-radius:5");
         content.getChildren().add(closeBtn);
@@ -553,9 +569,17 @@ public class StaffFX {
         return container;
     }
 
+    //Method to change focus to address tab that shows only the requested address
+    public void showAddressTab(List<Address> address){
+        SingleSelectionModel selectionModel = parent.getSelectionModel();
+        selectionModel.select(6);
+        this.addressFX.fillTable(address);
+    }
+
+
     //GETTERS AND SETTERS
 
-    public AnchorPane getStaffTab() {
+    public AnchorPane getStaffTab() throws FileNotFoundException {
         createStaffTab();
         return staffTab;
     }
@@ -566,5 +590,13 @@ public class StaffFX {
 
     public void setCurrentUser(HashMap<Integer, String> currentUser) {
         this.currentUser = currentUser;
+    }
+
+    public AddressFX getAddressFX() {
+        return addressFX;
+    }
+
+    public void setAddressFX(AddressFX addressFX) {
+        this.addressFX = addressFX;
     }
 }

@@ -88,7 +88,8 @@ public class AddressDAO {           //Lynsey Fox
             transaction = entityManager.getTransaction();
             transaction.begin();
             if(!entityManager.contains(addressToDelete)) {
-                entityManager.merge(addressToDelete);
+                addressToDelete = entityManager.merge(addressToDelete);
+                //entityManager.merge(addressToDelete);
             }
             entityManager.remove(addressToDelete);
             transaction.commit();

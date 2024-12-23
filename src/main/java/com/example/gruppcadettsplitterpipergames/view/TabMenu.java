@@ -28,28 +28,30 @@ public class TabMenu{
         playerMatchesFX = new PlayerMatchesFX();
         teamMatchesFX = new TeamMatchesFX();
     }*/
+    private AddressFX addressFX = new AddressFX(this.root);
 
 
 
     public Scene tabMenuScene(Stage stage) throws FileNotFoundException{
         stage.setResizable(true);
         staffFX.setCurrentUser(this.currentUser);
-
+        staffFX.setAddressFX(addressFX);
 
         Tab staffTab = new Tab("Staff", staffFX.getStaffTab());
         staffTab.setClosable(false);
         Tab teamTab = new Tab("Team", new TeamFX().getView());
         teamTab.setClosable(false);
-        /*Tab playerMatchesTab = playerMatchesFX.getPlayerMatchesTab();
+        Tab teamMatchesTab = new Tab("TeamMatches");
+        teamMatchesTab.setClosable(false);
+        Tab playerMatchesTab = new Tab("PlayerMatches");
         playerMatchesTab.setClosable(false);
-        Tab teamMatchesTab = teamMatchesFX.getTeamMatchesTab();
-        teamMatchesTab.setClosable(false);*/
         Tab gamesTab = new Tab("Games", new GameFX().getGamesView());
         gamesTab.setClosable(false);
         Tab playerTab = new Tab("Player", new PlayerFX().getPlayerView());
         playerTab.setClosable(false);
+        Tab addressTab = new Tab("Address", addressFX.getAddressTab());
 
-        this.root.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab/*, playerMatchesTab, teamMatchesTab*/);
+        this.root.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab/*, playerMatchesTab, teamMatchesTab*/, addressTab);
         this.root.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
         Button logoutBtn = new Button("Logout");
