@@ -25,19 +25,15 @@ public class TabMenu{
     private StaffFX staffFX = new StaffFX(this.root);
     private TeamFX teamFX;
     private TeamsDAO teamsDAO = new TeamsDAO();
-    /*private PlayerMatchesFX playerMatchesFX;
-    private TeamMatchesFX teamMatchesFX;*/
-
-
-    /*public TabMenu() {
-        playerMatchesFX = new PlayerMatchesFX();
-        teamMatchesFX = new TeamMatchesFX();
-    }*/
+    private PlayerMatchesFX playerMatchesFX;
+    private TeamMatchesFX teamMatchesFX;
     private AddressFX addressFX = new AddressFX(this.root);
     private PlayerFX playerFX = new PlayerFX();
     private GameFX gameFX = new GameFX();
 
     public TabMenu() throws FileNotFoundException {
+        playerMatchesFX = new PlayerMatchesFX();
+        teamMatchesFX = new TeamMatchesFX();
     }
 
 
@@ -59,10 +55,10 @@ public class TabMenu{
             }
         });
         teamTab.setClosable(false);
-        Tab teamMatchesTab = new Tab("TeamMatches");
-        teamMatchesTab.setClosable(false);
-        Tab playerMatchesTab = new Tab("PlayerMatches");
+        Tab playerMatchesTab = playerMatchesFX.getPlayerMatchesTab();
         playerMatchesTab.setClosable(false);
+        Tab teamMatchesTab = teamMatchesFX.getTeamMatchesTab();
+        teamMatchesTab.setClosable(false);
         Tab gamesTab = new Tab("Games", gameFX.getGamesView());
         gamesTab.setClosable(false);
         gamesTab.setOnSelectionChanged(event -> {gameFX.loadGamesFromDB(new GamesDAO().getAllGames());});

@@ -1,3 +1,4 @@
+//CF
 package com.example.gruppcadettsplitterpipergames.entities;
 
 import jakarta.persistence.*;
@@ -8,6 +9,7 @@ public class PlayerMatches {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     @Column(name = "match_id")
     private int playerMatchId;
 

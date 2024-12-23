@@ -20,9 +20,10 @@ public class TeamMatchesDAO {
             transaction.begin();
             entityManager.persist(match);
             transaction.commit();
+            System.out.println("Team match saved: " + match); // Add this
             return true;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error saving team match: " + e.getMessage());
             if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
             }

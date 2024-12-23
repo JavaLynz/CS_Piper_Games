@@ -1,3 +1,4 @@
+//CF
 package com.example.gruppcadettsplitterpipergames.entities;
 
 import jakarta.persistence.*;
