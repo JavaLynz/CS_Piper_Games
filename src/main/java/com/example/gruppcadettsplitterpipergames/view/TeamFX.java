@@ -41,6 +41,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
+// Klass av Niklas
+
 public class TeamFX {
 
     private BorderPane view;
@@ -300,107 +303,79 @@ public class TeamFX {
         });
 
 
-
-
-
-
         // DELETE
         btnDelete.setOnAction(event -> {
-           Team selectedTeam = teamTable.getSelectionModel().getSelectedItem();
-           if(selectedTeam != null) {
-               Dialog<Boolean> dialog = new Dialog<>();
-               dialog.setTitle("Delete team");
-               dialog.setHeaderText("Do you want to delete the selected team?");
+            System.out.println("Delete team");
 
-               Button btnDeleteTeam = new Button("Delete");
-               Button btnCancel = new Button("Cancel");
+            Dialog<Boolean> dialog = new Dialog<>();
+            dialog.setTitle("Delete team");
+            dialog.setHeaderText("Choose team to delete");
 
-               GridPane gridPane = new GridPane();
-               gridPane.setHgap(20);
-               dialog.getDialogPane().setContent(gridPane);
-               gridPane.add(btnDeleteTeam, 1, 0);
-               gridPane.add(btnCancel,3 , 0);
-
-               btnDeleteTeam.setOnAction(e -> {
-                   teamsDAO.deleteTeam(selectedTeam);
-                   teamTable.getItems().remove(selectedTeam);
-                   teamTable.refresh();
-                   System.out.println("Team " + selectedTeam.getName() + " deleted");
-                   dialog.setResult(Boolean.TRUE);
-                   dialog.close();
-               });
-
-               btnCancel.setOnAction(e -> {
-                   System.out.println("Cancel");
-                   dialog.setResult(Boolean.TRUE);
-                   dialog.close();
-               });
-
-                dialog.showAndWait();
-           } else {
-               System.out.println("No team selected");
-           }
-            });
+            ComboBox<Team> teamCombo = new ComboBox<>();
+            teamCombo.setPromptText("Select a team to delete");
+            teamCombo.getItems().addAll(teamsDAO.getAllTeams());
 
 
             // CellFactory för att skriva ut lagnamnen i ComboBox
-//            teamCombo.setCellFactory(param -> new ListCell<Team>() {
-//                @Override
-//                protected void updateItem(Team team, boolean empty) {
-//                    super.updateItem(team, empty);
-//                    if (empty || team == null) {
-//                        setText(null);
-//                    } else {
-//                        setText(team.getName());
-//                    }
-//                }
-//            });
-//
-//            teamCombo.setButtonCell((new ListCell<Team>() {
-//                @Override
-//                protected void updateItem(Team team, boolean empty) {
-//                    super.updateItem(team, empty);
-//                    if (empty || team == null) {
-//                        setText(null);
-//                    } else {
-//                        setText(team.getName());
-//                    }
-//                }
-//            }));
+            teamCombo.setCellFactory(param -> new ListCell<Team>() {
+                @Override
+                protected void updateItem(Team team, boolean empty) {
+                    super.updateItem(team, empty);
+                    if (empty || team == null) {
+                        setText(null);
+                    } else {
+                        setText(team.getName());
+                    }
+                }
+            });
+
+            teamCombo.setButtonCell((new ListCell<Team>() {
+                @Override
+                protected void updateItem(Team team, boolean empty) {
+                    super.updateItem(team, empty);
+                    if (empty || team == null) {
+                        setText(null);
+                    } else {
+                        setText(team.getName());
+                    }
+                }
+            }));
 
 
-//            GridPane gridPane = new GridPane();
-//            gridPane.setHgap(20);
-//            gridPane.setVgap(10);
-////            gridPane.add(teamCombo, 1, 0);
-//
-//            Button btnDeleteTeam = new Button("Delete team");
-//            Button btnCancelDeleteTeam = new Button("Close");
-//
-//            dialog.getDialogPane().setContent(gridPane);
-//            gridPane.add(btnDeleteTeam, 1, 3);
-//            gridPane.add(btnCancelDeleteTeam, 2, 3);
-//
-//            btnCancelDeleteTeam.setOnAction(e -> {
-//                System.out.println("Cancel");
-//                dialog.setResult(Boolean.TRUE);
-//                dialog.close();
-//            });
-//
-//            btnDeleteTeam.setOnAction(e -> {
-//                Team teamToDelete = teamCombo.getValue();
-//                if (teamToDelete != null) {
-//                    teamsDAO.deleteTeam(teamToDelete);
-//                    teamTable.getItems().removeIf(t -> t.getId() == teamToDelete.getId());
-//                    teamTable.refresh();
-//                    System.out.println("Team " + teamToDelete + " was deleted!");
-//                    dialog.close();
-//                } else {
-//                    System.out.println("No team selected");
-//                }
-//            });
-//            dialog.showAndWait();
-//        });
+            GridPane gridPane = new GridPane();
+            gridPane.setHgap(20);
+            gridPane.setVgap(10);
+            gridPane.add(teamCombo, 1, 0);
+
+            Button btnDeleteTeam = new Button("Delete team");
+            Button btnCancelDeleteTeam = new Button("Close");
+
+            dialog.getDialogPane().setContent(gridPane);
+            gridPane.add(btnDeleteTeam, 1, 3);
+            gridPane.add(btnCancelDeleteTeam, 2, 3);
+
+            btnCancelDeleteTeam.setOnAction(e -> {
+                System.out.println("Cancel");
+                dialog.setResult(Boolean.TRUE);
+                dialog.close();
+            });
+
+            btnDeleteTeam.setOnAction(e -> {
+                Team teamToDelete = teamCombo.getValue();
+                if (teamToDelete != null) {
+                    teamsDAO.deleteTeam(teamToDelete);
+                    teamTable.getItems().removeIf(t -> t.getId() == teamToDelete.getId());
+                    teamTable.refresh();
+                    System.out.println("Team " + teamToDelete + " was deleted!");
+                    dialog.close();
+                } else {
+                    System.out.println("No team selected");
+                }
+            });
+            dialog.showAndWait();
+        });
+
+
 
         // UPDATE
         btnUpdate.setOnAction(event -> {

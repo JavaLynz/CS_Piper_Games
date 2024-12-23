@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+// Klass av Niklas
+
 public class TeamsDAO {
 
     private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("myconfig");
@@ -84,6 +86,12 @@ public class TeamsDAO {
             }
             entityManager.remove(teamToDelete);
             transaction.commit();
+            Team found = entityManager.find(Team.class, teamToDelete.getId());
+            if (found == null) {
+                System.out.println("Team successfully deleted from DB");
+            } else {
+                System.out.println("Team was NOT deleted from DB");
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
             if(entityManager != null && transaction != null && transaction.isActive()){
