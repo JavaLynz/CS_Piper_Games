@@ -163,7 +163,7 @@ public class TeamFX {
             gameCombo.getItems().addAll(gameDAO.getAllGames());
 
             // CellFactory för att skriva ut spelnamnen i ComboBox
-            gameCombo.setCellFactory(param -> new ListCell<Game>() {
+            gameCombo.setCellFactory(param -> new ListCell<Game>( ) {
                 @Override
                 protected void updateItem(Game game, boolean empty) {
                     super.updateItem(game, empty);
