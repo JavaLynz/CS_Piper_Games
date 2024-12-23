@@ -9,8 +9,13 @@ import java.util.List;
 
 public class TeamsDAO {
 
+
+    private EntityManagerFactory entityManagerFactory;
     private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence.createEntityManagerFactory("myconfig");
 
+    public TeamsDAO() {
+        entityManagerFactory = Persistence.createEntityManagerFactory("myconfig");
+    }
 
     // Create
     public boolean saveTeam(Team team) {
@@ -133,4 +138,20 @@ public class TeamsDAO {
         }
         return teams;
     }
+    public Team getTeamByName(String name) {
+        EntityManager em = null;
+        try {
+            em = entityManagerFactory.createEntityManager();
+            return em.createQuery("SELECT t FROM Team t WHERE t.name = :name", Team.class)
+                    .setParameter("name", name)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null; // Handle the case where no team is found
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+        }
+    }
+
 }
