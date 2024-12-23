@@ -29,13 +29,6 @@ public class DeleteConfirmBox {     // Lynsey Fox
         window.setResizable(false);
         window.setMinHeight(400);
 
-        ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
-        Circle logoClip = new Circle(80,80,70);
-        logo.setTranslateY(0);
-        logo.setClip(logoClip);
-        logo.setPreserveRatio(true);
-        logo.setFitHeight(160.0);
-
         Label title = new Label("Confirm Delete");
         title.setAlignment(Pos.CENTER);
         title.setStyle("-fx-font-size: 20");
@@ -45,15 +38,10 @@ public class DeleteConfirmBox {     // Lynsey Fox
         Button delete = new Button("Delete");
         Button cancel = new Button("Cancel");
         delete.setOnAction(e -> {
-            System.out.println("number of games: " + gamesDAO.getAllGames().size());
-            System.out.println("Game deleted: " + gameToDelete.getGameName());
-            gamesDAO.deleteGame(gameToDelete);
-            try {
-                confirmPopup(gameToDelete);
-            } catch (FileNotFoundException ex) {
-                throw new RuntimeException(ex);
+            if(gamesDAO.deleteGameById(gameToDelete.getGameId())) {
+                System.out.println("Delete status: " + gamesDAO.deleteGameById(gameToDelete.getGameId()));
             }
-            System.out.println("number of games: " + gamesDAO.getAllGames().size());
+            answer = true;
             window.close();
         });
         cancel.setOnAction(e -> {
@@ -62,7 +50,7 @@ public class DeleteConfirmBox {     // Lynsey Fox
         });
 
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(logo,title,label, delete, cancel);
+        layout.getChildren().addAll(title,label, delete, cancel);
         layout.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(layout);
@@ -73,37 +61,4 @@ public class DeleteConfirmBox {     // Lynsey Fox
 
     }
 
-    private void confirmPopup(Game gameToDelete) throws FileNotFoundException {
-        Stage window = new Stage();
-        window.initModality(Modality.APPLICATION_MODAL);
-
-        ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
-        Circle logoClip = new Circle(80,80,70);
-        logo.setTranslateY(0);
-        logo.setClip(logoClip);
-        logo.setPreserveRatio(true);
-        logo.setFitHeight(160.0);
-
-        Button closeButton = new Button("Close");
-        closeButton.setOnAction(e -> window.close());
-
-        Label label = new Label("Game: "+ gameToDelete.getGameName() + " has been deleted");
-        AnchorPane root = new AnchorPane();
-        root.setPrefSize(150,150);
-
-        VBox layout = new VBox(20);
-        layout.getChildren().addAll(logo,label, closeButton);
-        layout.setAlignment(Pos.CENTER);
-        root.getChildren().add(layout);
-
-        AnchorPane.setLeftAnchor(layout, 5.0);
-        AnchorPane.setRightAnchor(layout, 5.0);
-        AnchorPane.setTopAnchor(layout, 5.0);
-        AnchorPane.setBottomAnchor(layout, 5.0);
-
-        Scene scene = new Scene(root);
-        window.setScene(scene);
-        window.showAndWait();
-        window.setAlwaysOnTop(true);
-    }
 }

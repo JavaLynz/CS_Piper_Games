@@ -1,6 +1,9 @@
 package com.example.gruppcadettsplitterpipergames.entities;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,11 +20,13 @@ public class Game {     //Lynsey Fox
     @Column(name = "game_name", nullable = false)
     private String gameName;
 
-    @OneToMany(orphanRemoval = true,cascade = CascadeType.ALL, mappedBy = "playerId")
-    private List<Player> players;
+    @OneToMany(orphanRemoval = true,cascade = CascadeType.ALL, mappedBy = "game", fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<Player> players = new ArrayList<>();
 
-    @OneToMany(orphanRemoval = true,cascade = CascadeType.ALL, mappedBy = "id")
-    private List<Team> teams;
+    @OneToMany(orphanRemoval = true,cascade = CascadeType.ALL, mappedBy = "game", fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<Team> teams = new ArrayList<>();
 
     public Game(String gameName) {
         this.gameName = gameName;

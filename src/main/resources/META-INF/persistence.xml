@@ -5,7 +5,9 @@
 
     <persistence-unit name="myconfig">
 
-        <!-- <class>org.hibernate.example.Book</class> -->
+         <class>com.example.gruppcadettsplitterpipergames.entities.Team</class>
+         <class>com.example.gruppcadettsplitterpipergames.entities.Address</class>
+         <class>com.example.gruppcadettsplitterpipergames.entities.Player</class>
 
         <properties>
             <!-- MySQL -->

@@ -16,12 +16,13 @@ import javafx.stage.Stage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-
-     //   Logger.getLogger("org.hibernate").setLevel(Level.OFF);
+     //Logger.getLogger("org.hibernate").setLevel(Level.OFF);
 
         AnchorPane root = new AnchorPane();
         LoginPage login = new LoginPage();

@@ -11,18 +11,21 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.List;
 
 
 public class GameFX {           //Lynsey Fox
     private final GamesDAO gamesDAO;
     private AnchorPane gamesView;
     private final ObservableList<Game> gamesList;
+    TableView<Game> gamesTableView;
 
     public GameFX() throws FileNotFoundException {
         gamesDAO = new GamesDAO();
@@ -39,14 +42,15 @@ public class GameFX {           //Lynsey Fox
         HBox buttonHolder = new HBox(30);
         buttonHolder.setAlignment(Pos.CENTER);
 
+        // logo code from Benjamin
         ImageView logo = new ImageView(new Image(new FileInputStream("src/main/resources/logo.png")));
-        Circle logoClip = new Circle(80,80,70);
-        logo.setTranslateY(0);
+        Circle logoClip = new Circle(50,50,40);
         logo.setClip(logoClip);
         logo.setPreserveRatio(true);
-        logo.setFitHeight(160.0);
+        logo.setFitHeight(100);
+        BorderPane header = new BorderPane();header.setRight(logo);header.setCenter(title);
 
-        TableView<Game> gamesTableView = createGamesTableView();
+        gamesTableView = createGamesTableView();
         gamesTableView.setPrefHeight(250);
 
 
@@ -57,48 +61,39 @@ public class GameFX {           //Lynsey Fox
 
         Button searchGames = new Button("Search");
         searchGames.setOnAction(e -> {
-            //search game pop up box
             try {
                 new GameSearchPopUp().display(gamesDAO);
             } catch (FileNotFoundException ex) {
                 throw new RuntimeException(ex);
             }
-
-            loadGamesFromDB(gamesTableView);
+            loadGamesFromDB(gamesDAO.getAllGames());
 
         });
 
 
         Button addGame = new Button("Add Game");
         addGame.setOnAction(e1 -> {
-            try {
-                if(new AddGameBox(gamesDAO).display()){
-                    loadGamesFromDB(gamesTableView);
-                }
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-
-
+          if(new AddGameBox(gamesDAO).display()){
+                    loadGamesFromDB(gamesDAO.getAllGames());
+          }
         });
 
         Button refreshTable = new Button("Refresh Table");
         refreshTable.setOnAction(e1 -> {
-            loadGamesFromDB(gamesTableView);
+            loadGamesFromDB(gamesDAO.getAllGames());
 
         });
         buttonHolder.getChildren().addAll(refreshTable, searchGames, addGame);
         buttonHolder.setStyle("-fx-background-color: silver");
         buttonHolder.setAlignment(Pos.BOTTOM_CENTER);
-        AnchorPane.setBottomAnchor(gamesView, 10.0);
-        AnchorPane.setLeftAnchor(gamesView, 10.0);
-        AnchorPane.setRightAnchor(gamesView, 10.0);
-        AnchorPane.setTopAnchor(gamesView, 10.0);
+        AnchorPane.setBottomAnchor(container, 5.0);
+        AnchorPane.setLeftAnchor(container, 5.0);
+        AnchorPane.setRightAnchor(container, 5.0);
+        AnchorPane.setTopAnchor(container, 0.0);
         gamesView.getChildren().addAll(container);
         gamesView.setPadding(new Insets(15));
         gamesView.setPrefWidth(800);
-        loadGamesFromDB(gamesTableView);
-
+        loadGamesFromDB(gamesDAO.getAllGames());
 
 
     }
@@ -112,7 +107,16 @@ public class GameFX {           //Lynsey Fox
 
         TableColumn<Game, String> nameCol = new TableColumn<>("Game Name");
         nameCol.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGameName()));
-        nameCol.setPrefWidth(200);
+        nameCol.setPrefWidth(100);
+
+        TableColumn<Game, String> teamCol = new TableColumn<>("No. of Teams");
+        teamCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getTeams().size())));
+        teamCol.setPrefWidth(125);
+
+        TableColumn<Game,String> playersCol = new TableColumn<>("No. of Players");
+        playersCol.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getPlayers().size())));
+        playersCol.setPrefWidth(125);
+
 
         TableColumn<Game,Void> updateCol =  new TableColumn<>("Update");
         updateCol.setCellFactory(col -> new TableCell<Game,Void>(){
@@ -123,14 +127,11 @@ public class GameFX {           //Lynsey Fox
                     TableColumn idColumn = (TableColumn) gamesTableView.getColumns().get(0);
                     int id = Integer.parseInt ((String) idColumn.getCellObservableValue(getIndex()).getValue());
                     Game gameToUpdate = gamesDAO.getGameById(id);
-                    try {
-                        if(new GameUpdateBox().display(gameToUpdate, gamesDAO)){
-                            loadGamesFromDB(gamesTableView);
-                        }
-                    } catch (FileNotFoundException e) {
-                        throw new RuntimeException(e);
+                    if(new GameUpdateBox().display(gameToUpdate, gamesDAO)){
+                            loadGamesFromDB(gamesDAO.getAllGames());
                     }
                     System.out.println("Game updated: " + gameToUpdate);
+
 
                 });
             }
@@ -152,13 +153,14 @@ public class GameFX {           //Lynsey Fox
                     TableColumn idColumn = (TableColumn) gamesTableView.getColumns().get(0);
                     int id = Integer.parseInt ((String) idColumn.getCellObservableValue(getIndex()).getValue());
                     Game gameToDelete = gamesDAO.getGameById(id);
+
                     try {
                         if(new DeleteConfirmBox().display(gameToDelete, gamesDAO)){
-                            loadGamesFromDB(gamesTableView);
-                        }
+                            loadGamesFromDB(gamesDAO.getAllGames());
+                          }
                     } catch (FileNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
+                      throw new RuntimeException(e);
+                   }
 
                 });
             }
@@ -173,15 +175,15 @@ public class GameFX {           //Lynsey Fox
             }
         });
 
-        gamesTableView.getColumns().addAll(idCol, nameCol, updateCol, deleteCol);
+        gamesTableView.getColumns().addAll(idCol, nameCol, playersCol, teamCol, updateCol, deleteCol);
         return gamesTableView;
 
     }
 
 
-    private void loadGamesFromDB(TableView<Game> gamesTableView) {
-        gamesList.setAll(gamesDAO.getAllGames());
-        gamesTableView.setItems(gamesList);
+    public void loadGamesFromDB(List<Game> gamesToShow) {
+        gamesList.setAll(gamesToShow);
+        this.gamesTableView.setItems(gamesList);
     }
 
     public AnchorPane getGamesView() {
