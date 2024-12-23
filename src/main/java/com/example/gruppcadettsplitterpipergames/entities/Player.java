@@ -41,6 +41,7 @@ public class Player {   //Lynsey Fox
     private Team team;
 
     @OneToMany (mappedBy ="playerMatchId",fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private List<PlayerMatches> playerMatches = new ArrayList<>();
 
     @ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
