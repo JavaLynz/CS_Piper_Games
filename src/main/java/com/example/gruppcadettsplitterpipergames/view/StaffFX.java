@@ -318,10 +318,12 @@ public class StaffFX {
                         staffDAO.saveStaff(newStaff);
                         newStaff.setAddress(newAddress);
                         staffDAO.updateStaff(newStaff);
+                    } else{
+                        newStaff.setAddress(newAddress);
+                        newAddress.getStaff().add(newStaff);
+                        staffDAO.saveStaff(newStaff);
                     }
-                    newStaff.setAddress(newAddress);
-                    newAddress.getStaff().add(newStaff);
-                    staffDAO.saveStaff(newStaff);
+
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }

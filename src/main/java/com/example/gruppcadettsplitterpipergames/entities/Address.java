@@ -33,7 +33,7 @@ public class Address {          //Lynsey Fox
     @OnDelete(action = OnDeleteAction.NO_ACTION)
     private List<Player> players = new ArrayList<>();
 
-    @OneToMany (mappedBy = "address", cascade = {CascadeType.PERSIST,CascadeType.MERGE})
+    @OneToMany (mappedBy = "address", fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
     @OnDelete(action = OnDeleteAction.NO_ACTION)
     private List<Staff> staff = new ArrayList<>();
 
