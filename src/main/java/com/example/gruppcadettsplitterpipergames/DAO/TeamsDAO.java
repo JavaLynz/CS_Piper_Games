@@ -1,5 +1,6 @@
 package com.example.gruppcadettsplitterpipergames.DAO;
 
+import com.example.gruppcadettsplitterpipergames.entities.Game;
 import com.example.gruppcadettsplitterpipergames.entities.Team;
 import jakarta.persistence.*;
 
@@ -115,5 +116,21 @@ public class TeamsDAO {
         } finally {
             entityManager.close();
         }
+    }
+
+    public List<Team> getTeamsByGameNames(List<Game> selectedGames) {
+        EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
+        List<Team> teams = new ArrayList<>();
+        try {
+            String queryString = "SELECT t FROM Team t WHERE t.game IN :selectedGames";
+            TypedQuery<Team> query = entityManager.createQuery(queryString, Team.class);
+            query.setParameter("selectedGames", selectedGames);
+            teams = query.getResultList();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } finally {
+            entityManager.close();
+        }
+        return teams;
     }
 }

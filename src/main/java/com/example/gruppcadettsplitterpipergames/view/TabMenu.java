@@ -1,5 +1,6 @@
 package com.example.gruppcadettsplitterpipergames.view;
 
+import com.example.gruppcadettsplitterpipergames.DAO.TeamsDAO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+
 import java.util.HashMap;
 import java.io.FileNotFoundException;
 
@@ -20,6 +22,8 @@ public class TabMenu{
     private TabPane root = new TabPane();
     private HashMap<Integer,String> currentUser;
     private StaffFX staffFX = new StaffFX(this.root);
+    private TeamFX teamFX;
+    private TeamsDAO teamsDAO = new TeamsDAO();
     /*private PlayerMatchesFX playerMatchesFX;
     private TeamMatchesFX teamMatchesFX;*/
 
@@ -33,13 +37,21 @@ public class TabMenu{
 
 
     public Scene tabMenuScene(Stage stage) throws FileNotFoundException{
+        teamFX = new TeamFX();
+
         stage.setResizable(true);
         staffFX.setCurrentUser(this.currentUser);
-        staffFX.setAddressFX(addressFX);
 
         Tab staffTab = new Tab("Staff", staffFX.getStaffTab());
         staffTab.setClosable(false);
-        Tab teamTab = new Tab("Team", new TeamFX().getView());
+        Tab teamTab = new Tab("Team", teamFX.getView());
+
+        teamTab.setOnSelectionChanged(event -> {
+            if (teamTab.isSelected()) {
+                System.out.println("Team tab selected - loading teams...");
+                teamFX.loadTeamsFromDatabase(teamFX.getTeamTable());
+            }
+        });
         teamTab.setClosable(false);
         Tab teamMatchesTab = new Tab("TeamMatches");
         teamMatchesTab.setClosable(false);
@@ -49,9 +61,8 @@ public class TabMenu{
         gamesTab.setClosable(false);
         Tab playerTab = new Tab("Player", new PlayerFX().getPlayerView());
         playerTab.setClosable(false);
-        Tab addressTab = new Tab("Address", addressFX.getAddressTab());
 
-        this.root.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab/*, playerMatchesTab, teamMatchesTab*/, addressTab);
+        this.root.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab, playerMatchesTab, teamMatchesTab);
         this.root.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
         Button logoutBtn = new Button("Logout");
