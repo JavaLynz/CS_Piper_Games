@@ -20,6 +20,14 @@ public class TabMenu{
     private TabPane root = new TabPane();
     private HashMap<Integer,String> currentUser;
     private StaffFX staffFX = new StaffFX(this.root);
+    /*private PlayerMatchesFX playerMatchesFX;
+    private TeamMatchesFX teamMatchesFX;*/
+
+
+    /*public TabMenu() {
+        playerMatchesFX = new PlayerMatchesFX();
+        teamMatchesFX = new TeamMatchesFX();
+    }*/
     private AddressFX addressFX = new AddressFX(this.root);
 
 
@@ -43,7 +51,7 @@ public class TabMenu{
         playerTab.setClosable(false);
         Tab addressTab = new Tab("Address", addressFX.getAddressTab());
 
-        this.root.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab, playerMatchesTab, teamMatchesTab, addressTab);
+        this.root.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab/*, playerMatchesTab, teamMatchesTab*/, addressTab);
         this.root.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
         Button logoutBtn = new Button("Logout");
