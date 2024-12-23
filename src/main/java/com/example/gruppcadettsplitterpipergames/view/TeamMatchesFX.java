@@ -1,3 +1,4 @@
+//CF
 package com.example.gruppcadettsplitterpipergames.view;
 
 import com.example.gruppcadettsplitterpipergames.DAO.TeamMatchesDAO;
@@ -82,20 +83,23 @@ public class TeamMatchesFX {
         dialogStage.setTitle(isUpdate ? "Update Match" : "Add New Match");
         dialogStage.initModality(Modality.APPLICATION_MODAL);
 
-        Label team1Label = new Label("Team 1 Name:");
-        TextField team1Field = new TextField();
-        Label team2Label = new Label("Team 2 Name:");
-        TextField team2Field = new TextField();
+        Label team1Label = new Label("Team 1:");
+        ComboBox<String> team1Dropdown = new ComboBox<>();
+        team1Dropdown.setItems(FXCollections.observableArrayList(teamDAO.getAllTeams().stream().map(Team::getName).toList()));
+
+        Label team2Label = new Label("Team 2:");
+        ComboBox<String> team2Dropdown = new ComboBox<>();
+        team2Dropdown.setItems(FXCollections.observableArrayList(teamDAO.getAllTeams().stream().map(Team::getName).toList()));
 
         Label resultLabel = new Label("Result:");
         TextField resultField = new TextField();
 
-        Label matchDateLabel = new Label("Match Date:");
+        Label matchDateLabel = new Label("Match Date (YYYY-MM-DD):");
         TextField matchDateField = new TextField();
 
         if (isUpdate && existingMatch != null) {
-            team1Field.setText(existingMatch.getTeam1Name());
-            team2Field.setText(existingMatch.getTeam2Name());
+            team1Dropdown.setValue(existingMatch.getTeam1Name());
+            team2Dropdown.setValue(existingMatch.getTeam2Name());
             resultField.setText(existingMatch.getResult());
             matchDateField.setText(existingMatch.getMatchDate());
         }
@@ -105,9 +109,9 @@ public class TeamMatchesFX {
         grid.setVgap(10);
         grid.setPadding(new Insets(20));
         grid.add(team1Label, 0, 0);
-        grid.add(team1Field, 1, 0);
+        grid.add(team1Dropdown, 1, 0);
         grid.add(team2Label, 0, 1);
-        grid.add(team2Field, 1, 1);
+        grid.add(team2Dropdown, 1, 1);
         grid.add(resultLabel, 0, 2);
         grid.add(resultField, 1, 2);
         grid.add(matchDateLabel, 0, 3);
@@ -122,17 +126,18 @@ public class TeamMatchesFX {
 
         VBox dialogLayout = new VBox(10, grid, buttonBox);
         dialogLayout.setPadding(new Insets(20));
-        Scene dialogScene = new Scene(dialogLayout, 400, 250);
+        Scene dialogScene = new Scene(dialogLayout, 400, 300);
         dialogStage.setScene(dialogScene);
 
         okButton.setOnAction(e -> {
-            if (!team1Field.getText().isEmpty()
-                    && !team2Field.getText().isEmpty()
+            if (team1Dropdown.getValue() != null
+                    && team2Dropdown.getValue() != null
+                    && !resultField.getText().isEmpty()
                     && !matchDateField.getText().isEmpty()) {
 
                 TeamMatches match = (existingMatch == null) ? new TeamMatches() : existingMatch;
-                match.setTeam1Name(team1Field.getText());
-                match.setTeam2Name(team2Field.getText());
+                match.setTeam1Name(team1Dropdown.getValue());
+                match.setTeam2Name(team2Dropdown.getValue());
                 match.setResult(resultField.getText());
                 match.setMatchDate(matchDateField.getText());
 
@@ -144,13 +149,12 @@ public class TeamMatchesFX {
                 refreshMatches();
                 dialogStage.close();
             } else {
-                Alert alert = new Alert(Alert.AlertType.WARNING, "Fields with * are required!", ButtonType.OK);
+                Alert alert = new Alert(Alert.AlertType.WARNING, "All fields are required!", ButtonType.OK);
                 alert.showAndWait();
             }
         });
 
         cancelButton.setOnAction(e -> dialogStage.close());
-
         dialogStage.showAndWait();
     }
 
@@ -181,6 +185,7 @@ public class TeamMatchesFX {
 
     private void refreshMatches() {
         teamMatchesList.setAll(teamMatchesDAO.getAllTeamMatches());
+        System.out.println("Refreshed matches: " + teamMatchesList); // Add this
         tableView.refresh();
     }
 

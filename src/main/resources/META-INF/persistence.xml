@@ -5,9 +5,13 @@
 
     <persistence-unit name="myconfig">
 
-         <class>com.example.gruppcadettsplitterpipergames.entities.Team</class>
-         <class>com.example.gruppcadettsplitterpipergames.entities.Address</class>
-         <class>com.example.gruppcadettsplitterpipergames.entities.Player</class>
+        <class>com.example.gruppcadettsplitterpipergames.entities.Team</class>
+        <class>com.example.gruppcadettsplitterpipergames.entities.Player</class>
+        <class>com.example.gruppcadettsplitterpipergames.entities.TeamMatches</class>
+        <class>com.example.gruppcadettsplitterpipergames.entities.PlayerMatches</class>
+        <class>com.example.gruppcadettsplitterpipergames.entities.Game</class>
+
+        <!-- <class>org.hibernate.example.Book</class> -->
 
         <properties>
             <!-- MySQL -->
@@ -18,7 +22,7 @@
             <property name="jakarta.persistence.jdbc.user"
                       value="root"/>
             <property name="jakarta.persistence.jdbc.password"
-                      value="MySQL574921!"/>
+                      value="56895689n"/>
 
             <!-- Automatic schema export -->
             <property name="jakarta.persistence.schema-generation.database.action"
