@@ -1,20 +1,14 @@
-//När personalen hanterar lag ska dom kunna lägga till och ta bort befintliga spelarprofiler i laget.
-//Ett lag är alltid knutet till ett visst spel och en spelare får bara ingå i ett lag.
-
-
 package com.example.gruppcadettsplitterpipergames.entities;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.hibernate.engine.internal.Cascade;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "teams")
-
 public class Team {
 
     @Id
@@ -22,34 +16,35 @@ public class Team {
     @Column(name = "team_id", nullable = false)
     private int id;
 
-    @Column (name = "team_name", length = 50, nullable = false)
+    @Column(name = "team_name", length = 50, nullable = false)
     private String name;
-
 
     // Flera lag till ett spel
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "game_id", nullable = false)
-
+    @OnDelete(action = OnDeleteAction.CASCADE) // Se till att laget tas bort om spelet tas bort
     private Game game;
 
     // Ett lag till flera spelare
-    @OneToMany(mappedBy = "team", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "team", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.REMOVE)
+    @OnDelete(action = OnDeleteAction.CASCADE) // Se till att spelare tas bort om laget tas bort
     private List<Player> players = new ArrayList<>();
 
-    //Flera lag till flera matcher
-    @ManyToMany
+    // Flera lag till flera matcher
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinTable(name = "team_team_matches", joinColumns = @JoinColumn(name = "team_id"), inverseJoinColumns = @JoinColumn(name = "team_match_id"))
+    @OnDelete(action = OnDeleteAction.CASCADE) // Se till att relationen till matcher tas bort när laget tas bort
     private List<TeamMatches> teamMatches = new ArrayList<>();
 
     // Konstruktorer
     public Team() {}
-
 
     public Team(String name, Game game) {
         this.name = name;
         this.game = game;
     }
 
+    // Lägg till en spelare i laget
     public void addPlayer(Player player) {
         if (!players.contains(player)) {
             players.add(player);
@@ -57,6 +52,7 @@ public class Team {
         }
     }
 
+    // Ta bort en spelare från laget
     public void removePlayer(Player player) {
         if (players.contains(player)) {
             players.remove(player);
@@ -109,9 +105,9 @@ public class Team {
         return "Team{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", game=" + game +
-                ", players=" + players +
-                ", teamMatches=" + teamMatches +
+                ", game=" + (game != null ? game.getGameId() : "null") +
+                ", playersCount=" + (players != null ? players.size() : 0) +
+                ", teamMatchesCount=" + (teamMatches != null ? teamMatches.size() : 0) +
                 '}';
     }
 }
