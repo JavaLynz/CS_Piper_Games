@@ -34,6 +34,7 @@ public class StaffFX {
     private TableView staffTable;
     private AnchorPane staffTab;
     private HashMap<Integer,String> currentUser;
+    private AddressFX addressFX;
 
     public StaffFX() {
     }
@@ -568,6 +569,14 @@ public class StaffFX {
         return container;
     }
 
+    //Method to change focus to address tab that shows only the requested address
+    public void showAddressTab(List<Address> address){
+        SingleSelectionModel selectionModel = parent.getSelectionModel();
+        selectionModel.select(6);
+        this.addressFX.fillTable(address);
+    }
+
+
     //GETTERS AND SETTERS
 
     public AnchorPane getStaffTab() throws FileNotFoundException {
@@ -581,5 +590,13 @@ public class StaffFX {
 
     public void setCurrentUser(HashMap<Integer, String> currentUser) {
         this.currentUser = currentUser;
+    }
+
+    public AddressFX getAddressFX() {
+        return addressFX;
+    }
+
+    public void setAddressFX(AddressFX addressFX) {
+        this.addressFX = addressFX;
     }
 }
