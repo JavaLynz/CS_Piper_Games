@@ -302,6 +302,8 @@ public class TeamFX {
             dialog.showAndWait();
         });
 
+        // Delete slutade fungera efter merge och jag har inte lyckats hitta någon lösning.
+        // Lag raderas endast från table, inte databas
 
         // DELETE
         btnDelete.setOnAction(event -> {
