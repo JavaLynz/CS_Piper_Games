@@ -30,6 +30,11 @@ INSERT INTO teams(team_name, game_id) VALUES ("Natus Vincere",3);
 INSERT INTO teams(team_name, game_id) VALUES ("FaZe Clan", 4);
 INSERT INTO teams(team_name, game_id) VALUES ("Evil Geniuses", 4);
 
+update players set team_id = 1 where player_id in (1,2);
+update players set team_id = 2 where player_id in (3,4);
+update players set team_id = 3 where player_id in (5,6);
+update players set team_id = 4 where player_id in (7,8);
+
 
 INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id, game_id, team_id,email) VALUES ('Harrison', 'Ford', 'Harry', 1, 1,1,"harry@hford.com");
 INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id,  game_id, team_id,email) VALUES ('Michael J', 'Fox', 'Mike',2,1,1, "MJ@MFox.com");

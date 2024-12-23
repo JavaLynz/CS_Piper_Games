@@ -22,7 +22,7 @@ public class Staff {
     private String nickName;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "address_id")
+    @JoinColumn(name = "address_id", nullable = true)
     private Address address;
 
     @Column(name = "staff_email", length = 50, nullable = false)

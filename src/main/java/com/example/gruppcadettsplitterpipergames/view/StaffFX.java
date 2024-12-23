@@ -559,6 +559,8 @@ public class StaffFX {
             alert.setText("Are you sure you want to delete:\n\n"+ staff.getFullName());
             Button deleteBtn = new Button("Delete");
             deleteBtn.setOnMouseClicked(mouseEvent -> {
+                staff.setAddress(null);
+                staffDAO.updateStaff(staff);
                 staffDAO.deleteStaff(staff);
                 stage.close();
                 fillTable(staffDAO.getAllStaff());
