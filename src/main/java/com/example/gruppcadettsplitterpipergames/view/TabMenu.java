@@ -30,6 +30,8 @@ public class TabMenu{
     private AddressFX addressFX = new AddressFX(this.root);
     private PlayerFX playerFX = new PlayerFX();
     private GameFX gameFX = new GameFX();
+    private LoginPage loginPage;
+    private Scene scene;
 
     public TabMenu() throws FileNotFoundException {
         playerMatchesFX = new PlayerMatchesFX();
@@ -67,7 +69,7 @@ public class TabMenu{
         playerTab.setOnSelectionChanged(e-> playerFX.loadPlayersFromDB(new PlayerDAO().getAllPlayers()));
         Tab addressTab = new Tab("Address", addressFX.getAddressTab());
 
-        this.root.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab, playerMatchesTab, teamMatchesTab, addressTab);
+
         this.root.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
         Button logoutBtn = new Button("Logout");
@@ -83,13 +85,16 @@ public class TabMenu{
         Tab logoutTab = new Tab();
         logoutTab.setGraphic(logoutBtn);
         logoutTab.setStyle("-fx-padding: 0; right:0");
-        this.root.getTabs().add(logoutTab);
+        if (this.root.getTabs().isEmpty()){
+            this.root.getTabs().addAll(staffTab, playerTab, teamTab, gamesTab, playerMatchesTab, teamMatchesTab, addressTab, logoutTab);
+        }
 
-        return new Scene(this.root);
+        scene = new Scene(this.root);
+        return scene;
     }
 
     public void createLogoutPrompt(Stage mainStage) throws FileNotFoundException {
-        LoginPage login = new LoginPage();
+        //LoginPage login = new LoginPage();
         Stage stage = new Stage();
         AnchorPane root = new AnchorPane();
         VBox container = new VBox(10);
@@ -107,7 +112,9 @@ public class TabMenu{
         Button confirmBtn = new Button("Confirm");
         confirmBtn.setOnMouseClicked(mouseEvent -> {
             try {
-                mainStage.setScene(login.getLoginScene(mainStage));
+                scene.setRoot(new AnchorPane());
+                this.loginPage.setTabMenu(this);
+                mainStage.setScene(this.loginPage.getLoginScene(mainStage));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -132,5 +139,9 @@ public class TabMenu{
 
     public void setCurrentUser(HashMap<Integer, String> currentUser) {
         this.currentUser = currentUser;
+    }
+
+    public void setLoginPage(LoginPage loginPage) {
+        this.loginPage = loginPage;
     }
 }

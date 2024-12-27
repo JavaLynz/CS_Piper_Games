@@ -20,14 +20,21 @@ import java.util.HashMap;
 
 public class LoginPage {
     private StaffDAO staffDAO = new StaffDAO();
-    private TabMenu tabMenu = new TabMenu();
+    private TabMenu tabMenu;
 
-    public LoginPage() throws FileNotFoundException {
+    public LoginPage() {
+        //this.tabMenu = new TabMenu();
     }
 
+    public LoginPage(TabMenu tabMenu) {
+        this.tabMenu = tabMenu;
+    }
 
     public Scene getLoginScene(Stage stage) throws FileNotFoundException {
         //Components and styling for basic layout
+        if (this.tabMenu == null){
+            this.tabMenu = new TabMenu();
+        }
         AnchorPane root = new AnchorPane();
         Scene loginScene = new Scene(root, 600,350);
         VBox container = new VBox(20);
@@ -64,6 +71,7 @@ public class LoginPage {
                 System.out.println("StaffID: " + chosenStaff.getStaffId()+ " logged into system.");
                 HashMap<Integer, String> currentUser = new HashMap<>();
                 currentUser.put(chosenStaff.getStaffId(), loginDropdown.getValue());
+                tabMenu.setLoginPage(this);
                 tabMenu.setCurrentUser(currentUser);
                 stage.setScene(tabMenu.tabMenuScene(stage));
             } catch (Exception e) {
@@ -78,5 +86,13 @@ public class LoginPage {
         container.getChildren().addAll(logo, loginUI);
         loginUI.getChildren().addAll(loginDropdown, loginBtn);
         return loginScene;
+    }
+
+    public TabMenu getTabMenu() {
+        return tabMenu;
+    }
+
+    public void setTabMenu(TabMenu tabMenu) {
+        this.tabMenu = tabMenu;
     }
 }
