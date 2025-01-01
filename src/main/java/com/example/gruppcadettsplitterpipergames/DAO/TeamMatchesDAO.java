@@ -22,10 +22,10 @@ public class TeamMatchesDAO {
             transaction.begin();
             entityManager.persist(match);
             transaction.commit();
-            System.out.println("Team match saved: " + match);
+            System.out.println("Team match saved" + match);
             return true;
         } catch (Exception e) {
-            System.out.println("Error saving team match: " + e.getMessage());
+            System.out.println("Error saving team match" + e.getMessage());
             if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
             }
@@ -124,7 +124,7 @@ public class TeamMatchesDAO {
             }
             return false;
         } catch (Exception e) {
-            System.out.println("Error deleting team match by ID: " + e.getMessage());
+            System.out.println("Error deleting team" + e.getMessage());
             if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
             }
@@ -145,7 +145,7 @@ public class TeamMatchesDAO {
             teams = query.getResultList();
             System.out.println("Fetched " + teams.size() + " teams for game: " + game.getGameName());
         } catch (Exception e) {
-            System.out.println("Error fetching teams by game: " + e.getMessage());
+            System.out.println("Error fetching teams" + e.getMessage());
         } finally {
             entityManager.close();
         }
