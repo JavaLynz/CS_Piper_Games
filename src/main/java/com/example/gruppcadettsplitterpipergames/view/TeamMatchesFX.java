@@ -95,6 +95,7 @@ public class TeamMatchesFX {
         Button showUndecidedButton = new Button("Show Undecided");
         showUndecidedButton.setOnAction(e -> showUndecidedMatches());
 
+
         VBox rightBox = new VBox(10, showDecidedButton, showUndecidedButton);
         rightBox.setAlignment(Pos.CENTER);
         rightBox.setPadding(new Insets(10));

@@ -26,6 +26,9 @@ public class PlayerMatches {
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
+    @Column(name = "match_date", length = 10)
+    private String matchDate;
+
     @Transient
     public String getGameTitle() {
         return (game != null) ? game.getGameName() : null;
@@ -33,11 +36,12 @@ public class PlayerMatches {
 
     public PlayerMatches() {}
 
-    public PlayerMatches(String player1Name, String player2Name, String result, Game game) {
+    public PlayerMatches(String player1Name, String player2Name, String result, Game game, String matchDate) {
         this.player1Name = player1Name;
         this.player2Name = player2Name;
         this.result = result;
         this.game = game;
+        this.matchDate = matchDate;
     }
 
     public int getPlayerMatchId() {
@@ -78,6 +82,13 @@ public class PlayerMatches {
 
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    public String getMatchDate() {
+        return matchDate;
+    }
+    public void setMatchDate(String matchDate) {
+        this.matchDate = matchDate;
     }
 
     @Override
