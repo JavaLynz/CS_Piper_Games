@@ -26,7 +26,7 @@ public class TeamMatches {
 
     @ManyToOne
     @JoinColumn(name = "game_id", nullable = false)
-    private Game game;
+    private Game gameId;
 
     public TeamMatches() {}
 
@@ -35,7 +35,7 @@ public class TeamMatches {
         this.team2Name = team2Name;
         this.result = result;
         this.matchDate = matchDate;
-        this.game = game;
+        this.gameId = game;
     }
 
     public int getMatchId() {
@@ -79,10 +79,22 @@ public class TeamMatches {
     }
 
     public Game getGame() {
-        return game;
+        return gameId;
     }
 
     public void setGame(Game game) {
-        this.game = game;
+        this.gameId = game;
+    }
+
+    @Override
+    public String toString() {
+        return "TeamMatches{" +
+                "matchId=" + matchId +
+                ", team1Name='" + team1Name + '\'' +
+                ", team2Name='" + team2Name + '\'' +
+                ", result='" + result + '\'' +
+                ", matchDate='" + matchDate + '\'' +
+                ", game=" + (gameId != null ? gameId.getGameName() : "null") +
+                '}';
     }
 }

@@ -1,6 +1,8 @@
 //CF
 package com.example.gruppcadettsplitterpipergames.DAO;
 
+import com.example.gruppcadettsplitterpipergames.entities.Game;
+import com.example.gruppcadettsplitterpipergames.entities.Team;
 import com.example.gruppcadettsplitterpipergames.entities.TeamMatches;
 import jakarta.persistence.*;
 
@@ -20,7 +22,7 @@ public class TeamMatchesDAO {
             transaction.begin();
             entityManager.persist(match);
             transaction.commit();
-            System.out.println("Team match saved: " + match); // Add this
+            System.out.println("Team match saved: " + match);
             return true;
         } catch (Exception e) {
             System.out.println("Error saving team match: " + e.getMessage());
@@ -41,6 +43,7 @@ public class TeamMatchesDAO {
                     "SELECT t FROM TeamMatches t", TeamMatches.class
             );
             matches = query.getResultList();
+            System.out.println("Fetched team matches: " + matches.size());
         } catch (Exception e) {
             System.out.println(e.getMessage());
         } finally {
@@ -74,7 +77,7 @@ public class TeamMatchesDAO {
             transaction.commit();
             return true;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error updating team match: " + e.getMessage());
             if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
             }
@@ -97,7 +100,7 @@ public class TeamMatchesDAO {
             transaction.commit();
             return true;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error deleting team match: " + e.getMessage());
             if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
             }
@@ -121,7 +124,7 @@ public class TeamMatchesDAO {
             }
             return false;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error deleting team match by ID: " + e.getMessage());
             if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
             }
@@ -129,5 +132,23 @@ public class TeamMatchesDAO {
         } finally {
             entityManager.close();
         }
+    }
+
+    public List<Team> getTeamsByGame(Game game) {
+        EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
+        List<Team> teams = new ArrayList<>();
+        try {
+            TypedQuery<Team> query = entityManager.createQuery(
+                    "SELECT t FROM Team t WHERE t.game = :game", Team.class
+            );
+            query.setParameter("game", game);
+            teams = query.getResultList();
+            System.out.println("Fetched " + teams.size() + " teams for game: " + game.getGameName());
+        } catch (Exception e) {
+            System.out.println("Error fetching teams by game: " + e.getMessage());
+        } finally {
+            entityManager.close();
+        }
+        return teams;
     }
 }

@@ -161,5 +161,20 @@ public class TeamsDAO {
             }
         }
     }
+    public List<Team> getTeamsByGame(Game selectedGame) {
+        EntityManager entityManager = ENTITY_MANAGER_FACTORY.createEntityManager();
+        List<Team> teams = new ArrayList<>();
+        try {
+            String queryString = "SELECT t FROM Team t WHERE t.game = :selectedGame";
+            TypedQuery<Team> query = entityManager.createQuery(queryString, Team.class);
+            query.setParameter("selectedGame", selectedGame);
+            teams = query.getResultList();
+        } catch (Exception e) {
+            System.out.println("Error fetching teams by game: " + e.getMessage());
+        } finally {
+            entityManager.close();
+        }
+        return teams;
+    }
 
 }
