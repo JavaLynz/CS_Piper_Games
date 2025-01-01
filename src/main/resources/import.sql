@@ -50,5 +50,16 @@ INSERT INTO players(player_first_name, player_last_name, player_nick_name, addre
 INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id,game_id,email) VALUES ('Stina', 'Samsson', 'Stina',2,3,"s@samsson.com");
 INSERT INTO players(player_first_name, player_last_name, player_nick_name, address_id,game_id, email) VALUES ('Folke', 'Dragotinovic', 'Folke',6,1,"folke@drago.com");
 
+INSERT INTO games (id, game_name) VALUES
+                                      (1, 'Battleship'),
+                                      (2, 'Mario Kart'),
+                                      (3, 'Street Fighter'),
+                                      (4, 'Asphalt 9');
 
-
+-- Insert team matches (this comes after games because of the foreign key dependency)
+NSERT INTO team_matches (team1_name, team2_name, result, match_date, game_id)
+VALUES
+('Ninjas in Pyjamas', 'Team Liquid', 'Ninjas in Pyjamas', '2024-01-01', 1),
+('Fnatic', 'G2 Esports', 'Fnatic', '2024-01-02', 2),
+('Cloud9', 'Natus Vincere', 'Cloud9', '2024-01-03', 3),
+('FaZe Clan', 'Evil Geniuses', 'Evil Geniuses', '2024-01-04', 4);
