@@ -17,6 +17,9 @@ import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TeamMatchesFX {
@@ -42,44 +45,35 @@ public class TeamMatchesFX {
         tableView = new TableView<>();
         tableView.setItems(teamMatchesList);
 
-        // Match ID Column
         TableColumn<TeamMatches, Integer> matchIdColumn = new TableColumn<>("Match ID");
         matchIdColumn.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getMatchId()));
 
-        // Game Column
         TableColumn<TeamMatches, String> gameColumn = new TableColumn<>("Game");
         gameColumn.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(data.getValue().getGame().getGameName()));
 
-        // Team 1 Column
         TableColumn<TeamMatches, String> team1Column = new TableColumn<>("Team 1");
         team1Column.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(data.getValue().getTeam1Name()));
 
-        // Team 2 Column
         TableColumn<TeamMatches, String> team2Column = new TableColumn<>("Team 2");
         team2Column.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(data.getValue().getTeam2Name()));
 
-        // Result Column
         TableColumn<TeamMatches, String> resultColumn = new TableColumn<>("Result");
         resultColumn.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(data.getValue().getResult()));
 
-        // Match Date Column
         TableColumn<TeamMatches, String> dateColumn = new TableColumn<>("Match Date");
         dateColumn.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(data.getValue().getMatchDate()));
 
-        // Add columns to the TableView in the correct order
         tableView.getColumns().addAll(matchIdColumn, gameColumn, team1Column, team2Column, resultColumn, dateColumn);
 
-        // Placeholder for when the table is empty
         Label emptyTableLabel = new Label("No team matches available.");
         tableView.setPlaceholder(emptyTableLabel);
 
-        // Button Section
         HBox buttonBox = new HBox(10);
         buttonBox.setStyle("-fx-padding: 10; -fx-alignment: center;");
 
@@ -90,16 +84,25 @@ public class TeamMatchesFX {
 
         buttonBox.getChildren().addAll(addButton, updateButton, deleteButton, refreshButton);
 
-        // Button Actions
         addButton.setOnAction(e -> addMatch());
         updateButton.setOnAction(e -> updateMatch());
         deleteButton.setOnAction(e -> deleteMatch());
         refreshButton.setOnAction(e -> refreshMatches());
 
-        // Layout
+        Button showDecidedButton = new Button("Show Decided");
+        showDecidedButton.setOnAction(e -> showDecidedMatches());
+
+        Button showUndecidedButton = new Button("Show Undecided");
+        showUndecidedButton.setOnAction(e -> showUndecidedMatches());
+
+        VBox rightBox = new VBox(10, showDecidedButton, showUndecidedButton);
+        rightBox.setAlignment(Pos.CENTER);
+        rightBox.setPadding(new Insets(10));
+
         BorderPane root = new BorderPane();
         root.setCenter(tableView);
         root.setBottom(buttonBox);
+        root.setRight(rightBox);
 
         teamMatchesTab.setContent(root);
     }
@@ -109,7 +112,6 @@ public class TeamMatchesFX {
         dialogStage.setTitle(isUpdate ? "Update Match" : "Add New Match");
         dialogStage.initModality(Modality.APPLICATION_MODAL);
 
-        // Create input fields with prompt text
         ComboBox<Game> gameComboBox = new ComboBox<>();
         gameComboBox.getItems().addAll(gamesDAO.getAllGames());
         gameComboBox.setPromptText("Select a game");
@@ -126,7 +128,6 @@ public class TeamMatchesFX {
         TextField matchDateField = new TextField();
         matchDateField.setPromptText("Enter match date (e.g., YYYY-MM-DD)");
 
-        // Pre-fill fields if updating
         if (isUpdate && existingMatch != null) {
             gameComboBox.setValue(existingMatch.getGame());
             team1ComboBox.setValue(new Team(existingMatch.getTeam1Name(), existingMatch.getGame()));
@@ -135,7 +136,6 @@ public class TeamMatchesFX {
             matchDateField.setText(existingMatch.getMatchDate());
         }
 
-        // Dynamic update for team ComboBoxes based on selected game
         gameComboBox.setOnAction(e -> {
             Game selectedGame = gameComboBox.getValue();
             if (selectedGame != null) {
@@ -143,19 +143,16 @@ public class TeamMatchesFX {
                 team1ComboBox.getItems().setAll(teams);
                 team2ComboBox.getItems().setAll(teams);
 
-                // Reset team selections to prevent conflicts
                 team1ComboBox.setValue(null);
                 team2ComboBox.setValue(null);
             }
         });
 
-        // Create layout
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(20));
 
-        // Add components to grid
         grid.add(new Label("Game:"), 0, 0);
         grid.add(gameComboBox, 1, 0);
         grid.add(new Label("Team 1:"), 0, 1);
@@ -167,22 +164,18 @@ public class TeamMatchesFX {
         grid.add(new Label("Match Date:"), 0, 4);
         grid.add(matchDateField, 1, 4);
 
-        // Add buttons
         Button okButton = new Button("Ok");
         Button cancelButton = new Button("Cancel");
         HBox buttonBox = new HBox(10, okButton, cancelButton);
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.setPadding(new Insets(10));
 
-        // Add grid and buttons to the layout
         VBox dialogLayout = new VBox(10, grid, buttonBox);
         dialogLayout.setPadding(new Insets(20));
 
-        // Set scene
         Scene dialogScene = new Scene(dialogLayout, 400, 350);
         dialogStage.setScene(dialogScene);
 
-        // Button actions
         okButton.setOnAction(e -> {
             if (gameComboBox.getValue() != null &&
                     team1ComboBox.getValue() != null &&
@@ -240,8 +233,42 @@ public class TeamMatchesFX {
     }
 
     private void refreshMatches() {
-        teamMatchesList.setAll(teamMatchesDAO.getAllTeamMatches());
+        List<TeamMatches> allMatches = teamMatchesDAO.getAllTeamMatches();
+        teamMatchesList.setAll(allMatches);
+        tableView.setItems(teamMatchesList);
         tableView.refresh();
+    }
+
+    private void showDecidedMatches() {
+        LocalDate today = LocalDate.now();
+        List<TeamMatches> filtered = new ArrayList<>();
+        for (TeamMatches tm : teamMatchesList) {
+            try {
+                LocalDate matchDay = LocalDate.parse(tm.getMatchDate());
+                if (matchDay.isBefore(today)) {
+                    filtered.add(tm);
+                }
+            } catch (DateTimeParseException ex) {
+                System.err.println("Invalid date format: " + tm.getMatchDate());
+            }
+        }
+        tableView.setItems(FXCollections.observableArrayList(filtered));
+    }
+
+    private void showUndecidedMatches() {
+        LocalDate today = LocalDate.now();
+        List<TeamMatches> filtered = new ArrayList<>();
+        for (TeamMatches tm : teamMatchesList) {
+            try {
+                LocalDate matchDay = LocalDate.parse(tm.getMatchDate());
+                if (!matchDay.isBefore(today)) {
+                    filtered.add(tm);
+                }
+            } catch (DateTimeParseException ex) {
+                System.err.println("Invalid date format: " + tm.getMatchDate());
+            }
+        }
+        tableView.setItems(FXCollections.observableArrayList(filtered));
     }
 
     public Tab getTeamMatchesTab() {
