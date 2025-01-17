@@ -35,7 +35,7 @@ public class Player {   //Lynsey Fox
     @OnDelete(action = OnDeleteAction.SET_NULL)
     private Address address;
 
-    @ManyToOne (fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToOne (fetch = FetchType.EAGER/*, cascade = { CascadeType.PERSIST, CascadeType.MERGE }*/)
     @JoinColumn(name = "team_id", referencedColumnName = "team_id", foreignKey = @ForeignKey(name = "fk_team_id"))
     @OnDelete(action = OnDeleteAction.SET_NULL)
     private Team team;

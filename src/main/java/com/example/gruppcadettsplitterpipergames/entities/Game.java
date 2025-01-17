@@ -24,7 +24,7 @@ public class Game {     //Lynsey Fox
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Player> players = new ArrayList<>();
 
-    @OneToMany(orphanRemoval = true,cascade = CascadeType.ALL, mappedBy = "game", fetch = FetchType.EAGER)
+    @OneToMany(orphanRemoval = true/*,cascade = CascadeType.ALL*/, mappedBy = "game", fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Team> teams = new ArrayList<>();
 

@@ -302,8 +302,6 @@ public class TeamFX {
             dialog.showAndWait();
         });
 
-        // Delete slutade fungera efter merge och jag har inte lyckats hitta någon lösning.
-        // Lag raderas endast från table, inte databas
 
         // DELETE
         btnDelete.setOnAction(event -> {
@@ -365,6 +363,14 @@ public class TeamFX {
             btnDeleteTeam.setOnAction(e -> {
                 Team teamToDelete = teamCombo.getValue();
                 if (teamToDelete != null) {
+//                    teamToDelete.setGame(null);
+//                    System.out.println(teamToDelete + " game_id set to null");
+
+                    for(Player player : teamToDelete.getPlayers()) {
+                        player.setTeam(null);
+                        System.out.println("Team set to null for " + player.getFirstName());
+                        playerDAO.updatePlayer(player);
+                    }
                     teamsDAO.deleteTeam(teamToDelete);
                     teamTable.getItems().removeIf(t -> t.getId() == teamToDelete.getId());
                     teamTable.refresh();
